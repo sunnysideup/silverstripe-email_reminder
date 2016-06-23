@@ -69,4 +69,5 @@ Setting up a Cron job
  ---
 The task to run is `dev/tasks/EmailReminder_DailyMailOut`. A few things to remember:
  * theme-ing may not work / work differently from command line
- * In the `EmailReminder_NotificationSchedule`
+ * In the `EmailReminder_NotificationSchedule` you can set up test emails.
+ * Not sure how to set up a cron job? Google it. 
