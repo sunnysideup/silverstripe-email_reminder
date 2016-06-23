@@ -1,0 +1,25 @@
+
+{
+    "name": "sunnysideup/email_reminder",
+    "type": "silverstripe-module",
+    "description": "Sends email reminders to members / users based on a selectable date field in the Member Record.",
+    "homepage": "http://www.silverstripe-webdevelopment.com",
+    "keywords": ["member", "user", "emogrifier", "email", "reminder", "membership"],
+    "license": "Sunny Side Up (BSD-3-Clause and CUSTOM)",
+    "authors":[
+        {
+            "name": "Nicolaas Francken",
+            "homepage": "https://github.com/sunnysideup",
+            "email" : "modules@sunnysideup.co.nz",
+            "role" : "lead developer"
+        }
+    ],
+    "require":{
+        "silverstripe/framework": "~3",
+        "silverstripe/cms": "~3",
+        "pelago/emogrifier": "@dev"
+    },
+    "extra": {
+        "installer-name": "newsletter_emogrify"
+    }
+}
