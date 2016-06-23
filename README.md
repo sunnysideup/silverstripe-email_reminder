@@ -62,6 +62,7 @@ Inspiration / Ideas
 ---
  * https://github.com/silverstripe-labs/silverstripe-newsletter
  * https://github.com/sunnysideup/silverstripe-newsletter_emogrify: how to emogrify.
+ * https://github.com/unclecheese/silverstripe-permamail: should we extend this module? 
 
 
 Setting up a Cron job
