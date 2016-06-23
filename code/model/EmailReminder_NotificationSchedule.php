@@ -3,6 +3,8 @@
 class EmailReminder_NotificationSchedule extends DataObject
 {
 
+    private static $days_before_same_notification_can_be_sent_to_same_user = 100;
+
     private static $singular_name = "Service Search";
         function i18n_singular_name() { return self::$singular_name;}
 
