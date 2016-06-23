@@ -60,9 +60,9 @@ The system will only ever send `n` mails per day (see configs).  This is to ensu
 
 Inspiration / Ideas
 ---
- * https://github.com/silverstripe-labs/silverstripe-newsletter
+ * https://github.com/silverstripe-labs/silverstripe-newsletter: how to set up email templates and how to allow the selection of available templates in the CMS. 
  * https://github.com/sunnysideup/silverstripe-newsletter_emogrify: how to emogrify.
- * https://github.com/unclecheese/silverstripe-permamail: should we extend this module? 
+ * https://github.com/unclecheese/silverstripe-permamail: seems great - might be used in conjunction with this module?
 
 
 Setting up a Cron job
