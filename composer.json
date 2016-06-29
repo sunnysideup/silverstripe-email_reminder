@@ -20,6 +20,6 @@
         "pelago/emogrifier": "@dev"
     },
     "extra": {
-        "installer-name": "newsletter_emogrify"
+        "installer-name": "email_reminder"
     }
 }
