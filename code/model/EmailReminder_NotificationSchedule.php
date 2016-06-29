@@ -58,15 +58,23 @@ class EmailReminder_NotificationSchedule extends DataObject
      *    $controller = singleton("MyModelAdmin");
      *    return $controller->Link().$this->ClassName."/EditForm/field/".$this->ClassName."/item/".$this->ID."/edit";
       */
-    public function CMSEditLink();
+    public function CMSEditLink()
+    {
 
-    public function getCMSFields();
+    }
+
+    public function getCMSFields()
+    {
+
+    }
 
     /**
      * returns list of fields as they are exported
      * @return array
      * Field => Label
      */
-    public function getExportFields();
+    public function getExportFields(){
+
+    }
 
 }

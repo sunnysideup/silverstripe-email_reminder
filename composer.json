@@ -1,4 +1,3 @@
-
 {
     "name": "sunnysideup/email_reminder",
     "type": "silverstripe-module",
@@ -17,7 +16,7 @@
     "require":{
         "silverstripe/framework": "~3",
         "silverstripe/cms": "~3",
-        "pelago/emogrifier": "@dev"
+        "pelago/emogrifier": "*"
     },
     "extra": {
         "installer-name": "email_reminder"
