@@ -93,7 +93,6 @@
 				<tr>
 					<td align="center" valign="top" sytle="border-collapse:collapse;">
 						<table border="0" cellpadding="0" cellspacing="0" width="751" id="templateContainer" sytle="border: 1px solid #B29E80;background-color:#161616;">
-							<% include NewsletterHeader %>
 							<tr>
 								<td align="center" valign="top" sytle="border-collapse:collapse;">
 									<table border="0" cellpadding="20" cellspacing="0" width="751" id="templateBody" style="background-color:#FFFFFF;">
