@@ -3,47 +3,48 @@
 class EmailReminder_EmailRecord extends DataObject
 {
 
-    private static $singular_name = "Service Search";
+    private static $singular_name = "Email Reminder Record";
         function i18n_singular_name() { return self::$singular_name;}
 
-    private static $plural_name = "Service Searches";
+    private static $plural_name = "Email Reminder Records";
         function i18n_plural_name() { return self::$plural_name;}
 
-    private static $db;
+    private static $db = array(
+        'EmailTo' => 'Varchar(100)',
+        'Result' => 'Boolean',
+        'IsTestOnly' => 'Boolean'
+    );
 
-    private static $has_one;
+    private static $indexes = array(
+        'To' => true,
+        'Result' => true
+    );
 
-    /**
-     * A meta-relationship that allows you to define the reverse side of a {@link DataObject::$has_one}.
-     *
-     * This does not actually create any data structures, but allows you to query the other object in a one-to-one
-     * relationship from the child object. If you have multiple belongs_to links to another object you can use the
-     * syntax "ClassName.HasOneName" to specify which foreign has_one key on the other object to use.
-     *
-     * Note that you cannot have a has_one and belongs_to relationship with the same name.
-     *
-     * @var array
-     * @config
-     */
-    private static $belongs_to;
+    private static $has_one = array(
+        'EmailReminder_NotificationSchedule' => 'EmailReminder_NotificationSchedule'
+    );
 
-    private static $has_many;
+    private static $summary_fields = array(
+        'Created.Nice' => 'When',
+        'EmailTo' => 'Sent to',
+        'Result.Nice' => 'Sent Succesfully',
+        'IsTestOnly.Nice' => 'Test Only'
+    );
 
-    private static $many_many;
+    public function canCreate($member = null)
+    {
+        return false;
+    }
 
-    private static $belongs_many_many;
+    public function canEdit($member = null)
+    {
+        return false;
+    }
 
-    private static $casting;
-
-    private static $indexes;
-
-    private static $default_sort;
-
-    private static $required_fields;
-
-    private static $summary_fields;
-
-    private static $field_labels;
+    public function canDelete($member = null)
+    {
+        return false;
+    }
 
     /**
      *
