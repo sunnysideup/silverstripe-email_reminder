@@ -16,7 +16,7 @@ class EmailReminder_EmailRecord extends DataObject
     );
 
     private static $indexes = array(
-        'To' => true,
+        'EmailTo' => true,
         'Result' => true
     );
 
