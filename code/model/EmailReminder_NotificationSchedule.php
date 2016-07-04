@@ -4,11 +4,6 @@ class EmailReminder_NotificationSchedule extends DataObject
 {
 
     /**
-     * @var int
-     */ 
-    private static $days_before_same_notification_can_be_sent_to_same_user = 100;
-
-    /**
      * @var string
      */ 
     private static $default_data_object = 'Member';
@@ -22,6 +17,11 @@ class EmailReminder_NotificationSchedule extends DataObject
      * @var string
      */     
     private static $default_email_field = '';
+
+    /**
+     * @var string
+     */ 
+    private static $mail_out_class = 'EmailReminder_DailyMailOut';
 
     private static $singular_name = 'Email Reminder Schedule';
     public function i18n_singular_name()
@@ -40,6 +40,7 @@ class EmailReminder_NotificationSchedule extends DataObject
         'EmailField' => 'Varchar(100)',     
         'DateField' => 'Varchar(100)',      
         'Days' => 'Int',                    
+        'RepeatDays' => 'Int',                    
         'BeforeAfter' => "Enum('before,after','before')",
         'EmailFrom' => 'Varchar(100)',      
         'EmailSubject' => 'Varchar(100)',   
@@ -60,7 +61,8 @@ class EmailReminder_NotificationSchedule extends DataObject
 
     private static $field_labels = array(
         'DataObject' => 'Class/Table',
-        'Days' => 'Days from Expiry'
+        'Days' => 'Days from Expiry',
+        'RepeatDays' => 'Repeat cycle days'
     );
 
     function populateDefaults(){
@@ -69,6 +71,7 @@ class EmailReminder_NotificationSchedule extends DataObject
         $this->EmailField = $this->Config()->get('default_email_field');
         $this->DateField = $this->Config()->get('default_date_field');
         $this->Days = 7;
+        $this->RepeatDays = 300;
         $this->BeforeAfter = 'before';
         $this->EmailFrom = Config::inst()->get('Email', 'admin_email');
         $this->EmailSubject = 'Your memberships expires in [days] days';
@@ -130,13 +133,15 @@ class EmailReminder_NotificationSchedule extends DataObject
 
         $fields->removeFieldsFromTab(
             'Root.Main',
-            array('Days','BeforeAfter')
+            array('Days','BeforeAfter', 'RepeatDays')
         );
         $fields->addFieldsToTab(
             'Root.Main',
             array(
                 NumericField::create('Days', 'Days')
                     ->setRightTitle('How many days in advance (before) or in arrears (after) of the expiration date should this email be sent?'),
+                NumericField::create('RepeatDays', 'Repeat Cycle Days')
+                    ->setRightTitle('Number of days after which the cycle can be repeated (e.g. 300 days)'),
                 DropdownField::create('BeforeAfter', 'Before / After Expiration', array('before' => 'before', 'after' => 'after'))
                     ->setRightTitle('Are the days listed above before or after the actual expiration date.')
             )
@@ -146,19 +151,17 @@ class EmailReminder_NotificationSchedule extends DataObject
             array(
                 TextField::create('EmailFrom', 'Email From Address')
                     ->setRightTitle('The email from address, eg: "My Company &lt;info@example.com&gt;"'),
-                TextField::create('EmailSubject', 'Email Subject Line')
+                $subjectField = TextField::create('EmailSubject', 'Email Subject Line')
                     ->setRightTitle('The subject of the email'),
-                HTMLEditorField::create('Content', 'Email Content')
-                    ->setRightTitle('
-                        Content for email you can use:<br />
-                        [beforeafter] which will be replaced by <em>before</em> or <em>after</em> as specified above.<br />
-                        [loginlink] which will be replaced by a link for the member to log in.<br />
-                        [passwordreset] which will be replaced by a link for the member reset their password.<br />
-                        '
-                    )
+                $contentField = HTMLEditorField::create('Content', 'Email Content')
                     ->SetRows(20)
             )
         );
+        if($obj = $this->getReplacerObject()) {
+            $html = $obj->replaceHelpList($asHTML = true);
+            $subjectField->setRightTitle($html);
+            $contentField->setRightTitle($html);
+        }
         $fields->addFieldsToTab(
             'Root.Sent',
             array(        
@@ -297,16 +300,53 @@ class EmailReminder_NotificationSchedule extends DataObject
         return $valid;
     }
 
+    function onBeforeWrite()
+    {
+        parent::onBeforeWrite();
+        if($this->RepeatDays < ($this->Days * 3)) {
+            $this->RepeatDays = ($this->Days * 3);
+        }
+    }
 
     function onAfterWrite()
     {
         parent::onAfterWrite();
         if($this->SendTestTo) {
-            $obj = Injector::inst()->get('EmailReminder_DailyMailOut');
-            $obj->setTestOnly(true);
-            $obj->setVerbose(true);
-            $obj->run(null);
+            if($mailOutObject = $this->getMailOutObject()) {
+                $mailOutObject->setTestOnly(true);
+                $mailOutObject->setVerbose(true);
+                $mailOutObject->run(null);
+            }
         }
     }
+
+    /**
+     *
+     * @return null | EmailReminder_ReplacerClassInterface
+     */ 
+    function getReplacerObject()
+    {
+        if($mailOutObject = $this->getMailOutObject()) {
+            return $mailOutObject->getReplacerObject();
+        } 
+    }
+
+    /**
+     *
+     * @return null | ScheduledTask
+     */ 
+    function getMailOutObject()
+    {
+        $mailOutClass = $this->Config()->get('mail_out_class');
+        if(class_exists($mailOutClass)) {
+            $obj = Injector::inst()->get($mailOutClass);
+            if($obj instanceof ScheduledTask){
+                return $obj;
+            } else {
+                user_error($mailOutClass.' needs to be an instance of a Scheduled Task');
+            }
+        }
+    }
+
 
 }

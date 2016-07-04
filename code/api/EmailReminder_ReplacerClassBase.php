@@ -12,7 +12,14 @@ class EmailReminder_ReplacerClassBase extends Object implements EmailReminder_Re
             'Title' => 'Login Page'
             'Method' => 'LoginLink'
         ),
-        
+        '[Days]' = array(
+            'Title' => 'Replaces with the number of days, as set'
+            'Method' => 'Days'
+        ),
+        '[BEFORE_OR_AFTER]' = array(
+            'Title' => 'Replaces with before or after experiry date, as set'
+            'Method' => 'BeforeOrAfter'
+        )
     );
 
     public function getReplaceArray()
@@ -20,37 +27,63 @@ class EmailReminder_ReplacerClassBase extends Object implements EmailReminder_Re
         return $this->replaceArray;
     }
     
-    function replace($str)
+    function replace($reminder, $record, $str)
     {
         $newArray = array();
         foreach($this->replaceArray as $searchString => $moreInfoArray) {
             $method = $moreInfoArray['Method'];
-            $str = $this->$method($searchString, $str);
+            $str = $this->$method($reminder, $record, $searchString, $str);
         }
         return $str;
         
     }
 
-    function replaceHelpList()
+    function replaceHelpList($asHTML = false)
     {
         $newArray = array();
         foreach($this->replaceArray as $searchString => $moreInfoArray) {
             $newArray[$searchstring] = $moreInfoArray['Title'];
         }
+        if($asHTML) {
+            
+            $html = '
+            <ul class="replace-help-list">';
+            foreach($newArray as $searchString => $title) {
+                $html .= '
+                <li><strong>$searchString:</strong> <span>$title</span></li>';
+            }
+            $html .= '
+            </ul>';
+            return $html;
+        }
         return $newArray;
     }
 
-    protected function PasswordReminderLink($searchString, $str)
+    protected function PasswordReminderLink($reminder, $record, $searchString, $str)
     {
-        $link = Director::absoluteURL('Security/lostpassword');
-        $str = str_replace($searchString, $link, $str);
+        $replace = Director::absoluteURL('Security/lostpassword');
+        $str = str_replace($searchString, $replace, $str);
         return $str;
     }
 
-    protected function LoginLink($searchString, $str)
+    protected function LoginLink($reminder, $record, $searchString, $str)
     {
-        $link = Director::absoluteURL('Security/login');
-        $str = str_replace($searchString, $link, $str);
+        $replace = Director::absoluteURL('Security/login');
+        $str = str_replace($searchString, $replace, $str);
+        return $str;
+    }
+
+    protected function Days($reminder, $record, $searchString, $str)
+    {
+        $replace = $reminder->Days;
+        $str = str_replace($searchString, $replace, $str);
+        return $str;
+    }
+
+    protected function BeforeOrAfter($reminder, $record, $searchString, $str)
+    {
+        $replace = $reminder->BeforeAfter;
+        $str = str_replace($searchString, $replace, $str);
         return $str;
     }
 

@@ -2,7 +2,6 @@
 
 class EmailReminder_ModelAdmin extends ModelAdmin
 {
-    // private static $menu_icon = '';
 
     public static $managed_models = array('EmailReminder_NotificationSchedule');
 

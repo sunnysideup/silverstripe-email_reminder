@@ -7,11 +7,14 @@ interface EmailReminder_ReplacerClassInterface
     /**
      * replaces all instances of certain
      * strings in the string and returns the string
-     * @param string $str
+     *
+     * @param EmailReminder_NotificationSchedule  $reminder
+     * @param DataObject                          $record
+     * @param string                              $str
      * 
      * @return string
      */ 
-    public function replace($str);
+    public function replace($reminder, $record, $str);
 
     /**
      * provides and array of replacements like this:
@@ -20,6 +23,6 @@ interface EmailReminder_ReplacerClassInterface
      * 
      * @return array
      */
-    public function replaceHelpList();
+    public function replaceHelpList($asHTML = false);
 
 }

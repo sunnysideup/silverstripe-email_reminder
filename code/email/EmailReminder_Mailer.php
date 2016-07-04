@@ -4,9 +4,7 @@
 class EmailReminder_Mailer extends Mailer
 {
 
-    private static $css_file = '';
-
-    private static $replacer_class = '';
+    private static $css_file = 'email_reminder/css/example.css';
 
     function sendHTML(
         $to,
@@ -17,15 +15,6 @@ class EmailReminder_Mailer extends Mailer
         $customheaders = false,
         $plainContent = false
     ) {
-        $replacerClass = Director::baseFolder() . Config::inst()->get("EmailReminder_Mailer", "replacer_class");
-        if($replacerClass && class_exists($replacerClass)) {
-            $interfaces = class_implements($replacerClass);
-            if($interfaces && in_array('EmailReminder_ReplacerClassInterface', $interfaces)) {
-                $replacerObject = Injector::inst()->get($replacerClass);
-                $htmlContent = $replacerObject->replace($htmlContent);
-                $subject = $replacerObject->replace($subject);
-            }
-        }
         $cssFileLocation = Director::baseFolder() . Config::inst()->get("EmailReminder_Mailer", "css_file");
         if($cssFileLocation) {
             $cssFileHandler = fopen($cssFileLocation, 'r');

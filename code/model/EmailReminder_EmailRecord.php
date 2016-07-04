@@ -46,11 +46,37 @@ class EmailReminder_EmailRecord extends DataObject
         return false;
     }
 
+    public function canSendAgain()
+    {
+        $send = true;
+        if($this->Result) {
+            if($this->IsTestOnly) {
+                return true;
+            }
+            else {
+                $send = false;
+                $numberOfSecondsBeforeYouCanSendAgain = $this->EmailReminder_NotificationSchedule()->RepeatDays * 86400;
+                $todaysTS = strtotime('NOW');
+                
+                $creationTS = strtotime($this->Created);
+                $difference = ($todaysTS - $creationTS);
+                if($difference > $numberOfSecondsBeforeYouCanSendAgain) {
+                    $send = true;
+                }
+            }
+        }
+        return $send;
+    }
+
     /**
      *
      * PartialMatchFilter
      */
-    private static $searchable_fields;
+    private static $searchable_fields = array(
+        'EmailTo' => 'PartialMatchFilter',
+        'Result' => 'ExactMatchFilter',
+        'IsTestOnly' => 'ExactMatchFilter',
+    );
 
     /**
      * e.g.
