@@ -1,0 +1,9 @@
+---
+EmailReminder
+---
+
+EmailReminder_NotificationSchedule:
+  days_before_same_notification_can_be_sent_to_same_user: 100
+  default_data_object: Member
+  default_email_field: 'Email'
+  default_date_field: 'Expires'
