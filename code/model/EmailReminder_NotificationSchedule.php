@@ -53,18 +53,6 @@ class EmailReminder_NotificationSchedule extends DataObject
         'EmailsSent' => 'EmailReminder_EmailRecord'
     );
 
-    private static $many_many;
-
-    private static $belongs_many_many;
-
-    private static $casting;
-
-    private static $indexes;
-
-    private static $default_sort;
-
-    private static $required_fields;
-
     private static $summary_fields = array(
         'EmailSubject',
         'Days'
