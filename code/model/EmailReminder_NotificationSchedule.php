@@ -196,7 +196,11 @@ class EmailReminder_NotificationSchedule extends DataObject
                         'Today we are sending to ...',
                         $records
                     ),
-                    LiteralField::create('FieldDataForRecords', 'sample of date field values: '.implode(', ', $this->FieldDataForRecords()))
+                    LiteralField::create(
+                        'SampleFieldDataForRecords',
+                        '<h3>sample of date field values:</h3>
+                        <li>'.implode('</li><li>', $this->SampleFieldDataForRecords()).'</li>'
+                    )
                 )
             );
         }
@@ -367,13 +371,29 @@ class EmailReminder_NotificationSchedule extends DataObject
         }
     }
 
-    function FieldDataForRecords(){
+    /**
+     *
+     * @return array
+     */
+    function SampleFieldDataForRecords(){
         if($this->hasValidFields()) {
             $do = $this->DataObject;
-            return $do::get()->sort($this->DateField, 'DESC')->limit(5000)->column($this->DateField);
+            $do = $do::get();
+            if($do->count()) {
+                return array_unique($do->sort($this->DateField, 'DESC')->limit(100)->column($this->DateField));
+            }
+            else {
+                return array();
+            }
 
         }
     }
+
+
+    /**
+     *
+     * @return DataList
+     */
     function CurrentRecords(){
         if($this->hasValidFields()) {
             $do = $this->DataObject;
