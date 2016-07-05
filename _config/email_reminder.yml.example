@@ -19,3 +19,7 @@ EmailReminder_NotificationSchedule:
   default_email_field: 'Email'
   default_date_field: 'ExpiresDateField'
   mail_out_class: 'MyScheduledMailOutClass'
+  replaceableFields:
+    - MyField1
+    - MyField2
+    

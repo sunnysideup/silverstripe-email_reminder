@@ -22,6 +22,10 @@ class EmailReminder_NotificationSchedule extends DataObject
      * @var string
      */
     private static $default_email_field = '';
+    /**
+     * @var string
+     */
+    private static $replaceable_record_fields = array('FirstName', 'Surname', 'Email');
 
     /**
      * @var string
@@ -146,7 +150,11 @@ class EmailReminder_NotificationSchedule extends DataObject
                 NumericField::create('Days', 'Days')
                     ->setRightTitle('How many days in advance (before) or in arrears (after) of the expiration date should this email be sent?'),
                 NumericField::create('RepeatDays', 'Repeat Cycle Days')
-                    ->setRightTitle('Number of days after which the same email can be sent to the same person (e.g. their membership can be expired again)'),
+                    ->setRightTitle('
+                        Number of days after which the same reminder can be sent to the same email address.
+                        <br />We allow an e-mail to be sent to one specific email address for one specific reminder only once.
+                        <br />In this field you can indicate for how long we will apply this rule.'
+                ),
                 DropdownField::create('BeforeAfter', 'Before / After Expiration', array('before' => 'before', 'after' => 'after'))
                     ->setRightTitle('Are the days listed above before or after the actual expiration date.')
             )
@@ -164,7 +172,18 @@ class EmailReminder_NotificationSchedule extends DataObject
         );
         if($obj = $this->getReplacerObject()) {
             $html = $obj->replaceHelpList($asHTML = true);
-            $subjectField->setRightTitle($html);
+            $otherFieldsThatCanBeUsed = $this->getFieldsFromDataObject(array('*'));
+            $replaceableFields = $this->Config()->get('replaceable_record_fields');
+            if(count($otherFieldsThatCanBeUsed)) {
+                $html .= '<h3>You can also use the record fields (not replaced in tests):</h3><ul>';
+                foreach($otherFieldsThatCanBeUsed as $key => $value) {
+                    if(in_array($key, $replaceableFields)) {
+                        $html .= '<li><strong>$'.$key.'</strong> <span>'.$value.'</span></li>';
+                    }
+                }
+            }
+            $html .= '</ul>';
+            $subjectField->setRightTitle('for replacement options, please see below ...');
             $contentField->setRightTitle($html);
         }
         $fields->addFieldsToTab(
@@ -229,16 +248,21 @@ class EmailReminder_NotificationSchedule extends DataObject
     }
 
 
+    /**
+     * list of database fields available
+     * @param  array $fieldTypeMatchArray - strpos filter
+     * @return array
+     */
     protected function getFieldsFromDataObject($fieldTypeMatchArray = array()){
-        $allOptions = DataObject::database_fields($this->DataObject);
         $array = array();
         if($this->hasValidDataObject()) {
             $object = Injector::inst()->get($this->DataObject);
             if($object) {
-               $fieldLabels = $object->fieldLabels();
+                $allOptions = $object->stat('db');
+                $fieldLabels = $object->fieldLabels();
                 foreach($allOptions as $fieldName => $fieldType) {
                     foreach($fieldTypeMatchArray as $matchString) {
-                        if(strpos($fieldType, $matchString) !== false) {
+                        if((strpos($fieldType, $matchString) !== false) || $matchString == '*' ) {
                             if(isset($fieldLabels[$fieldName])) {
                                 $label = $fieldLabels[$fieldName];
                             } else {
@@ -285,6 +309,9 @@ class EmailReminder_NotificationSchedule extends DataObject
         return true;
     }
 
+    /**
+     * @return string
+     */
     public function getTitle()
     {
         return (
@@ -294,7 +321,11 @@ class EmailReminder_NotificationSchedule extends DataObject
             'uncompleted';
     }
 
-    function hasValidFields(){
+    /**
+     * @return boolean
+     */
+    function hasValidFields()
+    {
         if (!$this->hasValidDataObject()) {
             return false;
         }
@@ -307,7 +338,9 @@ class EmailReminder_NotificationSchedule extends DataObject
         return false;
     }
 
-
+    /**
+     * @return boolean
+     */
     public function validate()
     {
         $valid = parent::validate();
@@ -372,15 +405,15 @@ class EmailReminder_NotificationSchedule extends DataObject
     }
 
     /**
-     *
+     * @param int $limit
      * @return array
      */
-    function SampleFieldDataForRecords(){
+    function SampleFieldDataForRecords($limit = 100){
         if($this->hasValidFields()) {
             $do = $this->DataObject;
             $do = $do::get();
             if($do->count()) {
-                return array_unique($do->sort($this->DateField, 'DESC')->limit(100)->column($this->DateField));
+                return array_unique($do->sort($this->DateField, 'DESC')->limit($limit)->column($this->DateField));
             }
             else {
                 return array();
