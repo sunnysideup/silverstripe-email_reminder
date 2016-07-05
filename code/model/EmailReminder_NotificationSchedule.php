@@ -146,7 +146,7 @@ class EmailReminder_NotificationSchedule extends DataObject
                 NumericField::create('Days', 'Days')
                     ->setRightTitle('How many days in advance (before) or in arrears (after) of the expiration date should this email be sent?'),
                 NumericField::create('RepeatDays', 'Repeat Cycle Days')
-                    ->setRightTitle('Number of days after which the cycle can be repeated (e.g. 300 days)'),
+                    ->setRightTitle('Number of days after which the same email can be sent to the same person (e.g. their membership can be expired again)'),
                 DropdownField::create('BeforeAfter', 'Before / After Expiration', array('before' => 'before', 'after' => 'after'))
                     ->setRightTitle('Are the days listed above before or after the actual expiration date.')
             )
