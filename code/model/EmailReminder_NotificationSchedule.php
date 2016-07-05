@@ -4,23 +4,28 @@ class EmailReminder_NotificationSchedule extends DataObject
 {
 
     /**
+     * @var int
+     */
+    private static $grace_days = 3;
+
+    /**
      * @var string
-     */ 
+     */
     private static $default_data_object = 'Member';
 
     /**
      * @var string
-     */     
+     */
     private static $default_date_field = '';
 
     /**
      * @var string
-     */     
+     */
     private static $default_email_field = '';
 
     /**
      * @var string
-     */ 
+     */
     private static $mail_out_class = 'EmailReminder_DailyMailOut';
 
     private static $singular_name = 'Email Reminder Schedule';
@@ -36,15 +41,15 @@ class EmailReminder_NotificationSchedule extends DataObject
     }
 
     private static $db = array(
-        'DataObject' => 'Varchar(100)',     
-        'EmailField' => 'Varchar(100)',     
-        'DateField' => 'Varchar(100)',      
-        'Days' => 'Int',                    
-        'RepeatDays' => 'Int',                    
+        'DataObject' => 'Varchar(100)',
+        'EmailField' => 'Varchar(100)',
+        'DateField' => 'Varchar(100)',
+        'Days' => 'Int',
+        'RepeatDays' => 'Int',
         'BeforeAfter' => "Enum('before,after','before')",
-        'EmailFrom' => 'Varchar(100)',      
-        'EmailSubject' => 'Varchar(100)',   
-        'Content' => 'HTMLText', 
+        'EmailFrom' => 'Varchar(100)',
+        'EmailSubject' => 'Varchar(100)',
+        'Content' => 'HTMLText',
         'Disable' => 'Boolean',
         'SendTestTo' => 'Text'
     );
@@ -83,12 +88,12 @@ class EmailReminder_NotificationSchedule extends DataObject
 
         $emailsSentField = $fields->dataFieldByName('EmailsSent');
         $fields->removeFieldFromTab('Root', 'EmailsSent');
-        
+
         $fields->addFieldToTab(
             'Root.Main',
             CheckboxField::create('Disable')
         );
-        $fields->addFieldToTab(        
+        $fields->addFieldToTab(
             'Root.Main',
             $dataObjecField = DropdownField::create(
                 'DataObject',
@@ -164,7 +169,7 @@ class EmailReminder_NotificationSchedule extends DataObject
         }
         $fields->addFieldsToTab(
             'Root.Sent',
-            array(        
+            array(
                 TextareaField::create('SendTestTo', 'Send test email to ...')
                     ->setRightTitle('
                         Separate emails by commas
@@ -181,26 +186,40 @@ class EmailReminder_NotificationSchedule extends DataObject
                 $emailsSentField
             );
         }
+        $records = $this->CurrentRecords();
+        if($records) {
+            $fields->addFieldsToTab(
+                'Root.Review',
+                array(
+                    GridField::create(
+                        'CurrentRecords',
+                        'Today we are sending to ...',
+                        $records
+                    ),
+                    LiteralField::create('FieldDataForRecords', 'sample of date field values: '.implode(', ', $this->FieldDataForRecords()))
+                )
+            );
+        }
         return $fields;
     }
 
     /**
      * @return array
-     */ 
+     */
     protected function dataObjectOptions(){
         return ClassInfo::subclassesFor("DataObject");
     }
 
     /**
      * @return array
-     */ 
+     */
     protected function emailFieldOptions(){
         return $this->getFieldsFromDataObject(array('Varchar', 'Email'));
     }
 
     /**
      * @return array
-     */ 
+     */
     protected function dateFieldOptions(){
         return $this->getFieldsFromDataObject(array('Date'));
     }
@@ -266,7 +285,7 @@ class EmailReminder_NotificationSchedule extends DataObject
     {
         return (
             $this->hasValidDataObjectFields()) ?
-            '[' . $this->EmailSubject . '] - send ' . $this->Days . ' days '.$this->BeforeAfter.' Expiration Date'
+            '[' . $this->EmailSubject . '] // send ' . $this->Days . ' days '.$this->BeforeAfter.' Expiration Date'
             :
             'uncompleted';
     }
@@ -274,7 +293,7 @@ class EmailReminder_NotificationSchedule extends DataObject
     function hasValidFields(){
         if (!$this->hasValidDataObject()) {
             return false;
-        }        
+        }
         if (!$this->hasValidDataObjectFields()) {
             return false;
         }
@@ -323,18 +342,18 @@ class EmailReminder_NotificationSchedule extends DataObject
     /**
      *
      * @return null | EmailReminder_ReplacerClassInterface
-     */ 
+     */
     function getReplacerObject()
     {
         if($mailOutObject = $this->getMailOutObject()) {
             return $mailOutObject->getReplacerObject();
-        } 
+        }
     }
 
     /**
      *
      * @return null | ScheduledTask
-     */ 
+     */
     function getMailOutObject()
     {
         $mailOutClass = $this->Config()->get('mail_out_class');
@@ -345,6 +364,37 @@ class EmailReminder_NotificationSchedule extends DataObject
             } else {
                 user_error($mailOutClass.' needs to be an instance of a Scheduled Task');
             }
+        }
+    }
+
+    function FieldDataForRecords(){
+        if($this->hasValidFields()) {
+            $do = $this->DataObject;
+            return $do::get()->sort($this->DateField, 'DESC')->limit(5000)->column($this->DateField);
+
+        }
+    }
+    function CurrentRecords(){
+        if($this->hasValidFields()) {
+            $do = $this->DataObject;
+            $sign = $this->BeforeAfter == 'before' ? '+' : '-';
+            $graceDays = Config::inst()->get('EmailReminder_NotificationSchedule', 'grace_days');
+
+            if($sign == '+') {
+                $minDays = $sign . ($this->Days - $graceDays) . ' days';
+                $maxDays = $sign . $this->Days . ' days';
+            } else {
+                $minDays = $sign . ($this->Days - $graceDays) . ' days';
+                $maxDays = $sign . $this->Days . ' days';
+            }
+
+            $minDate = date('Y-m-d', strtotime($minDays)).' 00:00:00';
+            $maxDate = date('Y-m-d', strtotime($maxDays)).' 23:59:59';
+
+            // Use StartsWith to match Date and DateTime fields
+            $records = $do::get()
+                ->where('("'. $this->DateField.'" BETWEEN \''.$minDate.'\' AND \''.$maxDate.'\')');
+           return $records;
         }
     }
 

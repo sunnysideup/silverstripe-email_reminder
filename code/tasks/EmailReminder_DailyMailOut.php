@@ -4,35 +4,26 @@
 class EmailReminder_DailyMailOut extends DailyTask
 {
 
-    /**
-     * @var int
-     */ 
-    private static $days_before_same_notification_can_be_sent_to_same_user = 100;
 
     /**
      * @var int
-     */ 
+     */
     private static $limit = 20;
 
     /**
-     * @var int
-     */ 
-    private static $grace_days = 3;
-
-    /**
      * @var string
-     */ 
+     */
     private static $replacer_class = 'EmailReminder_ReplacerClassBase';
 
 
     protected $verbose = false;
-    
+
     protected $testOnly = false;
 
     /**
      * The object that replaces tags in the subject and content.
      * @var EmailReinder_ReplacerClassInterface
-     */ 
+     */
     protected $replacerObject = null;
 
 
@@ -60,7 +51,7 @@ class EmailReminder_DailyMailOut extends DailyTask
      * days after 7
      * min: current date - 7
      * max current date - 7 - grace days
-     * 
+     *
      * @param  [type] $request [description]
      * @return [type]          [description]
      */
@@ -68,7 +59,7 @@ class EmailReminder_DailyMailOut extends DailyTask
     {
         //CRUCIAL !
         //
-        Email::set_mailer(new EmailReminder_Mailer());    
+        Email::set_mailer(new EmailReminder_Mailer());
 
         $reminders = EmailReminder_NotificationSchedule::get();
 
@@ -80,21 +71,6 @@ class EmailReminder_DailyMailOut extends DailyTask
                 continue; // skip if task is disable
             }
 
-            $do = $reminder->DataObject;
-            $sign = $reminder->BeforeAfter == 'before' ? '+' : '-';
-            $graceDays = Config::inst()->get('EmailReminder_DailyMailOut', 'grace_days');
-            
-            if($sign == '+') {
-                $minDays = $sign . ($reminder->Days - $graceDays) . ' days';
-                $maxDays = $sign . $reminder->Days . ' days';
-            } else {
-                $minDays = $sign . ($reminder->Days - $graceDays) . ' days';
-                $maxDays = $sign . $reminder->Days . ' days';
-            }
-            
-            $minDate = date('Y-m-d', strtotime($minDays)).' 00:00:00';
-            $maxDate = date('Y-m-d', strtotime($maxDays)).' 23:59:59';
-
             // Use StartsWith to match Date and DateTime fields
             if($this->testOnly) {
                 if($reminder->SendTestTo) {
@@ -104,14 +80,9 @@ class EmailReminder_DailyMailOut extends DailyTask
                     }
                 }
             } else {
-                $limit = Config::inst()->get('EmailReminder_DailyMailOut', 'daily_limit');
-                $records = $do::get()->filter(
-                    array(
-                        $reminder->DateField . ':GreaterThan' => $minDate,
-                        $reminder->DateField . ':LessThan' => $maxDate
-                    )
-                )->limit($limit);
-
+                $limit = $records->get('EmailReminder_DailyMailOut', 'daily_limit');
+                $records = $reminder->CurrentRecords();
+                $records = $records->limit($limit);
                 if ($records) {
                     foreach ($records as $record) {
                         $this->sendEmail($reminder, $record, $isTestOnly = false);
@@ -159,14 +130,14 @@ class EmailReminder_DailyMailOut extends DailyTask
                     $subject = $replacerObject->replace($reminder, $record, $subject);
                 }
                 $email_content = $this->getParsedContent($record, $email_content);
-                
+
                 /* Parse HTML like a template, and translate any internal links */
                 $data = ArrayData::create(array(
                     'Content' => $email_content
                 ));
 
                 // $email_body = $record->renderWith(SSViewer::fromString($reminder->Content));
-                // echo $record->renderWith('Email_Reminder_Standard_Template');//$email_body;                
+                // echo $record->renderWith('Email_Reminder_Standard_Template');//$email_body;
                 $email = new Email(
                     $reminder->EmailFrom,
                     $email,
@@ -188,14 +159,14 @@ class EmailReminder_DailyMailOut extends DailyTask
         return false;
     }
 
-    
+
     /**
      * @return EmailReminder_ReplacerClassInterface | null
-     */ 
+     */
     public function getReplacerObject()
     {
         if( ! $this->replacerObject) {
-            $replacerClass = Config::inst()->get("EmailReminder_Mailer", "replacer_class");
+            $replacerClass = Config::inst()->get("EmailReminder_DailyMailOut", "replacer_class");
             if($replacerClass && class_exists($replacerClass)) {
                 $interfaces = class_implements($replacerClass);
                 if($interfaces && in_array('EmailReminder_ReplacerClassInterface', $interfaces)) {
@@ -210,7 +181,7 @@ class EmailReminder_DailyMailOut extends DailyTask
     /**
      *
      * @return string
-     */  
+     */
     public function getParsedContent($record, $content){
         return ShortcodeParser::get_active()
             ->parse(
@@ -219,5 +190,5 @@ class EmailReminder_DailyMailOut extends DailyTask
                 )
             );
     }
-    
+
 }

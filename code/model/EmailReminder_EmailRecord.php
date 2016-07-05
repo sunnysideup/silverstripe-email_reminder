@@ -57,7 +57,7 @@ class EmailReminder_EmailRecord extends DataObject
                 $send = false;
                 $numberOfSecondsBeforeYouCanSendAgain = $this->EmailReminder_NotificationSchedule()->RepeatDays * 86400;
                 $todaysTS = strtotime('NOW');
-                
+
                 $creationTS = strtotime($this->Created);
                 $difference = ($todaysTS - $creationTS);
                 if($difference > $numberOfSecondsBeforeYouCanSendAgain) {
@@ -88,10 +88,6 @@ class EmailReminder_EmailRecord extends DataObject
 
     }
 
-    public function getCMSFields()
-    {
-
-    }
 
     /**
      * returns list of fields as they are exported

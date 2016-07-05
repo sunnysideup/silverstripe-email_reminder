@@ -17,11 +17,13 @@ class EmailReminder_Mailer extends Mailer
     ) {
         $cssFileLocation = Director::baseFolder() . Config::inst()->get("EmailReminder_Mailer", "css_file");
         if($cssFileLocation) {
-            $cssFileHandler = fopen($cssFileLocation, 'r');
-            $css = fread($cssFileHandler,  filesize($cssFileLocation));
-            fclose($cssFileHandler);
-            $emog = new \Pelago\Emogrifier($htmlContent, $css);
-            $htmlContent = $emog->emogrify();
+            if(file_exists($cssFileLocation)) {
+                $cssFileHandler = fopen($cssFileLocation, 'r');
+                $css = fread($cssFileHandler,  filesize($cssFileLocation));
+                fclose($cssFileHandler);
+                $emog = new \Pelago\Emogrifier($htmlContent, $css);
+                $htmlContent = $emog->emogrify();
+            }
         }
         return parent::sendHTML($to, $from, $subject, $htmlContent, $attachedFiles, $customheaders, $plainContent);
     }

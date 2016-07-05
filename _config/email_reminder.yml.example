@@ -4,18 +4,18 @@ name: EmailReminder
 
 EmailReminder_DailyMailOut:
   limit: 20
-  grace_days: 3
   replacer_class: 'MyReplacerClass'
 
 EmailReminder_ModelAdmin:
   menu_icon: 'CoolStuff.png'
   menu_priority: 3
-  
+
 EmailReminder_Mailer:
   css_file: ''
 
 EmailReminder_NotificationSchedule:
+  grace_days: 3
   default_data_object: 'Member'
   default_email_field: 'Email'
-  default_date_field: 'MemberExpiresDateField'
+  default_date_field: 'ExpiresDateField'
   mail_out_class: 'MyScheduledMailOutClass'

@@ -4,20 +4,20 @@ class EmailReminder_ReplacerClassBase extends Object implements EmailReminder_Re
 {
 
     private $replaceArray = array(
-        '[PASSWORD_REMINDER_LINK]' = array(
-            'Title' => 'Password reminder page'
+        '[PASSWORD_REMINDER_LINK]' => array(
+            'Title' => 'Password reminder page',
             'Method' => 'PasswordReminderLink'
         ),
-        '[LOGIN_LINK]' = array(
-            'Title' => 'Login Page'
+        '[LOGIN_LINK]' => array(
+            'Title' => 'Login Page',
             'Method' => 'LoginLink'
         ),
-        '[Days]' = array(
-            'Title' => 'Replaces with the number of days, as set'
+        '[DAYS]' => array(
+            'Title' => 'Replaces with the number of days, as set',
             'Method' => 'Days'
         ),
-        '[BEFORE_OR_AFTER]' = array(
-            'Title' => 'Replaces with before or after experiry date, as set'
+        '[BEFORE_OR_AFTER]' => array(
+            'Title' => 'Replaces with before or after experiry date, as set',
             'Method' => 'BeforeOrAfter'
         )
     );
@@ -26,7 +26,7 @@ class EmailReminder_ReplacerClassBase extends Object implements EmailReminder_Re
     {
         return $this->replaceArray;
     }
-    
+
     function replace($reminder, $record, $str)
     {
         $newArray = array();
@@ -35,22 +35,22 @@ class EmailReminder_ReplacerClassBase extends Object implements EmailReminder_Re
             $str = $this->$method($reminder, $record, $searchString, $str);
         }
         return $str;
-        
+
     }
 
     function replaceHelpList($asHTML = false)
     {
         $newArray = array();
         foreach($this->replaceArray as $searchString => $moreInfoArray) {
-            $newArray[$searchstring] = $moreInfoArray['Title'];
+            $newArray[$searchString] = $moreInfoArray['Title'];
         }
         if($asHTML) {
-            
+
             $html = '
             <ul class="replace-help-list">';
             foreach($newArray as $searchString => $title) {
                 $html .= '
-                <li><strong>$searchString:</strong> <span>$title</span></li>';
+                <li><strong>'.$searchString.':</strong> <span>'.$title.'</span></li>';
             }
             $html .= '
             </ul>';
