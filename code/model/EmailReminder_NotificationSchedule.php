@@ -396,7 +396,7 @@ class EmailReminder_NotificationSchedule extends DataObject
         $mailOutClass = $this->Config()->get('mail_out_class');
         if(class_exists($mailOutClass)) {
             $obj = Injector::inst()->get($mailOutClass);
-            if($obj instanceof ScheduledTask){
+            if($obj instanceof BuildTask){
                 return $obj;
             } else {
                 user_error($mailOutClass.' needs to be an instance of a Scheduled Task');

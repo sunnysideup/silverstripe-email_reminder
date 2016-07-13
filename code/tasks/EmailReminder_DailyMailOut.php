@@ -1,7 +1,7 @@
 <?php
 
 
-class EmailReminder_DailyMailOut extends DailyTask
+class EmailReminder_DailyMailOut extends BuildTask
 {
 
 
@@ -80,7 +80,7 @@ class EmailReminder_DailyMailOut extends DailyTask
                     }
                 }
             } else {
-                $limit = $records->get('EmailReminder_DailyMailOut', 'daily_limit');
+                $limit = Config::inst()->get('EmailReminder_DailyMailOut', 'daily_limit');
                 $records = $reminder->CurrentRecords();
                 $records = $records->limit($limit);
                 if ($records) {
