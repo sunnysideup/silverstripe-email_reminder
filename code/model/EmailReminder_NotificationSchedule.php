@@ -191,7 +191,7 @@ class EmailReminder_NotificationSchedule extends DataObject
             array(
                 TextareaField::create('SendTestTo', 'Send test email to ...')
                     ->setRightTitle('
-                        Separate emails by commas
+                        Separate emails by commas, a test email will be sent every time you save this Email Reminder, if you do not want test emails to be sent make sure this field is empty
                         '
                     )
                     ->SetRows(3)
