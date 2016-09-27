@@ -149,14 +149,14 @@ class EmailReminder_NotificationSchedule extends DataObject
             array(
                 NumericField::create('Days', 'Days')
                     ->setRightTitle('How many days in advance (before) or in arrears (after) of the expiration date should this email be sent?'),
+                DropdownField::create('BeforeAfter', 'Before / After Expiration', array('before' => 'before', 'after' => 'after'))
+                    ->setRightTitle('Are the days listed above before or after the actual expiration date.'),
                 NumericField::create('RepeatDays', 'Repeat Cycle Days')
                     ->setRightTitle('
                         Number of days after which the same reminder can be sent to the same email address.
                         <br />We allow an e-mail to be sent to one specific email address for one specific reminder only once.
                         <br />In this field you can indicate for how long we will apply this rule.'
-                ),
-                DropdownField::create('BeforeAfter', 'Before / After Expiration', array('before' => 'before', 'after' => 'after'))
-                    ->setRightTitle('Are the days listed above before or after the actual expiration date.')
+                )
             )
         );
         $fields->addFieldsToTab(
@@ -350,7 +350,7 @@ class EmailReminder_NotificationSchedule extends DataObject
             } elseif (! $this->hasValidDataObjectFields()) {
                 $valid->error('Please select valid fields for both Email & Date');
             } elseif ( ! $this->hasValidFields()) {
-                $valid->error('Please fill in all fields');
+                $valid->error('Please fill in all fields.  Make sure not to forget the email details (from who, subject, content)');
             }
         }
         return $valid;
