@@ -13,24 +13,16 @@ Daily task
  A daily task can run through all the users to check who needs a membership.
  You will need to set this up using a cron job or similar.
 
-Model
+Screenshot Examples
 ---
- * `EmailReminder_NotificationSchedule`:
-   * Days before / after experiation to run
-   * Template to be used for mail out.
-   * Message (HTML)
-   * Number of days lee-way a message can have - i.e. if the message is not
-     sent exactly on the day it is supposed to then the system have up to `n` number of days to send it.
-   * MANY_MANY: Members: if any Users are listed here, the task will send the reminder to these test users instead of the actual users that need to receive it. For these test users, the expiry date will be ignored (i.e. they test users will get the email every time)
-   * Date field to use: date fiels are automatically selected from the `Member` class and using the `field_labels` config for Member, the meaningful name for the field is shown here (e.g. `Created`, `LastEdited`, `ExpiryDate`.  
- * `EmailReminder_EmailRecord`:
-   * One for each notification for each member. This helps us ensure
-     that no emails are sent twice.
 
-Other classes
----
- * `EmailReminder_DailyMailOut`
- * `EmailReminder_Mailer` extends Mailer so that we can add change the content of the email (e.g. replace tags) before sending it.
+Here are four screenshots that give you a flavour for what the module does.
+
+![Example 1](https://raw.githubusercontent.com/sunnysideup/silverstripe-email_reminder/master/docs/en/examples/Example1.png)
+![Example 2](https://raw.githubusercontent.com/sunnysideup/silverstripe-email_reminder/master/docs/en/examples/Example2.png)
+![Example 3](https://raw.githubusercontent.com/sunnysideup/silverstripe-email_reminder/master/docs/en/examples/Example3.png)
+![Example 4](https://raw.githubusercontent.com/sunnysideup/silverstripe-email_reminder/master/docs/en/examples/Example4.png)
+
 
 Email Formatting
 ---
@@ -52,6 +44,7 @@ If you add `[PASSWORD_REMINDER_LINK]` to your message then this becomes: <u>`pas
 Behind the scenes we replace the placeholder with a link link this: `<a href="Security/lostpassword">password reset</a>`.  The `password reset` phrase can be edited in the `lang*` file`
 
 The HTML of the email can also be set in the custom template file for the email.
+
 
 Slow Down and Security
 ---
