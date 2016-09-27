@@ -18,9 +18,19 @@ Screenshot Examples
 
 Here are four screenshots that give you a flavour for what the module does.
 
+#### Modeladmin:
 ![Example 1](https://raw.githubusercontent.com/sunnysideup/silverstripe-email_reminder/master/docs/en/examples/Example1.png)
+
+#### Main Details:
 ![Example 2](https://raw.githubusercontent.com/sunnysideup/silverstripe-email_reminder/master/docs/en/examples/Example2.png)
+
+#### Email Content:
 ![Example 3](https://raw.githubusercontent.com/sunnysideup/silverstripe-email_reminder/master/docs/en/examples/Example3.png)
+
+#### Sent Emails:
+![Example 5](https://raw.githubusercontent.com/sunnysideup/silverstripe-email_reminder/master/docs/en/examples/Example5.png)
+
+#### What is happening today?
 ![Example 4](https://raw.githubusercontent.com/sunnysideup/silverstripe-email_reminder/master/docs/en/examples/Example4.png)
 
 
