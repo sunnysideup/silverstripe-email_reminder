@@ -2,7 +2,6 @@
 
 class EmailReminder_ReplacerClassBase extends Object implements EmailReminder_ReplacerClassInterface
 {
-
     private $replaceArray = array(
         '[PASSWORD_REMINDER_LINK]' => array(
             'Title' => 'Password reminder page',
@@ -27,28 +26,26 @@ class EmailReminder_ReplacerClassBase extends Object implements EmailReminder_Re
         return $this->replaceArray;
     }
 
-    function replace($reminder, $record, $str)
+    public function replace($reminder, $record, $str)
     {
         $newArray = array();
-        foreach($this->replaceArray as $searchString => $moreInfoArray) {
+        foreach ($this->replaceArray as $searchString => $moreInfoArray) {
             $method = $moreInfoArray['Method'];
             $str = $this->$method($reminder, $record, $searchString, $str);
         }
         return $str;
-
     }
 
-    function replaceHelpList($asHTML = false)
+    public function replaceHelpList($asHTML = false)
     {
         $newArray = array();
-        foreach($this->replaceArray as $searchString => $moreInfoArray) {
+        foreach ($this->replaceArray as $searchString => $moreInfoArray) {
             $newArray[$searchString] = $moreInfoArray['Title'];
         }
-        if($asHTML) {
-
+        if ($asHTML) {
             $html = '
             <ul class="replace-help-list">';
-            foreach($newArray as $searchString => $title) {
+            foreach ($newArray as $searchString => $title) {
                 $html .= '
                 <li><strong>'.$searchString.':</strong> <span>'.$title.'</span></li>';
             }
@@ -86,5 +83,4 @@ class EmailReminder_ReplacerClassBase extends Object implements EmailReminder_Re
         $str = str_replace($searchString, $replace, $str);
         return $str;
     }
-
 }

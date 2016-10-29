@@ -11,18 +11,17 @@ interface EmailReminder_ReplacerClassInterface
      * @param EmailReminder_NotificationSchedule  $reminder
      * @param DataObject                          $record
      * @param string                              $str
-     * 
+     *
      * @return string
-     */ 
+     */
     public function replace($reminder, $record, $str);
 
     /**
      * provides and array of replacements like this:
      *
      *     [string to replace] => 'description of what it does'
-     * 
+     *
      * @return array
      */
     public function replaceHelpList($asHTML = false);
-
 }

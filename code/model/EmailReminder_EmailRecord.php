@@ -2,12 +2,17 @@
 
 class EmailReminder_EmailRecord extends DataObject
 {
-
     private static $singular_name = "Email Reminder Record";
-        function i18n_singular_name() { return self::$singular_name;}
+    public function i18n_singular_name()
+    {
+        return self::$singular_name;
+    }
 
     private static $plural_name = "Email Reminder Records";
-        function i18n_plural_name() { return self::$plural_name;}
+    public function i18n_plural_name()
+    {
+        return self::$plural_name;
+    }
 
     private static $db = array(
         'EmailTo' => 'Varchar(100)',
@@ -49,18 +54,17 @@ class EmailReminder_EmailRecord extends DataObject
     public function canSendAgain()
     {
         $send = true;
-        if($this->Result) {
-            if($this->IsTestOnly) {
+        if ($this->Result) {
+            if ($this->IsTestOnly) {
                 return true;
-            }
-            else {
+            } else {
                 $send = false;
                 $numberOfSecondsBeforeYouCanSendAgain = $this->EmailReminder_NotificationSchedule()->RepeatDays * 86400;
                 $todaysTS = strtotime('NOW');
 
                 $creationTS = strtotime($this->Created);
                 $difference = ($todaysTS - $creationTS);
-                if($difference > $numberOfSecondsBeforeYouCanSendAgain) {
+                if ($difference > $numberOfSecondsBeforeYouCanSendAgain) {
                     $send = true;
                 }
             }
@@ -85,7 +89,6 @@ class EmailReminder_EmailRecord extends DataObject
       */
     public function CMSEditLink()
     {
-
     }
 
 
@@ -94,8 +97,7 @@ class EmailReminder_EmailRecord extends DataObject
      * @return array
      * Field => Label
      */
-    public function getExportFields(){
-
+    public function getExportFields()
+    {
     }
-
 }

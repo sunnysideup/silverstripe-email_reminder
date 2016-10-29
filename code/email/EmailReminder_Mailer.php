@@ -3,10 +3,9 @@
 
 class EmailReminder_Mailer extends Mailer
 {
-
     private static $css_file = 'email_reminder/css/example.css';
 
-    function sendHTML(
+    public function sendHTML(
         $to,
         $from,
         $subject,
@@ -16,8 +15,8 @@ class EmailReminder_Mailer extends Mailer
         $plainContent = false
     ) {
         $cssFileLocation = Director::baseFolder() . Config::inst()->get("EmailReminder_Mailer", "css_file");
-        if($cssFileLocation) {
-            if(file_exists($cssFileLocation)) {
+        if ($cssFileLocation) {
+            if (file_exists($cssFileLocation)) {
                 $cssFileHandler = fopen($cssFileLocation, 'r');
                 $css = fread($cssFileHandler,  filesize($cssFileLocation));
                 fclose($cssFileHandler);
@@ -27,5 +26,4 @@ class EmailReminder_Mailer extends Mailer
         }
         return parent::sendHTML($to, $from, $subject, $htmlContent, $attachedFiles, $customheaders, $plainContent);
     }
-
 }

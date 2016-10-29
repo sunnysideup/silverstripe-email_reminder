@@ -27,12 +27,12 @@ class EmailReminder_DailyMailOut extends BuildTask
     protected $replacerObject = null;
 
 
-    function setVerbose($b)
+    public function setVerbose($b)
     {
         $this->verbose = $b;
     }
 
-    function setTestOnly($b)
+    public function setTestOnly($b)
     {
         $this->testOnly = $b;
     }
@@ -64,18 +64,18 @@ class EmailReminder_DailyMailOut extends BuildTask
         $reminders = EmailReminder_NotificationSchedule::get();
 
         foreach ($reminders as $reminder) {
-            if ( ! $reminder->hasValidFields()) {
+            if (! $reminder->hasValidFields()) {
                 continue; // skip if task is not valid
             }
-            if ( $reminder->Disabled) {
+            if ($reminder->Disabled) {
                 continue; // skip if task is disable
             }
 
             // Use StartsWith to match Date and DateTime fields
-            if($this->testOnly) {
-                if($reminder->SendTestTo) {
+            if ($this->testOnly) {
+                if ($reminder->SendTestTo) {
                     $emails = explode(',', $reminder->SendTestTo);
-                    foreach($emails as $key => $email) {
+                    foreach ($emails as $key => $email) {
                         $this->sendEmail($reminder, $email, $isTestOnly = true);
                     }
                 }
@@ -88,25 +88,21 @@ class EmailReminder_DailyMailOut extends BuildTask
                         $this->sendEmail($reminder, $record, $isTestOnly = false);
                     }
                 }
-
             }
-
         }
     }
 
     protected function sendEmail($reminder, $recordOrEmail, $isTestOnly)
     {
-        if(is_object($recordOrEmail)) {
+        if (is_object($recordOrEmail)) {
             $email_field = $reminder->EmailField;
             $email = $recordOrEmail->$email_field;
             $record = $recordOrEmail;
-
         } else {
             $email = strtolower(trim($recordOrEmail));
             $record = Injector::inst()->get($reminder->DataObject);
         }
         if (Email::validEmailAddress($email)) {
-
             $send = true;
             $filter = array(
                 'EmailTo' => $email,
@@ -114,18 +110,18 @@ class EmailReminder_DailyMailOut extends BuildTask
             );
             $logs = EmailReminder_EmailRecord::get()->filter($filter);
             $send = true;
-            foreach($logs as $log) {
-                if( ! $log->canSendAgain()) {
+            foreach ($logs as $log) {
+                if (! $log->canSendAgain()) {
                     $send = false;
                     break;
                 }
             }
-            if($send) {
+            if ($send) {
                 $log = EmailReminder_EmailRecord::create($filter);
 
                 $subject = $reminder->EmailSubject;
                 $email_content = $reminder->Content;
-                if($replacerObject = $this->getReplacerObject()) {
+                if ($replacerObject = $this->getReplacerObject()) {
                     $email_content = $replacerObject->replace($reminder, $record, $email_content);
                     $subject = $replacerObject->replace($reminder, $record, $subject);
                 }
@@ -154,7 +150,6 @@ class EmailReminder_DailyMailOut extends BuildTask
                 $log->EmailReminder_NotificationScheduleID = $reminder->ID;
                 $log->write();
             }
-
         }
         return false;
     }
@@ -165,11 +160,11 @@ class EmailReminder_DailyMailOut extends BuildTask
      */
     public function getReplacerObject()
     {
-        if( ! $this->replacerObject) {
+        if (! $this->replacerObject) {
             $replacerClass = Config::inst()->get("EmailReminder_DailyMailOut", "replacer_class");
-            if($replacerClass && class_exists($replacerClass)) {
+            if ($replacerClass && class_exists($replacerClass)) {
                 $interfaces = class_implements($replacerClass);
-                if($interfaces && in_array('EmailReminder_ReplacerClassInterface', $interfaces)) {
+                if ($interfaces && in_array('EmailReminder_ReplacerClassInterface', $interfaces)) {
                     $this->replacerObject = Injector::inst()->get($replacerClass);
                 }
             }
@@ -182,7 +177,8 @@ class EmailReminder_DailyMailOut extends BuildTask
      *
      * @return string
      */
-    public function getParsedContent($record, $content){
+    public function getParsedContent($record, $content)
+    {
         return ShortcodeParser::get_active()
             ->parse(
                 $record->renderWith(
@@ -190,5 +186,4 @@ class EmailReminder_DailyMailOut extends BuildTask
                 )
             );
     }
-
 }
