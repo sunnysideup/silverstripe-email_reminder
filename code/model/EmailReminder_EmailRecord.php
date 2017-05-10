@@ -36,6 +36,11 @@ class EmailReminder_EmailRecord extends DataObject
         'IsTestOnly.Nice' => 'Test Only'
     );
 
+    public static $default_sort = array(
+        'Created' => 'DESC'
+    );
+
+
     public function canCreate($member = null)
     {
         return false;
