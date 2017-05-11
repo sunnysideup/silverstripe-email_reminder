@@ -1,7 +1,8 @@
 <?php
 
 
-class EmailReminder_DailyMailOut extends BuildTask implements EmailReminder_MailOutInterface
+class EmailReminder_DailyMailOut extends BuildTask
+    implements EmailReminder_MailOutInterface
 {
 
 
@@ -62,7 +63,6 @@ class EmailReminder_DailyMailOut extends BuildTask implements EmailReminder_Mail
         Email::set_mailer(new EmailReminder_Mailer());
 
         $reminders = EmailReminder_NotificationSchedule::get();
-
         foreach ($reminders as $reminder) {
             if (! $reminder->hasValidFields()) {
                 continue; // skip if task is not valid
@@ -76,6 +76,7 @@ class EmailReminder_DailyMailOut extends BuildTask implements EmailReminder_Mail
                 if ($reminder->SendTestTo) {
                     $emails = explode(',', $reminder->SendTestTo);
                     foreach ($emails as $key => $email) {
+                        die('xxx');
                         $this->sendEmail($reminder, $email, $isTestOnly = true);
                     }
                 }
