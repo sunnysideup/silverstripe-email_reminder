@@ -124,6 +124,7 @@ class EmailReminder_NotificationSchedule extends DataObject
             ->setEmptyString('[ Please select ]')
         );
         if ($this->Config()->get('default_email_field')) {
+
             $fields->replaceField('EmailField', $emailFieldField->performReadonlyTransformation());
         }
 

@@ -22,4 +22,3 @@ EmailReminder_NotificationSchedule:
   replaceableFields:
     - MyField1
     - MyField2
-

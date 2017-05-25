@@ -41,3 +41,5 @@ Interface EmailReminder_MailOutInterface
      * @return string
      */
     public function getParsedContent($record, $content);
+
+}
