@@ -76,7 +76,6 @@ class EmailReminder_DailyMailOut extends BuildTask
                 if ($reminder->SendTestTo) {
                     $emails = explode(',', $reminder->SendTestTo);
                     foreach ($emails as $key => $email) {
-                        die('xxx');
                         $this->sendEmail($reminder, $email, $isTestOnly = true);
                     }
                 }
