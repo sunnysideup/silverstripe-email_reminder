@@ -21,11 +21,23 @@ class EmailReminder_ReplacerClassBase extends Object implements EmailReminder_Re
         )
     );
 
+    /**
+     *
+     * @return array
+     */
     public function getReplaceArray()
     {
         return $this->replaceArray;
     }
 
+    /**
+     *
+     * @param EmailReminder $reminder
+     * @param DataObject $record
+     * @param string $str
+     *
+     * @return string
+     */
     public function replace($reminder, $record, $str)
     {
         $newArray = array();
@@ -36,6 +48,13 @@ class EmailReminder_ReplacerClassBase extends Object implements EmailReminder_Re
         return $str;
     }
 
+
+    /**
+     *
+     * @param bool $asHTML
+     *
+     * @return array
+     */
     public function replaceHelpList($asHTML = false)
     {
         $newArray = array();
@@ -56,6 +75,15 @@ class EmailReminder_ReplacerClassBase extends Object implements EmailReminder_Re
         return $newArray;
     }
 
+    /**
+     *
+     * @param EmailReminder $reminder
+     * @param DataObject $record
+     * @param string $searchString
+     * @param string $str
+     *
+     * @return string
+     */
     protected function PasswordReminderLink($reminder, $record, $searchString, $str)
     {
         $replace = Director::absoluteURL('Security/lostpassword');
@@ -63,6 +91,15 @@ class EmailReminder_ReplacerClassBase extends Object implements EmailReminder_Re
         return $str;
     }
 
+    /**
+     *
+     * @param EmailReminder $reminder
+     * @param DataObject $record
+     * @param string $searchString
+     * @param string $str
+     *
+     * @return string
+     */
     protected function LoginLink($reminder, $record, $searchString, $str)
     {
         $replace = Director::absoluteURL('Security/login');
@@ -70,6 +107,15 @@ class EmailReminder_ReplacerClassBase extends Object implements EmailReminder_Re
         return $str;
     }
 
+    /**
+     *
+     * @param EmailReminder $reminder
+     * @param DataObject $record
+     * @param string $searchString
+     * @param string $str
+     *
+     * @return string
+     */
     protected function Days($reminder, $record, $searchString, $str)
     {
         $replace = $reminder->Days;
@@ -77,6 +123,15 @@ class EmailReminder_ReplacerClassBase extends Object implements EmailReminder_Re
         return $str;
     }
 
+    /**
+     *
+     * @param EmailReminder $reminder
+     * @param DataObject $record
+     * @param string $searchString
+     * @param string $str
+     *
+     * @return string
+     */
     protected function BeforeOrAfter($reminder, $record, $searchString, $str)
     {
         $replace = $reminder->BeforeAfter;

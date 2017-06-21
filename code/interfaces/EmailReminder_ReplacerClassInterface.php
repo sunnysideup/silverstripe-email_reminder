@@ -20,6 +20,7 @@ interface EmailReminder_ReplacerClassInterface
      * provides and array of replacements like this:
      *
      *     [string to replace] => 'description of what it does'
+     * @param bool $asHTML
      *
      * @return array
      */

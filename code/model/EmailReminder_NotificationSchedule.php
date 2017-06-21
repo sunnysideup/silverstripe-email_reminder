@@ -218,8 +218,13 @@ class EmailReminder_NotificationSchedule extends DataObject
                         $records
                     ),
                     LiteralField::create(
+                        'SampleSelectStatement',
+                        '<h3>Here is a sample statement used to select records:</h3>
+                        <pre>'.$this->whereStatementForDays().'</pre>'
+                    ),
+                    LiteralField::create(
                         'SampleFieldDataForRecords',
-                        '<h3>sample of date field values:</h3>
+                        '<h3>sample of '.$this->DateField.' field values:</h3>
                         <li>'.implode('</li><li>', $this->SampleFieldDataForRecords()).'</li>'
                     )
                 )
@@ -414,13 +419,15 @@ class EmailReminder_NotificationSchedule extends DataObject
      * @param int $limit
      * @return array
      */
-    public function SampleFieldDataForRecords($limit = 100)
+    public function SampleFieldDataForRecords($limit = 200)
     {
         if ($this->hasValidFields()) {
-            $do = $this->DataObject;
-            $do = $do::get();
-            if ($do->count()) {
-                return array_unique($do->sort($this->DateField, 'DESC')->limit($limit)->column($this->DateField));
+            $className = $this->DataObject;
+            $objects = $className::get()->sort('RAND()')
+                ->where('"'.$this->DateField.'" IS NOT NULL AND "'.$this->DateField.'" <> \'\' AND "'.$this->DateField.'" <> 0')
+                ->limit($limit);
+            if ($objects->count()) {
+                return array_unique($objects->column($this->DateField));
             } else {
                 return array();
             }
@@ -429,31 +436,49 @@ class EmailReminder_NotificationSchedule extends DataObject
 
 
     /**
-     *
-     * @return DataList
+     * @return DataList | null
      */
     public function CurrentRecords()
     {
         if ($this->hasValidFields()) {
-            $do = $this->DataObject;
+            $className = $this->DataObject;
+
+            // Use StartsWith to match Date and DateTime fields
+            $records = $className::get()->where($this->whereStatementForDays());
+            return $records;
+        }
+    }
+
+    /**
+     * BeforeAfter = 'after'
+     * Days = 3
+     * GraceDays = 2
+     *  -> minDays = -5 days start of day
+     *  -> maxDays = -3 days end of day
+     *
+     * @return string
+     */
+    protected function whereStatementForDays()
+    {
+        if ($this->hasValidFields()) {
             $sign = $this->BeforeAfter == 'before' ? '+' : '-';
-            $graceDays = Config::inst()->get('EmailReminder_NotificationSchedule', 'grace_days');
+            $graceDays = 10; //Config::inst()->get('EmailReminder_NotificationSchedule', 'grace_days');
 
             if ($sign == '+') {
                 $minDays = $sign . ($this->Days - $graceDays) . ' days';
                 $maxDays = $sign . $this->Days . ' days';
+                $minDate = date('Y-m-d', strtotime($minDays)).' 00:00:00';
+                $maxDate = date('Y-m-d', strtotime($maxDays)).' 23:59:59';
             } else {
-                $minDays = $sign . ($this->Days - $graceDays) . ' days';
-                $maxDays = $sign . $this->Days . ' days';
+                $minDays = $sign . ($this->Days ) . ' days';
+                $maxDays = $sign . $this->Days - $graceDays . ' days';
+                //we purposely change these days around here ...
+                $minDate = date('Y-m-d', strtotime($maxDays)).' 00:00:00';
+                $maxDate = date('Y-m-d', strtotime($minDays)).' 23:59:59';
             }
 
-            $minDate = date('Y-m-d', strtotime($minDays)).' 00:00:00';
-            $maxDate = date('Y-m-d', strtotime($maxDays)).' 23:59:59';
-
-            // Use StartsWith to match Date and DateTime fields
-            $records = $do::get()
-                ->where('("'. $this->DateField.'" BETWEEN \''.$minDate.'\' AND \''.$maxDate.'\')');
-            return $records;
+            return '("'. $this->DateField.'" BETWEEN \''.$minDate.'\' AND \''.$maxDate.'\')';
         }
+        return '1 == 2';
     }
 }
