@@ -50,7 +50,7 @@ class EmailReminder_NotificationSchedule extends DataObject
         'DateField' => 'Varchar(100)',
         'Days' => 'Int',
         'RepeatDays' => 'Int',
-        'BeforeAfter' => "Enum('before,after','before')",
+        'BeforeAfter' => "Enum('before,after,immediately','before')",
         'EmailFrom' => 'Varchar(100)',
         'EmailSubject' => 'Varchar(100)',
         'Content' => 'HTMLText',
@@ -149,10 +149,10 @@ class EmailReminder_NotificationSchedule extends DataObject
         $fields->addFieldsToTab(
             'Root.Main',
             array(
-                NumericField::create('Days', 'Days')
-                    ->setRightTitle('How many days in advance (before) or in arrears (after) of the expiration date should this email be sent?'),
-                DropdownField::create('BeforeAfter', 'Before / After Expiration', array('before' => 'before', 'after' => 'after'))
+                DropdownField::create('BeforeAfter', 'Before / After Expiration', array('before' => 'before', 'after' => 'after', 'immediately' => 'immediately'))
                     ->setRightTitle('Are the days listed above before or after the actual expiration date.'),
+                NumericField::create('Days', 'Days')
+                    ->setRightTitle('How many days in advance (before) or in arrears (after) of the expiration date should this email be sent? </br>This field is ignored if set to send immediately.'),
                 NumericField::create('RepeatDays', 'Repeat Cycle Days')
                     ->setRightTitle('
                         Number of days after which the same reminder can be sent to the same email address.
@@ -480,5 +480,61 @@ class EmailReminder_NotificationSchedule extends DataObject
             return '("'. $this->DateField.'" BETWEEN \''.$minDate.'\' AND \''.$maxDate.'\')';
         }
         return '1 == 2';
+    }
+
+    public function sendEmailNow($recordOrEmail)
+    {
+        if (is_object($recordOrEmail)) {
+            $email_field = $this->EmailField;
+            $email = $recordOrEmail->$email_field;
+            $record = $recordOrEmail;
+        } else {
+            $email = strtolower(trim($recordOrEmail));
+            $record = Injector::inst()->get($reminder->DataObject);
+        }
+        if (Email::validEmailAddress($email)) {
+            $send = true;
+            $filter = array(
+                'EmailTo' => $email,
+                'EmailReminder_NotificationScheduleID' => $this->ID
+            );
+            $logs = EmailReminder_EmailRecord::get()->filter($filter);
+            $send = true;
+            foreach ($logs as $log) {
+                if (! $log->canSendAgain()) {
+                    $send = false;
+                    break;
+                }
+            }
+            if ($send) {
+                $log = EmailReminder_EmailRecord::create($filter);
+
+                $subject = $this->EmailSubject;
+                $email_content = $this->Content;
+
+                /* Parse HTML like a template, and translate any internal links */
+                $data = ArrayData::create(array(
+                    'Content' => $email_content
+                ));
+
+                // $email_body = $record->renderWith(SSViewer::fromString($reminder->Content));
+                // echo $record->renderWith('Email_Reminder_Standard_Template');//$email_body;
+                $email = new Email(
+                    $this->EmailFrom,
+                    $email,
+                    $subject
+                );
+
+                $email->setTemplate('Email_Reminder_Standard_Template');
+
+                $email->populateTemplate($data);
+
+                $log->IsTestOnly = $isTestOnly;
+                $log->Result = $email->send();
+                $log->EmailReminder_NotificationScheduleID = $this->ID;
+                $log->write();
+            }
+        }
+        return false;
     }
 }

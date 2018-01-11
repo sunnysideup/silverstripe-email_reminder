@@ -16,7 +16,7 @@ class EmailReminder_ReplacerClassBase extends Object implements EmailReminder_Re
             'Method' => 'Days'
         ),
         '[BEFORE_OR_AFTER]' => array(
-            'Title' => 'Replaces with before or after experiry date, as set',
+            'Title' => 'Replaces with before or after expiry date, as set',
             'Method' => 'BeforeOrAfter'
         )
     );

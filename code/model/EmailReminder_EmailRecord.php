@@ -58,6 +58,11 @@ class EmailReminder_EmailRecord extends DataObject
         return false;
     }
 
+    /**
+     *
+     * tests to see if an email can be sent
+     * the emails can only be sent once unless previous attempts have failed
+     */
     public function canSendAgain()
     {
         $send = true;
