@@ -53,15 +53,36 @@ class EmailReminder_DailyMailOut extends BuildTask
      * min: current date - 7
      * max current date - 7 - grace days
      *
-     * @param  [type] $request [description]
-     * @return [type]          [description]
+     * @param  SS_Request $request
      */
     public function run($request)
+    {
+        $this->startSending();
+        $this->runAll();
+    }
+
+    protected function startSending()
     {
         //CRUCIAL !
         //
         Email::set_mailer(new EmailReminder_Mailer());
+    }
 
+
+    /**
+     *
+     * @param  EmailReminder_NotificationSchedule  $reminder
+     * @param  string|DataObject  $recordOrEmail
+     * @param  bool $isTestOnly
+     */
+    public function runOne($reminder, $recordOrEmail, $isTestOnly = false)
+    {
+        $this->startSending();
+        $this->sendEmail($reminder, $recordOrEmail, $isTestOnly);
+    }
+
+    protected function runAll()
+    {
         $reminders = EmailReminder_NotificationSchedule::get();
         foreach ($reminders as $reminder) {
             if (! $reminder->hasValidFields()) {
@@ -92,22 +113,25 @@ class EmailReminder_DailyMailOut extends BuildTask
         }
     }
 
+
     protected function sendEmail($reminder, $recordOrEmail, $isTestOnly)
     {
-        if (is_object($recordOrEmail)) {
+        $filter = array(
+            'EmailReminder_NotificationScheduleID' => $reminder->ID,
+        );
+        if ($recordOrEmail instanceof DataObject) {
             $email_field = $reminder->EmailField;
             $email = $recordOrEmail->$email_field;
             $record = $recordOrEmail;
+            $filter['ExternalRecordClassName'] = $recordOrEmail->ClassName;
+            $filter['ExternalRecordID'] = $recordOrEmail->ID;
         } else {
             $email = strtolower(trim($recordOrEmail));
             $record = Injector::inst()->get($reminder->DataObject);
         }
+        $filter['EmailTo'] = $email;
         if (Email::validEmailAddress($email)) {
             $send = true;
-            $filter = array(
-                'EmailTo' => $email,
-                'EmailReminder_NotificationScheduleID' => $reminder->ID
-            );
             $logs = EmailReminder_EmailRecord::get()->filter($filter);
             $send = true;
             foreach ($logs as $log) {
@@ -148,6 +172,7 @@ class EmailReminder_DailyMailOut extends BuildTask
                 $log->IsTestOnly = $isTestOnly;
                 $log->Result = $email->send();
                 $log->EmailReminder_NotificationScheduleID = $reminder->ID;
+                $log->EmailContent = $email->body;
                 $log->write();
             }
         }
