@@ -1,8 +1,9 @@
 <?php
 
-class EmailReminder_ReplacerClassBase extends Object implements EmailReminder_ReplacerClassInterface
+class EmailReminder_ReplacerClassBase extends Object
+    implements EmailReminder_ReplacerClassInterface
 {
-    private $replaceArray = array(
+    protected $replaceArray = array(
         '[PASSWORD_REMINDER_LINK]' => array(
             'Title' => 'Password reminder page',
             'Method' => 'PasswordReminderLink'
