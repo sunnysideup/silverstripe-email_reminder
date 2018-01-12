@@ -24,6 +24,14 @@ class EmailReminder_Mailer extends Mailer
                 $htmlContent = $emog->emogrify();
             }
         }
-        return parent::sendHTML($to, $from, $subject, $htmlContent, $attachedFiles, $customheaders, $plainContent);
+        return parent::sendHTML(
+            $to,
+            $from,
+            $subject,
+            $htmlContent,
+            $attachedFiles,
+            $customheaders,
+            $plainContent
+        );
     }
 }
