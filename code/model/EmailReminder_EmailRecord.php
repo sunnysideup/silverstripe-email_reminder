@@ -16,12 +16,17 @@ class EmailReminder_EmailRecord extends DataObject
 
     private static $db = array(
         'EmailTo' => 'Varchar(100)',
+        'ExternalRecordClassName' => 'Varchar(100)',
+        'ExternalRecordID' => 'Int',
         'Result' => 'Boolean',
-        'IsTestOnly' => 'Boolean'
+        'IsTestOnly' => 'Boolean',
+        'EmailContent' => 'HTMLText'
     );
 
     private static $indexes = array(
         'EmailTo' => true,
+        'ExternalRecordClassName' => true,
+        'ExternalRecordID' => true,
         'Result' => true,
         'Created' => true
     );
@@ -56,6 +61,35 @@ class EmailReminder_EmailRecord extends DataObject
     public function canDelete($member = null)
     {
         return false;
+    }
+
+    /**
+     * standard SS method.
+     *
+     * @return FieldList
+     */
+    public function getCMSFields()
+    {
+        $fields = parent::getCMSFields();
+        $fields->addFieldsToTab(
+            'Root.Details',
+            array(
+                $fields->dataFieldByName("EmailTo"),
+                $fields->dataFieldByName("ExternalRecordClassName"),
+                $fields->dataFieldByName("ExternalRecordID"),
+                $fields->dataFieldByName("Result"),
+                $fields->dataFieldByName("IsTestOnly"),
+                $fields->dataFieldByName("EmailReminder_NotificationScheduleID"),
+            )
+        );
+        $fields->replaceField(
+            'EmailContent',
+            LiteralField::create(
+                'EmailContent',
+                $this->EmailContent
+            )
+        );
+        return $fields;
     }
 
     /**
