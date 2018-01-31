@@ -18,7 +18,7 @@ class EmailReminder_Mailer extends Mailer
         if ($cssFileLocation) {
             if (file_exists($cssFileLocation)) {
                 $cssFileHandler = fopen($cssFileLocation, 'r');
-                $css = fread($cssFileHandler,  filesize($cssFileLocation));
+                $css = fread($cssFileHandler, filesize($cssFileLocation));
                 fclose($cssFileHandler);
                 $emog = new \Pelago\Emogrifier($htmlContent, $css);
                 $htmlContent = $emog->emogrify();

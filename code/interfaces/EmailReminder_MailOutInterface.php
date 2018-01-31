@@ -1,11 +1,8 @@
 <?php
 
 
-Interface EmailReminder_MailOutInterface
+interface EmailReminder_MailOutInterface
 {
-
-
-
     public function setVerbose($b);
 
     public function setTestOnly($b);
@@ -41,5 +38,4 @@ Interface EmailReminder_MailOutInterface
      * @return string
      */
     public function getParsedContent($record, $content);
-
 }

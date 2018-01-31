@@ -124,7 +124,6 @@ class EmailReminder_NotificationSchedule extends DataObject
             ->setEmptyString('[ Please select ]')
         );
         if ($this->Config()->get('default_email_field')) {
-
             $fields->replaceField('EmailField', $emailFieldField->performReadonlyTransformation());
         }
 
@@ -154,7 +153,8 @@ class EmailReminder_NotificationSchedule extends DataObject
                 NumericField::create('Days', 'Days')
                     ->setRightTitle('How many days in advance (before) or in arrears (after) of the expiration date should this email be sent? </br>This field is ignored if set to send immediately.'),
                 NumericField::create('RepeatDays', 'Repeat Cycle Days')
-                    ->setRightTitle('
+                    ->setRightTitle(
+                        '
                         Number of days after which the same reminder can be sent to the same email address.
                         <br />We allow an e-mail to be sent to one specific email address for one specific reminder only once.
                         <br />In this field you can indicate for how long we will apply this rule.'
@@ -192,7 +192,8 @@ class EmailReminder_NotificationSchedule extends DataObject
             'Root.Sent',
             array(
                 TextareaField::create('SendTestTo', 'Send test email to ...')
-                    ->setRightTitle('
+                    ->setRightTitle(
+                        '
                         Separate emails by commas, a test email will be sent every time you save this Email Reminder, if you do not want test emails to be sent make sure this field is empty
                         '
                     )
@@ -470,7 +471,7 @@ class EmailReminder_NotificationSchedule extends DataObject
                 $minDate = date('Y-m-d', strtotime($minDays)).' 00:00:00';
                 $maxDate = date('Y-m-d', strtotime($maxDays)).' 23:59:59';
             } else {
-                $minDays = $sign . ($this->Days ) . ' days';
+                $minDays = $sign . ($this->Days) . ' days';
                 $maxDays = $sign . $this->Days - $graceDays . ' days';
                 //we purposely change these days around here ...
                 $minDate = date('Y-m-d', strtotime($maxDays)).' 00:00:00';
@@ -481,5 +482,4 @@ class EmailReminder_NotificationSchedule extends DataObject
         }
         return '1 == 2';
     }
-
 }
