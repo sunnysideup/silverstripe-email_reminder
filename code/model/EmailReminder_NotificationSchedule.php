@@ -326,11 +326,9 @@ class EmailReminder_NotificationSchedule extends DataObject
      */
     public function getTitle()
     {
-        return (
-            $this->hasValidDataObjectFields()) ?
-            '[' . $this->EmailSubject . '] // send ' . $this->Days . ' days '.$this->BeforeAfter.' Expiration Date'
-            :
-            'uncompleted';
+        $niceTitle = '[' . $this->EmailSubject . '] // send ';
+        $niceTitle .= $this->Days ? $this->Days . ' days '.$this->BeforeAfter.' Expiration Date' : $this->BeforeAfter;
+        return ($this->hasValidDataObjectFields()) ? $niceTitle : 'uncompleted';
     }
 
     /**
