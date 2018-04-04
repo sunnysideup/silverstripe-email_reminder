@@ -464,14 +464,14 @@ class EmailReminder_NotificationSchedule extends DataObject
 
                 //included method?
                 $hasIncludeMethod = false;
-                if($record->hasMethod($includeMethod)) {
+                if($firstRecord->hasMethod($includeMethod)) {
                     $includedRecords = [0 => 0];
                     $hasIncludeMethod = true;
                 }
 
                 //excluded method?
                 $hasExcludeMethod = false;
-                if($record->hasMethod($excludeMethod)) {
+                if($firstRecord->hasMethod($excludeMethod)) {
                     $excludedRecords = [0 => 0];
                     $hasExcludeMethod = true;
                 }
