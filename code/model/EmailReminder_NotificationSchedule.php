@@ -22,10 +22,21 @@ class EmailReminder_NotificationSchedule extends DataObject
      * @var string
      */
     private static $default_email_field = '';
+
     /**
      * @var string
      */
     private static $replaceable_record_fields = array('FirstName', 'Surname', 'Email');
+
+    /**
+     * @var string
+     */
+    private static $include_method = 'EmailReminderInclude';
+
+    /**
+     * @var string
+     */
+    private static $exclude_method = 'EmailReminderExclude';
 
     /**
      * @var string
@@ -444,6 +455,53 @@ class EmailReminder_NotificationSchedule extends DataObject
 
             // Use StartsWith to match Date and DateTime fields
             $records = $className::get()->where($this->whereStatementForDays());
+            //sample record
+            $firstRecord = $records->first();
+            if($firstRecord && $firstRecord->exists())
+                //methods
+                $includeMethod = $this->Config()->get('include_method');
+                $excludeMethod = $this->Config()->get('exclude_method');
+
+                //included method?
+                $hasIncludeMethod = false;
+                if($record->hasMethod($includeMethod)) {
+                    $includedRecords = [0 => 0];
+                    $hasIncludeMethod = true;
+                }
+
+                //excluded method?
+                $hasExcludeMethod = false;
+                if($record->hasMethod($excludeMethod)) {
+                    $excludedRecords = [0 => 0];
+                    $hasExcludeMethod = true;
+                }
+
+                //see who is in and out
+                if($hasIncludeMethod || $hasExcludeMethod) {
+                    foreach($records as $record) {
+                        if($hasIncludeMethod) {
+                            $in = $record->$includeMethod($this, $records);
+                            if($in === true) {
+                                $includedRecords[$record->ID] = $record->ID;
+                            }
+                        }
+                        if($hasExcludeMethod) {
+                            $out = $record->$excludeMethod($this, $records);
+                            if($out === true) {
+                                $excludedRecords[$record->ID] = $record->ID;
+                            }
+                        }
+                    }
+                }
+
+                //apply inclusions and exclusions
+                if($hasIncludeMethod) {
+                    $records = $className::get()->filter(['ID' => $includedRecords]);
+                }
+                if($hasExcludeMethod) {
+                    $records = $records->exclude(['ID' => $excludedRecords]);
+                }
+            }
             return $records;
         }
     }
