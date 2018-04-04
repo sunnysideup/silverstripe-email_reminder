@@ -481,13 +481,13 @@ class EmailReminder_NotificationSchedule extends DataObject
                     foreach($records as $record) {
                         if($hasIncludeMethod) {
                             $in = $record->$includeMethod($this, $records);
-                            if($in === true) {
+                            if($in == true) {
                                 $includedRecords[$record->ID] = $record->ID;
                             }
                         }
                         if($hasExcludeMethod) {
                             $out = $record->$excludeMethod($this, $records);
-                            if($out === true) {
+                            if($out == true) {
                                 $excludedRecords[$record->ID] = $record->ID;
                             }
                         }
