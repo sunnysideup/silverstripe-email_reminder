@@ -457,7 +457,7 @@ class EmailReminder_NotificationSchedule extends DataObject
             $records = $className::get()->where($this->whereStatementForDays());
             //sample record
             $firstRecord = $records->first();
-            if($firstRecord && $firstRecord->exists())
+            if($firstRecord && $firstRecord->exists()) {
                 //methods
                 $includeMethod = $this->Config()->get('include_method');
                 $excludeMethod = $this->Config()->get('exclude_method');
