@@ -74,10 +74,10 @@ class EmailReminder_DailyMailOut extends BuildTask implements EmailReminder_Mail
      * @param  string|DataObject  $recordOrEmail
      * @param  bool $isTestOnly
      */
-    public function runOne($reminder, $recordOrEmail, $isTestOnly = false)
+    public function runOne($reminder, $recordOrEmail, $isTestOnly = false, $force = false)
     {
         $this->startSending();
-        $this->sendEmail($reminder, $recordOrEmail, $isTestOnly);
+        $this->sendEmail($reminder, $recordOrEmail, $isTestOnly, $force);
     }
 
     protected function runAll()
@@ -113,7 +113,7 @@ class EmailReminder_DailyMailOut extends BuildTask implements EmailReminder_Mail
     }
 
 
-    protected function sendEmail($reminder, $recordOrEmail, $isTestOnly)
+    protected function sendEmail($reminder, $recordOrEmail, $isTestOnly, $force = false)
     {
         $filter = array(
             'EmailReminder_NotificationScheduleID' => $reminder->ID,
@@ -131,12 +131,14 @@ class EmailReminder_DailyMailOut extends BuildTask implements EmailReminder_Mail
         $filter['EmailTo'] = $email;
         if (Email::validEmailAddress($email)) {
             $send = true;
-            $logs = EmailReminder_EmailRecord::get()->filter($filter);
-            $send = true;
-            foreach ($logs as $log) {
-                if (! $log->canSendAgain()) {
-                    $send = false;
-                    break;
+            if(! $force){
+                $logs = EmailReminder_EmailRecord::get()->filter($filter);
+                $send = true;
+                foreach ($logs as $log) {
+                    if (! $log->canSendAgain()) {
+                        $send = false;
+                        break;
+                    }
                 }
             }
             if ($send) {
