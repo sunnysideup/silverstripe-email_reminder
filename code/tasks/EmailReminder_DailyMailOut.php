@@ -131,7 +131,7 @@ class EmailReminder_DailyMailOut extends BuildTask implements EmailReminder_Mail
         $filter['EmailTo'] = $email;
         if (Email::validEmailAddress($email)) {
             $send = true;
-            if(! $force){
+            if (! $force) {
                 $logs = EmailReminder_EmailRecord::get()->filter($filter);
                 $send = true;
                 foreach ($logs as $log) {

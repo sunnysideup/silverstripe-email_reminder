@@ -457,37 +457,37 @@ class EmailReminder_NotificationSchedule extends DataObject
             $records = $className::get()->where($this->whereStatementForDays());
             //sample record
             $firstRecord = $records->first();
-            if($firstRecord && $firstRecord->exists()) {
+            if ($firstRecord && $firstRecord->exists()) {
                 //methods
                 $includeMethod = $this->Config()->get('include_method');
                 $excludeMethod = $this->Config()->get('exclude_method');
 
                 //included method?
                 $hasIncludeMethod = false;
-                if($firstRecord->hasMethod($includeMethod)) {
+                if ($firstRecord->hasMethod($includeMethod)) {
                     $includedRecords = [0 => 0];
                     $hasIncludeMethod = true;
                 }
 
                 //excluded method?
                 $hasExcludeMethod = false;
-                if($firstRecord->hasMethod($excludeMethod)) {
+                if ($firstRecord->hasMethod($excludeMethod)) {
                     $excludedRecords = [0 => 0];
                     $hasExcludeMethod = true;
                 }
 
                 //see who is in and out
-                if($hasIncludeMethod || $hasExcludeMethod) {
-                    foreach($records as $record) {
-                        if($hasIncludeMethod) {
+                if ($hasIncludeMethod || $hasExcludeMethod) {
+                    foreach ($records as $record) {
+                        if ($hasIncludeMethod) {
                             $in = $record->$includeMethod($this, $records);
-                            if($in == true) {
+                            if ($in == true) {
                                 $includedRecords[$record->ID] = $record->ID;
                             }
                         }
-                        if($hasExcludeMethod) {
+                        if ($hasExcludeMethod) {
                             $out = $record->$excludeMethod($this, $records);
-                            if($out == true) {
+                            if ($out == true) {
                                 $excludedRecords[$record->ID] = $record->ID;
                             }
                         }
@@ -495,10 +495,10 @@ class EmailReminder_NotificationSchedule extends DataObject
                 }
 
                 //apply inclusions and exclusions
-                if($hasIncludeMethod) {
+                if ($hasIncludeMethod) {
                     $records = $className::get()->filter(['ID' => $includedRecords]);
                 }
-                if($hasExcludeMethod) {
+                if ($hasExcludeMethod) {
                     $records = $records->exclude(['ID' => $excludedRecords]);
                 }
             }
