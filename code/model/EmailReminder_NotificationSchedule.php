@@ -444,6 +444,13 @@ class EmailReminder_NotificationSchedule extends DataObject
         }
     }
 
+    public function CMSEditLink()
+    {
+        $controller = singleton("EmailReminder_ModelAdmin");
+
+        return $controller->Link().$this->ClassName."/EditForm/field/".$this->ClassName."/item/".$this->ID."/edit";
+    }
+
 
     /**
      * @return DataList | null
