@@ -105,7 +105,7 @@ class EmailReminder_DailyMailOut extends BuildTask implements EmailReminder_Mail
                 $records = $records->limit($limit);
                 if ($records) {
                     foreach ($records as $record) {
-                        //$this->sendEmail($reminder, $record, $isTestOnly = false);
+                        $this->sendEmail($reminder, $record, $isTestOnly = false);
                     }
                 }
             }
