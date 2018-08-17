@@ -76,13 +76,15 @@ class EmailReminder_NotificationSchedule extends DataObject
 
     private static $summary_fields = array(
         'EmailSubject',
+        'BeforeAfter',
         'Days'
     );
 
     private static $field_labels = array(
         'DataObject' => 'Class/Table',
-        'Days' => 'Days from Expiry',
-        'RepeatDays' => 'Repeat cycle days'
+        'Days' => 'Days Before/After Date',
+        'RepeatDays' => 'Repeat cycle days',
+        'BeforeAfter' => 'When to send'
     );
 
     public function populateDefaults()
@@ -172,6 +174,14 @@ class EmailReminder_NotificationSchedule extends DataObject
                 )
             )
         );
+
+        if($this->BeforeAfter === 'immediately'){
+            $fields->removeFieldsFromTab(
+                'Root.Main',
+                array('Days', 'RepeatDays')
+            );
+        }
+
         $fields->addFieldsToTab(
             'Root.EmailContent',
             array(
@@ -382,6 +392,10 @@ class EmailReminder_NotificationSchedule extends DataObject
         parent::onBeforeWrite();
         if ($this->RepeatDays < ($this->Days * 3)) {
             $this->RepeatDays = ($this->Days * 3);
+        }
+
+        if ($this->BeforeAfter === 'immediately'){
+            $this->Days = 0;
         }
     }
 
