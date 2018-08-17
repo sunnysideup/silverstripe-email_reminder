@@ -43,6 +43,11 @@ class EmailReminder_NotificationSchedule extends DataObject
      */
     private static $mail_out_class = 'EmailReminder_DailyMailOut';
 
+    /**
+     * @var string
+     */
+    private static $disabled_checkbox_label = 'Disable';
+
     private static $singular_name = 'Email Reminder Schedule';
     public function i18n_singular_name()
     {
@@ -107,9 +112,10 @@ class EmailReminder_NotificationSchedule extends DataObject
         $emailsSentField = $fields->dataFieldByName('EmailsSent');
         $fields->removeFieldFromTab('Root', 'EmailsSent');
 
+        $disableLabel = $this->Config()->get('disabled_checkbox_label');
         $fields->addFieldToTab(
             'Root.Main',
-            CheckboxField::create('Disable')
+            CheckboxField::create('Disable', $disableLabel)->setDescription("If checked this email will not be sent during the daily mail out, however it can still be sent programatically")
         );
         $fields->addFieldToTab(
             'Root.Main',
