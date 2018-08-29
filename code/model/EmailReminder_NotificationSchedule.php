@@ -236,7 +236,7 @@ class EmailReminder_NotificationSchedule extends DataObject
             );
         }
         $records = $this->CurrentRecords();
-        if ($records) {
+        if ($records && !$this->Disable) {
             $fields->addFieldsToTab(
                 'Root.Review',
                 array(
