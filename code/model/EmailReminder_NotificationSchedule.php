@@ -6,7 +6,7 @@ class EmailReminder_NotificationSchedule extends DataObject
     /**
      * @var int
      */
-    private static $grace_days = 3;
+    private static $grace_days = 10;
 
     /**
      * @var string
@@ -546,7 +546,7 @@ class EmailReminder_NotificationSchedule extends DataObject
     {
         if ($this->hasValidFields()) {
             $sign = $this->BeforeAfter == 'before' ? '+' : '-';
-            $graceDays = 10; //Config::inst()->get('EmailReminder_NotificationSchedule', 'grace_days');
+            $graceDays = Config::inst()->get('EmailReminder_NotificationSchedule', 'grace_days');
 
             if ($sign == '+') {
                 $minDays = $sign . ($this->Days - $graceDays) . ' days';
