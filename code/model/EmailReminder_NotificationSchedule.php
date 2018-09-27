@@ -181,7 +181,7 @@ class EmailReminder_NotificationSchedule extends DataObject
             )
         );
 
-        if($this->BeforeAfter === 'immediately'){
+        if ($this->BeforeAfter === 'immediately') {
             $fields->removeFieldsFromTab(
                 'Root.Main',
                 array('Days', 'RepeatDays')
@@ -400,7 +400,7 @@ class EmailReminder_NotificationSchedule extends DataObject
             $this->RepeatDays = ($this->Days * 3);
         }
 
-        if ($this->BeforeAfter === 'immediately'){
+        if ($this->BeforeAfter === 'immediately') {
             $this->Days = 0;
         }
     }
