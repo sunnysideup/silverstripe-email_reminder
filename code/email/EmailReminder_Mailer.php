@@ -14,7 +14,7 @@ class EmailReminder_Mailer extends Mailer
         $customheaders = false,
         $plainContent = false
     ) {
-        $cssFileLocation = Director::baseFolder() . Config::inst()->get("EmailReminder_Mailer", "css_file");
+        $cssFileLocation = Director::baseFolder() .'/'. Config::inst()->get("EmailReminder_Mailer", "css_file");
         if ($cssFileLocation) {
             if (file_exists($cssFileLocation)) {
                 $cssFileHandler = fopen($cssFileLocation, 'r');
