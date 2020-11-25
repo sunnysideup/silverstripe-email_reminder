@@ -555,7 +555,7 @@ class EmailReminder_NotificationSchedule extends DataObject
                 $maxDate = date('Y-m-d', strtotime($maxDays)).' 23:59:59';
             } else {
                 $minDays = $sign . ($this->Days) . ' days';
-                $maxDays = $sign . $this->Days - $graceDays . ' days';
+                $maxDays = $sign . ($this->Days - $graceDays) . ' days';
                 //we purposely change these days around here ...
                 $minDate = date('Y-m-d', strtotime($maxDays)).' 00:00:00';
                 $maxDate = date('Y-m-d', strtotime($minDays)).' 23:59:59';
