@@ -22,8 +22,8 @@
         }
     ],
     "require": {
-        "silverstripe/cms": "~3.6",
-        "pelago/emogrifier": "V1.1.0"
+        "pelago/emogrifier": "V1.1.0",
+        "silverstripe/recipe-cms": "^4.4"
     },
     "extra": {
         "installer-name": "email_reminder"
