@@ -1,5 +1,11 @@
 <?php
 
+namespace SunnySideUp\EmailReminder\Model;
+
+use DataObject;
+use LiteralField;
+
+
 class EmailReminder_EmailRecord extends DataObject
 {
     private static $singular_name = "Email Reminder Record";

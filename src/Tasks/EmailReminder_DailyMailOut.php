@@ -1,5 +1,21 @@
 <?php
 
+namespace SunnySideUp\EmailReminder\Tasks;
+
+use BuildTask;
+use EmailReminder_MailOutInterface;
+use Email;
+use EmailReminder_Mailer;
+use EmailReminder_NotificationSchedule;
+use Config;
+use DataObject;
+use Injector;
+use EmailReminder_EmailRecord;
+use ArrayData;
+use ShortcodeParser;
+use SSViewer;
+
+
 
 class EmailReminder_DailyMailOut extends BuildTask implements EmailReminder_MailOutInterface
 {

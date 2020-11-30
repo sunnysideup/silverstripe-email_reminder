@@ -1,5 +1,22 @@
 <?php
 
+namespace SunnySideUp\EmailReminder\Model;
+
+use DataObject;
+use Config;
+use CheckboxField;
+use DropdownField;
+use NumericField;
+use TextField;
+use HTMLEditorField;
+use TextareaField;
+use GridField;
+use LiteralField;
+use ClassInfo;
+use Injector;
+use BuildTask;
+
+
 class EmailReminder_NotificationSchedule extends DataObject
 {
 

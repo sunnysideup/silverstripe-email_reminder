@@ -1,5 +1,10 @@
 <?php
 
+namespace SunnySideUp\EmailReminder\Interfaces;
+
+
+
+
 
 interface EmailReminder_ReplacerClassInterface
 {

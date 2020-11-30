@@ -1,5 +1,10 @@
 <?php
 
+namespace SunnySideUp\EmailReminder\Cms;
+
+use ModelAdmin;
+
+
 class EmailReminder_ModelAdmin extends ModelAdmin
 {
     public static $managed_models = array('EmailReminder_NotificationSchedule');

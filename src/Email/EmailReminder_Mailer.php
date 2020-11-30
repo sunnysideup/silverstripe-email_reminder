@@ -1,5 +1,12 @@
 <?php
 
+namespace SunnySideUp\EmailReminder\Email;
+
+use Mailer;
+use Director;
+use Config;
+
+
 
 class EmailReminder_Mailer extends Mailer
 {

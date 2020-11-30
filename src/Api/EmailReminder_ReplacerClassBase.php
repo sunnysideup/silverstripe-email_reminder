@@ -1,5 +1,12 @@
 <?php
 
+namespace SunnySideUp\EmailReminder\Api;
+
+use ViewableData;
+use EmailReminder_ReplacerClassInterface;
+use Director;
+
+
 
 /**
   * ### @@@@ START REPLACEMENT @@@@ ###
