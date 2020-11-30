@@ -2,19 +2,43 @@
 
 namespace SunnySideUp\EmailReminder\Model;
 
-use DataObject;
-use Config;
-use CheckboxField;
-use DropdownField;
-use NumericField;
-use TextField;
-use HTMLEditorField;
-use TextareaField;
-use GridField;
-use LiteralField;
-use ClassInfo;
-use Injector;
-use BuildTask;
+
+
+
+
+
+
+
+
+
+
+
+
+
+use SilverStripe\Security\Member;
+use SilverStripe\Control\Email\Email;
+use SunnySideUp\EmailReminder\Tasks\EmailReminder_DailyMailOut;
+use SunnySideUp\EmailReminder\Model\EmailReminder_EmailRecord;
+use SilverStripe\Core\Config\Config;
+use SilverStripe\Forms\CheckboxField;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\EmailField;
+use SilverStripe\Forms\DateField;
+use SilverStripe\Forms\NumericField;
+use SilverStripe\Forms\TextField;
+use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
+use SilverStripe\Forms\TextareaField;
+use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
+use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\LiteralField;
+use SilverStripe\Core\ClassInfo;
+use SilverStripe\ORM\FieldType\DBDate;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Dev\BuildTask;
+use SunnySideUp\EmailReminder\Cms\EmailReminder_ModelAdmin;
+use SunnySideUp\EmailReminder\Model\EmailReminder_NotificationSchedule;
+
 
 
 class EmailReminder_NotificationSchedule extends DataObject
@@ -28,7 +52,7 @@ class EmailReminder_NotificationSchedule extends DataObject
     /**
      * @var string
      */
-    private static $default_data_object = 'Member';
+    private static $default_data_object = Member::class;
 
     /**
      * @var string
@@ -43,7 +67,7 @@ class EmailReminder_NotificationSchedule extends DataObject
     /**
      * @var string
      */
-    private static $replaceable_record_fields = array('FirstName', 'Surname', 'Email');
+    private static $replaceable_record_fields = array('FirstName', 'Surname', Email::class);
 
     /**
      * @var string
@@ -58,7 +82,7 @@ class EmailReminder_NotificationSchedule extends DataObject
     /**
      * @var string
      */
-    private static $mail_out_class = 'EmailReminder_DailyMailOut';
+    private static $mail_out_class = EmailReminder_DailyMailOut::class;
 
     /**
      * @var string
@@ -107,7 +131,7 @@ class EmailReminder_NotificationSchedule extends DataObject
 
 
     private static $has_many = array(
-        'EmailsSent' => 'EmailReminder_EmailRecord'
+        'EmailsSent' => EmailReminder_EmailRecord::class
     );
 
     private static $summary_fields = array(
@@ -132,7 +156,7 @@ class EmailReminder_NotificationSchedule extends DataObject
         $this->Days = 7;
         $this->RepeatDays = 300;
         $this->BeforeAfter = 'before';
-        $this->EmailFrom = Config::inst()->get('Email', 'admin_email');
+        $this->EmailFrom = Config::inst()->get(Email::class, 'admin_email');
         $this->EmailSubject = 'Your memberships expires in [days] days';
     }
 
@@ -151,14 +175,14 @@ class EmailReminder_NotificationSchedule extends DataObject
         $fields->addFieldToTab(
             'Root.Main',
             $dataObjecField = DropdownField::create(
-                'DataObject',
+                DataObject::class,
                 'Table/Class Name',
                 $this->dataObjectOptions()
             )
             ->setRightTitle('Type a valid table/class name')
         );
         if ($this->Config()->get('default_data_object')) {
-            $fields->replaceField('DataObject', $dataObjecField->performReadonlyTransformation());
+            $fields->replaceField(DataObject::class, $dataObjecField->performReadonlyTransformation());
         }
 
 
@@ -166,7 +190,7 @@ class EmailReminder_NotificationSchedule extends DataObject
         $fields->addFieldToTab(
             'Root.Main',
             $emailFieldField = DropdownField::create(
-                'EmailField',
+                EmailField::class,
                 'Email Field',
                 $this->emailFieldOptions()
             )
@@ -174,13 +198,13 @@ class EmailReminder_NotificationSchedule extends DataObject
             ->setEmptyString('[ Please select ]')
         );
         if ($this->Config()->get('default_email_field')) {
-            $fields->replaceField('EmailField', $emailFieldField->performReadonlyTransformation());
+            $fields->replaceField(EmailField::class, $emailFieldField->performReadonlyTransformation());
         }
 
         $fields->addFieldToTab(
             'Root.Main',
             $dateFieldField = DropdownField::create(
-                'DateField',
+                DateField::class,
                 'Date Field',
                 $this->dateFieldOptions()
             )
@@ -188,7 +212,7 @@ class EmailReminder_NotificationSchedule extends DataObject
             ->setEmptyString('[ Please select ]')
         );
         if ($this->Config()->get('default_date_field')) {
-            $fields->replaceField('DateField', $dateFieldField->performReadonlyTransformation());
+            $fields->replaceField(DateField::class, $dateFieldField->performReadonlyTransformation());
         }
 
         $fields->removeFieldsFromTab(
@@ -278,7 +302,7 @@ class EmailReminder_NotificationSchedule extends DataObject
         );
         if ($emailsSentField) {
             $config = $emailsSentField->getConfig();
-            $config->removeComponentsByType('GridFieldAddExistingAutocompleter');
+            $config->removeComponentsByType(GridFieldAddExistingAutocompleter::class);
             $fields->addFieldToTab(
                 'Root.Sent',
                 $emailsSentField
@@ -315,7 +339,7 @@ class EmailReminder_NotificationSchedule extends DataObject
      */
     protected function dataObjectOptions()
     {
-        return ClassInfo::subclassesFor("DataObject");
+        return ClassInfo::subclassesFor(DataObject::class);
     }
 
     /**
@@ -323,7 +347,7 @@ class EmailReminder_NotificationSchedule extends DataObject
      */
     protected function emailFieldOptions()
     {
-        return $this->getFieldsFromDataObject(array('Varchar', 'Email'));
+        return $this->getFieldsFromDataObject(array('Varchar', Email::class));
     }
 
     /**
@@ -331,7 +355,7 @@ class EmailReminder_NotificationSchedule extends DataObject
      */
     protected function dateFieldOptions()
     {
-        return $this->getFieldsFromDataObject(array('Date'));
+        return $this->getFieldsFromDataObject(array(DBDate::class));
     }
 
 
@@ -533,7 +557,7 @@ class EmailReminder_NotificationSchedule extends DataObject
 
     public function CMSEditLink()
     {
-        $controller = singleton("EmailReminder_ModelAdmin");
+        $controller = singleton(EmailReminder_ModelAdmin::class);
 
 
 /**
@@ -649,7 +673,7 @@ class EmailReminder_NotificationSchedule extends DataObject
     {
         if ($this->hasValidFields()) {
             $sign = $this->BeforeAfter == 'before' ? '+' : '-';
-            $graceDays = Config::inst()->get('EmailReminder_NotificationSchedule', 'grace_days');
+            $graceDays = Config::inst()->get(EmailReminder_NotificationSchedule::class, 'grace_days');
 
             if ($sign == '+') {
                 $minDays = $sign . ($this->Days - $graceDays) . ' days';

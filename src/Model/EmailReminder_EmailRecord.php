@@ -2,8 +2,12 @@
 
 namespace SunnySideUp\EmailReminder\Model;
 
-use DataObject;
-use LiteralField;
+
+
+use SunnySideUp\EmailReminder\Model\EmailReminder_NotificationSchedule;
+use SilverStripe\Forms\LiteralField;
+use SilverStripe\ORM\DataObject;
+
 
 
 class EmailReminder_EmailRecord extends DataObject
@@ -52,7 +56,7 @@ class EmailReminder_EmailRecord extends DataObject
     );
 
     private static $has_one = array(
-        'EmailReminder_NotificationSchedule' => 'EmailReminder_NotificationSchedule'
+        'EmailReminder_NotificationSchedule' => EmailReminder_NotificationSchedule::class
     );
 
     private static $summary_fields = array(

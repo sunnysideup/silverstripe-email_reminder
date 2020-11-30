@@ -2,18 +2,34 @@
 
 namespace SunnySideUp\EmailReminder\Tasks;
 
-use BuildTask;
-use EmailReminder_MailOutInterface;
-use Email;
-use EmailReminder_Mailer;
-use EmailReminder_NotificationSchedule;
-use Config;
-use DataObject;
-use Injector;
-use EmailReminder_EmailRecord;
-use ArrayData;
-use ShortcodeParser;
-use SSViewer;
+
+
+
+
+
+
+
+
+
+
+
+
+use SunnySideUp\EmailReminder\Api\EmailReminder_ReplacerClassBase;
+use SunnySideUp\EmailReminder\Email\EmailReminder_Mailer;
+use SilverStripe\Control\Email\Email;
+use SunnySideUp\EmailReminder\Model\EmailReminder_NotificationSchedule;
+use SilverStripe\Core\Config\Config;
+use SunnySideUp\EmailReminder\Tasks\EmailReminder_DailyMailOut;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\Core\Injector\Injector;
+use SunnySideUp\EmailReminder\Model\EmailReminder_EmailRecord;
+use SilverStripe\View\ArrayData;
+use SunnySideUp\EmailReminder\Interfaces\EmailReminder_ReplacerClassInterface;
+use SilverStripe\View\Parsers\ShortcodeParser;
+use SilverStripe\View\SSViewer;
+use SilverStripe\Dev\BuildTask;
+use SunnySideUp\EmailReminder\Interfaces\EmailReminder_MailOutInterface;
+
 
 
 
@@ -29,7 +45,7 @@ class EmailReminder_DailyMailOut extends BuildTask implements EmailReminder_Mail
     /**
      * @var string
      */
-    private static $replacer_class = 'EmailReminder_ReplacerClassBase';
+    private static $replacer_class = EmailReminder_ReplacerClassBase::class;
 
 
     protected $verbose = false;
@@ -116,7 +132,7 @@ class EmailReminder_DailyMailOut extends BuildTask implements EmailReminder_Mail
                     }
                 }
             } else {
-                $limit = Config::inst()->get('EmailReminder_DailyMailOut', 'daily_limit');
+                $limit = Config::inst()->get(EmailReminder_DailyMailOut::class, 'daily_limit');
                 $records = $reminder->CurrentRecords();
                 $records = $records->limit($limit);
                 if ($records) {
@@ -203,10 +219,10 @@ class EmailReminder_DailyMailOut extends BuildTask implements EmailReminder_Mail
     public function getReplacerObject()
     {
         if (! $this->replacerObject) {
-            $replacerClass = Config::inst()->get("EmailReminder_DailyMailOut", "replacer_class");
+            $replacerClass = Config::inst()->get(EmailReminder_DailyMailOut::class, "replacer_class");
             if ($replacerClass && class_exists($replacerClass)) {
                 $interfaces = class_implements($replacerClass);
-                if ($interfaces && in_array('EmailReminder_ReplacerClassInterface', $interfaces)) {
+                if ($interfaces && in_array(EmailReminder_ReplacerClassInterface::class, $interfaces)) {
                     $this->replacerObject = Injector::inst()->get($replacerClass);
                 }
             }

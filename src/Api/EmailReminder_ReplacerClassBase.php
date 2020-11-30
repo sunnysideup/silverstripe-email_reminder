@@ -2,9 +2,13 @@
 
 namespace SunnySideUp\EmailReminder\Api;
 
-use ViewableData;
-use EmailReminder_ReplacerClassInterface;
-use Director;
+
+
+
+use SilverStripe\Control\Director;
+use SilverStripe\View\ViewableData;
+use SunnySideUp\EmailReminder\Interfaces\EmailReminder_ReplacerClassInterface;
+
 
 
 

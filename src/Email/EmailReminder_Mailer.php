@@ -2,9 +2,14 @@
 
 namespace SunnySideUp\EmailReminder\Email;
 
-use Mailer;
-use Director;
-use Config;
+
+
+
+use SilverStripe\Control\Director;
+use SilverStripe\Core\Config\Config;
+use SunnySideUp\EmailReminder\Email\EmailReminder_Mailer;
+use SilverStripe\Control\Email\Mailer;
+
 
 
 
@@ -21,7 +26,7 @@ class EmailReminder_Mailer extends Mailer
         $customheaders = false,
         $plainContent = false
     ) {
-        $cssFileLocation = Director::baseFolder() .'/'. Config::inst()->get("EmailReminder_Mailer", "css_file");
+        $cssFileLocation = Director::baseFolder() .'/'. Config::inst()->get(EmailReminder_Mailer::class, "css_file");
         if ($cssFileLocation) {
             if (file_exists($cssFileLocation)) {
                 $cssFileHandler = fopen($cssFileLocation, 'r');
