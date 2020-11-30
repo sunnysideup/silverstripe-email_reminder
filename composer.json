@@ -25,7 +25,5 @@
         "pelago/emogrifier": "V1.1.0",
         "silverstripe/recipe-cms": "^4.4"
     },
-    "extra": {
-        "installer-name": "email_reminder"
-    }
+    "extra": []
 }
