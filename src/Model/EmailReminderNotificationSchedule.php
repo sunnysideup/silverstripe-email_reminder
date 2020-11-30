@@ -49,7 +49,7 @@ class EmailReminderNotificationSchedule extends DataObject
     /**
      * @var string
      */
-    private static $replaceable_record_fields = ['FirstName', 'Surname', Email::class];
+    private static $replaceable_record_fields = ['FirstName', 'Surname', 'Email'];
 
     /**
      * @var string
@@ -75,7 +75,7 @@ class EmailReminderNotificationSchedule extends DataObject
 
     private static $plural_name = 'Email Reminder Schedules';
 
-    private static $table_name = 'EmailReminderNotificationSchedule';
+    private static $table_name = 'EmailReminder_NotificationSchedule';
 
     private static $db = [
         'DataObject' => 'Varchar(100)',
@@ -146,20 +146,20 @@ class EmailReminderNotificationSchedule extends DataObject
         $fields->addFieldToTab(
             'Root.Main',
             $dataObjecField = DropdownField::create(
-                DataObject::class,
+                'DataObject',
                 'Table/Class Name',
                 $this->dataObjectOptions()
             )
                 ->setRightTitle('Type a valid table/class name')
         );
         if ($this->Config()->get('default_data_object')) {
-            $fields->replaceField(DataObject::class, $dataObjecField->performReadonlyTransformation());
+            $fields->replaceField('DataObject', $dataObjecField->performReadonlyTransformation());
         }
 
         $fields->addFieldToTab(
             'Root.Main',
             $emailFieldField = DropdownField::create(
-                EmailField::class,
+                'EmailField',
                 'Email Field',
                 $this->emailFieldOptions()
             )
@@ -167,13 +167,13 @@ class EmailReminderNotificationSchedule extends DataObject
                 ->setEmptyString('[ Please select ]')
         );
         if ($this->Config()->get('default_email_field')) {
-            $fields->replaceField(EmailField::class, $emailFieldField->performReadonlyTransformation());
+            $fields->replaceField('EmailField', $emailFieldField->performReadonlyTransformation());
         }
 
         $fields->addFieldToTab(
             'Root.Main',
             $dateFieldField = DropdownField::create(
-                DateField::class,
+                'DateField',
                 'Date Field',
                 $this->dateFieldOptions()
             )
@@ -181,7 +181,7 @@ class EmailReminderNotificationSchedule extends DataObject
                 ->setEmptyString('[ Please select ]')
         );
         if ($this->Config()->get('default_date_field')) {
-            $fields->replaceField(DateField::class, $dateFieldField->performReadonlyTransformation());
+            $fields->replaceField('DateField', $dateFieldField->performReadonlyTransformation());
         }
 
         $fields->removeFieldsFromTab(
@@ -194,32 +194,16 @@ class EmailReminderNotificationSchedule extends DataObject
                 DropdownField::create('BeforeAfter', 'Before / After Expiration', ['before' => 'before', 'after' => 'after', 'immediately' => 'immediately'])
                     ->setRightTitle('Are the days listed above before or after the actual expiration date.'),
 
-                /**
-                 * ### @@@@ START REPLACEMENT @@@@ ###
-                 * WHY: automated upgrade
-                 * OLD: NumericField::create (case sensitive)
-                 * NEW: NumericField::create (COMPLEX)
-                 * EXP: check the number of decimals required and add as ->setScale(2)
-                 * ### @@@@ STOP REPLACEMENT @@@@ ###
-                 */
                 NumericField::create('Days', 'Days')
-                    ->setRightTitle('How many days in advance (before) or in arrears (after) of the expiration date should this email be sent? </br>This field is ignored if set to send immediately.'),
+                    ->setRightTitle('How many days in advance (before) or in arrears (after) of the expiration date should this email be sent? </br>This field is ignored if set to send immediately.')->setScale(2),
 
-                /**
-                 * ### @@@@ START REPLACEMENT @@@@ ###
-                 * WHY: automated upgrade
-                 * OLD: NumericField::create (case sensitive)
-                 * NEW: NumericField::create (COMPLEX)
-                 * EXP: check the number of decimals required and add as ->setScale(2)
-                 * ### @@@@ STOP REPLACEMENT @@@@ ###
-                 */
                 NumericField::create('RepeatDays', 'Repeat Cycle Days')
                     ->setRightTitle(
                         '
                         Number of days after which the same reminder can be sent to the same email address.
                         <br />We allow an e-mail to be sent to one specific email address for one specific reminder only once.
                         <br />In this field you can indicate for how long we will apply this rule.'
-                    ),
+                    )->setScale(2),
             ]
         );
 
@@ -369,7 +353,7 @@ class EmailReminderNotificationSchedule extends DataObject
         $valid = parent::validate();
         if ($this->exists()) {
             if (! $this->hasValidDataObject()) {
-                $valid->error('Please enter valid Tabe/Class name ("' . htmlspecialchars($this->DataObject) . '" does not exist)');
+                $valid->error('Please enter valid Table/Class name ("' . htmlspecialchars($this->DataObject) . '" does not exist)');
             } elseif (! $this->hasValidDataObjectFields()) {
                 $valid->error('Please select valid fields for both Email & Date');
             } elseif (! $this->hasValidFields()) {
@@ -580,7 +564,7 @@ class EmailReminderNotificationSchedule extends DataObject
      */
     protected function emailFieldOptions()
     {
-        return $this->getFieldsFromDataObject(['Varchar', Email::class]);
+        return $this->getFieldsFromDataObject(['Varchar', 'Email']);
     }
 
     /**

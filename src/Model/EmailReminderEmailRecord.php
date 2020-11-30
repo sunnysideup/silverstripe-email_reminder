@@ -11,7 +11,7 @@ class EmailReminderEmailRecord extends DataObject
 
     private static $plural_name = 'Email Reminder Records';
 
-    private static $table_name = 'EmailReminderEmailRecord';
+    private static $table_name = 'EmailReminder_EmailRecord';
 
     private static $db = [
         'EmailTo' => 'Varchar(100)',
