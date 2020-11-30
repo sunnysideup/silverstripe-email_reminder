@@ -21,10 +21,10 @@ use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBDate;
 use SilverStripe\Security\Member;
-use SunnySideUp\EmailReminder\Cms\EmailReminder_ModelAdmin;
-use SunnySideUp\EmailReminder\Tasks\EmailReminder_DailyMailOut;
+use SunnySideUp\EmailReminder\Cms\EmailReminderModelAdmin;
+use SunnySideUp\EmailReminder\Tasks\EmailReminderDailyMailOut;
 
-class EmailReminder_NotificationSchedule extends DataObject
+class EmailReminderNotificationSchedule extends DataObject
 {
     /**
      * @var int
@@ -64,7 +64,7 @@ class EmailReminder_NotificationSchedule extends DataObject
     /**
      * @var string
      */
-    private static $mail_out_class = EmailReminder_DailyMailOut::class;
+    private static $mail_out_class = EmailReminderDailyMailOut::class;
 
     /**
      * @var string
@@ -75,15 +75,7 @@ class EmailReminder_NotificationSchedule extends DataObject
 
     private static $plural_name = 'Email Reminder Schedules';
 
-    /**
-     * ### @@@@ START REPLACEMENT @@@@ ###
-     * OLD: private static $db (case sensitive)
-     * NEW:
-    private static $db (COMPLEX)
-     * EXP: Check that is class indeed extends DataObject and that it is not a data-extension!
-     * ### @@@@ STOP REPLACEMENT @@@@ ###
-     */
-    private static $table_name = 'EmailReminder_NotificationSchedule';
+    private static $table_name = 'EmailReminderNotificationSchedule';
 
     private static $db = [
         'DataObject' => 'Varchar(100)',
@@ -100,7 +92,7 @@ class EmailReminder_NotificationSchedule extends DataObject
     ];
 
     private static $has_many = [
-        'EmailsSent' => EmailReminder_EmailRecord::class,
+        'EmailsSent' => EmailReminderEmailRecord::class,
     ];
 
     private static $summary_fields = [
@@ -474,7 +466,7 @@ class EmailReminder_NotificationSchedule extends DataObject
 
     public function CMSEditLink()
     {
-        $controller = singleton(EmailReminder_ModelAdmin::class);
+        $controller = singleton(EmailReminde_ModelAdmin::class);
 
         /**
          * ### @@@@ START REPLACEMENT @@@@ ###
@@ -642,7 +634,7 @@ class EmailReminder_NotificationSchedule extends DataObject
     {
         if ($this->hasValidFields()) {
             $sign = $this->BeforeAfter === 'before' ? '+' : '-';
-            $graceDays = Config::inst()->get(EmailReminder_NotificationSchedule::class, 'grace_days');
+            $graceDays = Config::inst()->get(EmailReminderNotificationSchedule::class, 'grace_days');
 
             if ($sign === '+') {
                 $minDays = $sign . ($this->Days - $graceDays) . ' days';

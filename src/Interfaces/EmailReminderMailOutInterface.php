@@ -2,7 +2,7 @@
 
 namespace SunnySideUp\EmailReminder\Interfaces;
 
-interface EmailReminder_MailOutInterface
+interface EmailReminderMailOutInterface
 {
     public function setVerbose($b);
 
@@ -28,7 +28,7 @@ interface EmailReminder_MailOutInterface
     public function run($request);
 
     /**
-     * @return EmailReminder_ReplacerClassInterface | null
+     * @return EmailReminderReplacerClassInterface | null
      */
     public function getReplacerObject();
 

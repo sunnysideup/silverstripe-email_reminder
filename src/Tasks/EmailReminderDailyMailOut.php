@@ -10,14 +10,14 @@ use SilverStripe\ORM\DataObject;
 use SilverStripe\View\ArrayData;
 use SilverStripe\View\Parsers\ShortcodeParser;
 use SilverStripe\View\SSViewer;
-use SunnySideUp\EmailReminder\Api\EmailReminder_ReplacerClassBase;
-use SunnySideUp\EmailReminder\Email\EmailReminder_Mailer;
-use SunnySideUp\EmailReminder\Interfaces\EmailReminder_MailOutInterface;
-use SunnySideUp\EmailReminder\Interfaces\EmailReminder_ReplacerClassInterface;
-use SunnySideUp\EmailReminder\Model\EmailReminder_EmailRecord;
-use SunnySideUp\EmailReminder\Model\EmailReminder_NotificationSchedule;
+use SunnySideUp\EmailReminder\Api\EmailReminderReplacerClassBase;
+use SunnySideUp\EmailReminder\Email\EmailReminderMailer;
+use SunnySideUp\EmailReminder\Interfaces\EmailReminderMailOutInterface;
+use SunnySideUp\EmailReminder\Interfaces\EmailReminderReplacerClassInterface;
+use SunnySideUp\EmailReminder\Model\EmailReminderEmailRecord;
+use SunnySideUp\EmailReminder\Model\EmailReminderNotificationSchedule;
 
-class EmailReminder_DailyMailOut extends BuildTask implements EmailReminder_MailOutInterface
+class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOutInterface
 {
     protected $verbose = false;
 
@@ -37,7 +37,7 @@ class EmailReminder_DailyMailOut extends BuildTask implements EmailReminder_Mail
     /**
      * @var string
      */
-    private static $replacer_class = EmailReminder_ReplacerClassBase::class;
+    private static $replacer_class = EmailReminderReplacerClassBase::class;
 
     public function setVerbose($b)
     {
@@ -72,7 +72,7 @@ class EmailReminder_DailyMailOut extends BuildTask implements EmailReminder_Mail
     }
 
     /**
-     * @param  EmailReminder_NotificationSchedule  $reminder
+     * @param  EmailReminderNotificationSchedule  $reminder
      * @param  string|DataObject  $recordOrEmail
      * @param  bool $isTestOnly
      */
@@ -83,15 +83,15 @@ class EmailReminder_DailyMailOut extends BuildTask implements EmailReminder_Mail
     }
 
     /**
-     * @return EmailReminder_ReplacerClassInterface | null
+     * @return EmailReminderReplacerClassInterface | null
      */
     public function getReplacerObject()
     {
         if (! $this->replacerObject) {
-            $replacerClass = Config::inst()->get(EmailReminder_DailyMailOut::class, 'replacer_class');
+            $replacerClass = Config::inst()->get(EmailReminderDailyMailOut::class, 'replacer_class');
             if ($replacerClass && class_exists($replacerClass)) {
                 $interfaces = class_implements($replacerClass);
-                if ($interfaces && in_array(EmailReminder_ReplacerClassInterface::class, $interfaces, true)) {
+                if ($interfaces && in_array(EmailReminderReplacerClassInterface::class, $interfaces, true)) {
                     //$this->replacerObject = Injector::inst()->get($replacerClass);
                 }
             }
@@ -123,12 +123,12 @@ class EmailReminder_DailyMailOut extends BuildTask implements EmailReminder_Mail
     protected function startSending()
     {
         //CRUCIAL !
-        Email::set_mailer(new EmailReminder_Mailer());
+        Email::set_mailer(new EmailReminderMailer());
     }
 
     protected function runAll()
     {
-        $reminders = EmailReminder_NotificationSchedule::get();
+        $reminders = EmailReminderNotificationSchedule::get();
         foreach ($reminders as $reminder) {
             if (! $reminder->hasValidFields()) {
                 continue; // skip if task is not valid
@@ -161,7 +161,7 @@ class EmailReminder_DailyMailOut extends BuildTask implements EmailReminder_Mail
     protected function sendEmail($reminder, $recordOrEmail, $isTestOnly, $force = false)
     {
         $filter = [
-            'EmailReminder_NotificationScheduleID' => $reminder->ID,
+            'EmailReminderNotificationScheduleID' => $reminder->ID,
         ];
         if ($recordOrEmail instanceof DataObject) {
             $email_field = $reminder->EmailField;
@@ -177,7 +177,7 @@ class EmailReminder_DailyMailOut extends BuildTask implements EmailReminder_Mail
         if (Email::validEmailAddress($email)) {
             $send = true;
             if (! $force) {
-                $logs = EmailReminder_EmailRecord::get()->filter($filter);
+                $logs = EmailReminderEmailRecord::get()->filter($filter);
                 $send = true;
                 foreach ($logs as $log) {
                     if (! $log->canSendAgain()) {
@@ -187,7 +187,7 @@ class EmailReminder_DailyMailOut extends BuildTask implements EmailReminder_Mail
                 }
             }
             if ($send) {
-                $log = EmailReminder_EmailRecord::create($filter);
+                $log = EmailReminderEmailRecord::create($filter);
 
                 $subject = $reminder->EmailSubject;
                 $email_content = $reminder->Content;

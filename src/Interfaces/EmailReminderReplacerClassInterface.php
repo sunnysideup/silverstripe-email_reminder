@@ -2,13 +2,13 @@
 
 namespace SunnySideUp\EmailReminder\Interfaces;
 
-interface EmailReminder_ReplacerClassInterface
+interface EmailReminderReplacerClassInterface
 {
     /**
      * replaces all instances of certain
      * strings in the string and returns the string
      *
-     * @param EmailReminder_NotificationSchedule  $reminder
+     * @param EmailReminderNotificationSchedule  $reminder
      * @param DataObject                          $record
      * @param string                              $str
      *

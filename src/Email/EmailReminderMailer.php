@@ -6,7 +6,7 @@ use SilverStripe\Control\Director;
 use SilverStripe\Control\Email\SwiftMailer;
 use SilverStripe\Core\Config\Config;
 
-class EmailReminder_Mailer extends SwiftMailer
+class EmailReminderMailer extends SwiftMailer
 {
     private static $css_file = 'email_reminder/css/example.css';
 
@@ -19,7 +19,7 @@ class EmailReminder_Mailer extends SwiftMailer
         $customheaders = false,
         $plainContent = false
     ) {
-        $cssFileLocation = Director::baseFolder() . '/' . Config::inst()->get(EmailReminder_Mailer::class, 'css_file');
+        $cssFileLocation = Director::baseFolder() . '/' . Config::inst()->get(EmailReminderMailer::class, 'css_file');
         if ($cssFileLocation) {
             if (file_exists($cssFileLocation)) {
                 $cssFileHandler = fopen($cssFileLocation, 'r');

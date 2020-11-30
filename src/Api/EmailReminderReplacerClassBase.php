@@ -4,7 +4,7 @@ namespace SunnySideUp\EmailReminder\Api;
 
 use SilverStripe\Control\Director;
 use SilverStripe\View\ViewableData;
-use SunnySideUp\EmailReminder\Interfaces\EmailReminder_ReplacerClassInterface;
+use SunnySideUp\EmailReminder\Interfaces\EmailReminderReplacerClassInterface;
 
 /**
  * ### @@@@ START REPLACEMENT @@@@ ###
@@ -14,7 +14,7 @@ use SunnySideUp\EmailReminder\Interfaces\EmailReminder_ReplacerClassInterface;
  * EXP: This used to extend Object, but object does not exist anymore. You can also manually add use Extensible, use Injectable, and use Configurable
  * ### @@@@ STOP REPLACEMENT @@@@ ###
  */
-class EmailReminder_ReplacerClassBase extends ViewableData implements EmailReminder_ReplacerClassInterface
+class EmailReminderReplacerClassBase extends ViewableData implements EmailReminderReplacerClassInterface
 {
     protected $replaceArray = [
         '[PASSWORD_REMINDER_LINK]' => [

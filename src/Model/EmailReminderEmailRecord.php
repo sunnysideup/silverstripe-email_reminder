@@ -5,21 +5,13 @@ namespace SunnySideUp\EmailReminder\Model;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\ORM\DataObject;
 
-class EmailReminder_EmailRecord extends DataObject
+class EmailReminderEmailRecord extends DataObject
 {
     private static $singular_name = 'Email Reminder Record';
 
     private static $plural_name = 'Email Reminder Records';
 
-    /**
-     * ### @@@@ START REPLACEMENT @@@@ ###
-     * OLD: private static $db (case sensitive)
-     * NEW:
-    private static $db (COMPLEX)
-     * EXP: Check that is class indeed extends DataObject and that it is not a data-extension!
-     * ### @@@@ STOP REPLACEMENT @@@@ ###
-     */
-    private static $table_name = 'EmailReminder_EmailRecord';
+    private static $table_name = 'EmailReminderEmailRecord';
 
     private static $db = [
         'EmailTo' => 'Varchar(100)',
@@ -39,7 +31,7 @@ class EmailReminder_EmailRecord extends DataObject
     ];
 
     private static $has_one = [
-        'EmailReminder_NotificationSchedule' => EmailReminder_NotificationSchedule::class,
+        'EmailReminderNotificationSchedule' => EmailReminderNotificationSchedule::class,
     ];
 
     private static $summary_fields = [
