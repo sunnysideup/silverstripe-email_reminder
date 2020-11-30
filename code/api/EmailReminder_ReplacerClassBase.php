@@ -139,3 +139,4 @@ class EmailReminder_ReplacerClassBase extends Object implements EmailReminder_Re
         return $str;
     }
 }
+

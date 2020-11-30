@@ -13,3 +13,4 @@ class EmailReminder_ModelAdmin extends ModelAdmin
     /* Prevent importing of CSV */
     public $showImportForm = false;
 }
+

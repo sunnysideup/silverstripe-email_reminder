@@ -213,3 +213,4 @@ class EmailReminder_DailyMailOut extends BuildTask implements EmailReminder_Mail
             );
     }
 }
+

@@ -35,3 +35,4 @@ class EmailReminder_Mailer extends Mailer
         );
     }
 }
+

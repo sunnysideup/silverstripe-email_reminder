@@ -566,3 +566,4 @@ class EmailReminder_NotificationSchedule extends DataObject
         return '1 == 2';
     }
 }
+

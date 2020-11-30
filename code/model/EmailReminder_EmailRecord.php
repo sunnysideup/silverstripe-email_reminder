@@ -147,3 +147,4 @@ class EmailReminder_EmailRecord extends DataObject
     {
     }
 }
+
