@@ -22,7 +22,7 @@
         }
     ],
     "require": {
-        "pelago/emogrifier": "V1.1.0",
+        "pelago/emogrifier": "v5.0.0",
         "silverstripe/recipe-cms": "^4.4"
     },
     "extra": [],
