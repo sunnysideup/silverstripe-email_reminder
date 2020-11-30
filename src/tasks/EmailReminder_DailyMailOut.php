@@ -207,7 +207,16 @@ class EmailReminder_DailyMailOut extends BuildTask implements EmailReminder_Mail
     {
         return ShortcodeParser::get_active()
             ->parse(
-                $record->renderWith(
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: ->RenderWith( (ignore case)
+  * NEW: ->RenderWith( (COMPLEX)
+  * EXP: Check that the template location is still valid!
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+                $record->RenderWith(
                     SSViewer::fromString($content)
                 )
             );

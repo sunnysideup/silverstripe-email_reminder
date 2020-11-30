@@ -183,8 +183,26 @@ class EmailReminder_NotificationSchedule extends DataObject
             array(
                 DropdownField::create('BeforeAfter', 'Before / After Expiration', array('before' => 'before', 'after' => 'after', 'immediately' => 'immediately'))
                     ->setRightTitle('Are the days listed above before or after the actual expiration date.'),
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: NumericField::create (case sensitive)
+  * NEW: NumericField::create (COMPLEX)
+  * EXP: check the number of decimals required and add as ->setScale(2)
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
                 NumericField::create('Days', 'Days')
                     ->setRightTitle('How many days in advance (before) or in arrears (after) of the expiration date should this email be sent? </br>This field is ignored if set to send immediately.'),
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: NumericField::create (case sensitive)
+  * NEW: NumericField::create (COMPLEX)
+  * EXP: check the number of decimals required and add as ->setScale(2)
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
                 NumericField::create('RepeatDays', 'Repeat Cycle Days')
                     ->setRightTitle(
                         '
@@ -307,7 +325,7 @@ class EmailReminder_NotificationSchedule extends DataObject
      */
     protected function getFieldsFromDataObject($fieldTypeMatchArray = array())
     {
-        $array = array();
+        $array = [];
         if ($this->hasValidDataObject()) {
             $object = Injector::inst()->get($this->DataObject);
             if ($object) {
@@ -466,7 +484,25 @@ class EmailReminder_NotificationSchedule extends DataObject
     public function SampleFieldDataForRecords($limit = 200)
     {
         if ($this->hasValidFields()) {
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
             $className = $this->DataObject;
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
             $objects = $className::get()->sort('RAND()')
                 ->where('"'.$this->DateField.'" IS NOT NULL AND "'.$this->DateField.'" <> \'\' AND "'.$this->DateField.'" <> 0')
                 ->limit($limit);
@@ -482,6 +518,15 @@ class EmailReminder_NotificationSchedule extends DataObject
     {
         $controller = singleton("EmailReminder_ModelAdmin");
 
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $this->ClassName (case sensitive)
+  * NEW: $this->ClassName (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
         return $controller->Link().$this->ClassName."/EditForm/field/".$this->ClassName."/item/".$this->ID."/edit";
     }
 
@@ -492,9 +537,27 @@ class EmailReminder_NotificationSchedule extends DataObject
     public function CurrentRecords()
     {
         if ($this->hasValidFields()) {
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
             $className = $this->DataObject;
 
             // Use StartsWith to match Date and DateTime fields
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
             $records = $className::get()->where($this->whereStatementForDays());
             //sample record
             $firstRecord = $records->first();
@@ -537,6 +600,15 @@ class EmailReminder_NotificationSchedule extends DataObject
 
                 //apply inclusions and exclusions
                 if ($hasIncludeMethod) {
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: $className (case sensitive)
+  * NEW: $className (COMPLEX)
+  * EXP: Check if the class name can still be used as such
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
                     $records = $className::get()->filter(['ID' => $includedRecords]);
                 }
                 if ($hasExcludeMethod) {

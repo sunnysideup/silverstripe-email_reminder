@@ -1,6 +1,15 @@
 <?php
 
-class EmailReminder_ReplacerClassBase extends Object implements EmailReminder_ReplacerClassInterface
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD:  extends Object (ignore case)
+  * NEW:  extends ViewableData (COMPLEX)
+  * EXP: This used to extend Object, but object does not exist anymore. You can also manually add use Extensible, use Injectable, and use Configurable
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+class EmailReminder_ReplacerClassBase extends ViewableData implements EmailReminder_ReplacerClassInterface
 {
     protected $replaceArray = array(
         '[PASSWORD_REMINDER_LINK]' => array(
@@ -40,7 +49,7 @@ class EmailReminder_ReplacerClassBase extends Object implements EmailReminder_Re
      */
     public function replace($reminder, $record, $str)
     {
-        $newArray = array();
+        $newArray = [];
         foreach ($this->replaceArray as $searchString => $moreInfoArray) {
             $method = $moreInfoArray['Method'];
             $str = $this->$method($reminder, $record, $searchString, $str);
@@ -57,7 +66,7 @@ class EmailReminder_ReplacerClassBase extends Object implements EmailReminder_Re
      */
     public function replaceHelpList($asHTML = false)
     {
-        $newArray = array();
+        $newArray = [];
         foreach ($this->replaceArray as $searchString => $moreInfoArray) {
             $newArray[$searchString] = $moreInfoArray['Title'];
         }
