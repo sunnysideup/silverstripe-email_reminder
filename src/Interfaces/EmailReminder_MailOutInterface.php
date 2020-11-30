@@ -2,10 +2,6 @@
 
 namespace SunnySideUp\EmailReminder\Interfaces;
 
-
-
-
-
 interface EmailReminder_MailOutInterface
 {
     public function setVerbose($b);
@@ -13,7 +9,6 @@ interface EmailReminder_MailOutInterface
     public function setTestOnly($b);
 
     /**
-     *
      * @todo: https://docs.silverstripe.org/en/3.1/developer_guides/extending/injector/ implement
      * for email class to be used...
      *
@@ -37,9 +32,7 @@ interface EmailReminder_MailOutInterface
      */
     public function getReplacerObject();
 
-
     /**
-     *
      * @return string
      */
     public function getParsedContent($record, $content);

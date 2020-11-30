@@ -1,0 +1,211 @@
+
+
+---------------------------------
+  Running Easy Conding Standards
+---------------------------------
+  directory of script: /home/shane/.config/composer/vendor/bin
+  directory to analyse: /var/www/upgrades/email-reminder/email_reminder/src
+  also check (e.g. _config.php file): /var/www/upgrades/email-reminder/app/_config.php
+  ecs config file: /home/shane/.config/composer/vendor/bin/../sunnysideup/easy-coding-standards/ecs.yml
+---------------------------------
+
+
+EasyCodingStandard v6.1.0
+Config file: /home/shane/.config/composer/vendor/sunnysideup/easy-coding-standards/ecs.yml
+ 0/1 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+ 1/1 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+
+ [OK] No errors found. Great job - your code is shiny in style!                                                         
+
+EasyCodingStandard v6.1.0
+Config file: /home/shane/.config/composer/vendor/sunnysideup/easy-coding-standards/ecs.yml
+ 0/8 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+ 5/8 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░]  62%
+ 7/8 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░]  87%
+ 8/8 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ email_reminder/src/Api/EmailReminder_ReplacerClassBase.php:17
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Class name "EmailReminder_ReplacerClassBase" is not in PascalCase format
+ (PHP_CodeSniffer\Standards\Squiz\Sniffs\Classes\ValidClassNameSniff.NotCamelCaps)
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ email_reminder/src/Api/EmailReminder_ReplacerClassBase.php:55
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Unused variable $newArray.
+ (SlevomatCodingStandard\Sniffs\Variables\UnusedVariableSniff.UnusedVariable)
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ email_reminder/src/Cms/EmailReminder_ModelAdmin.php:8
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Class name "EmailReminder_ModelAdmin" is not in PascalCase format
+ (PHP_CodeSniffer\Standards\Squiz\Sniffs\Classes\ValidClassNameSniff.NotCamelCaps)
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ email_reminder/src/Email/EmailReminder_Mailer.php:9
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Class name "EmailReminder_Mailer" is not in PascalCase format
+ (PHP_CodeSniffer\Standards\Squiz\Sniffs\Classes\ValidClassNameSniff.NotCamelCaps)
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ email_reminder/src/Interfaces/EmailReminder_MailOutInterface.php:5
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Interface name "EmailReminder_MailOutInterface" is not in PascalCase format
+ (PHP_CodeSniffer\Standards\Squiz\Sniffs\Classes\ValidClassNameSniff.NotCamelCaps)
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ email_reminder/src/Interfaces/EmailReminder_ReplacerClassInterface.php:5
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Interface name "EmailReminder_ReplacerClassInterface" is not in PascalCase format
+ (PHP_CodeSniffer\Standards\Squiz\Sniffs\Classes\ValidClassNameSniff.NotCamelCaps)
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ email_reminder/src/Model/EmailReminder_EmailRecord.php:8
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Class name "EmailReminder_EmailRecord" is not in PascalCase format
+ (PHP_CodeSniffer\Standards\Squiz\Sniffs\Classes\ValidClassNameSniff.NotCamelCaps)
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ email_reminder/src/Model/EmailReminder_NotificationSchedule.php:27
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Class name "EmailReminder_NotificationSchedule" is not in PascalCase format
+ (PHP_CodeSniffer\Standards\Squiz\Sniffs\Classes\ValidClassNameSniff.NotCamelCaps)
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ email_reminder/src/Tasks/EmailReminder_DailyMailOut.php:20
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Class name "EmailReminder_DailyMailOut" is not in PascalCase format
+ (PHP_CodeSniffer\Standards\Squiz\Sniffs\Classes\ValidClassNameSniff.NotCamelCaps)
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ email_reminder/src/Tasks/EmailReminder_DailyMailOut.php:144
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Unused variable $key.
+ (SlevomatCodingStandard\Sniffs\Variables\UnusedVariableSniff.UnusedVariable)
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ [ERROR] Found 10 errors that needs to be fixed manually.                                                               
+
+
+
+---------------------------------
+  Running PHP STAN
+---------------------------------
+  directory of script: /home/shane/.config/composer/vendor/bin
+  directory to analyse: /var/www/upgrades/email-reminder/email_reminder/src
+  also check (e.g. _config.php file): /var/www/upgrades/email-reminder/app/_config.php
+  level: 4 (1/6)
+  php stan config file: /home/shane/.config/composer/vendor/bin/../sunnysideup/easy-coding-standards/phpstan.neon
+---------------------------------
+
+
+ 0/1 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%[2K 1/1 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+
+ [OK] No errors                                                                                                         
+
+ 0/8 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%[2K 3/8 [▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░]  37%[2K 8/8 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+
+ ------ --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
+  Line   Api/EmailReminder_ReplacerClassBase.php                                                                                                                                          
+ ------ --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
+  53     Parameter $record of method SunnySideUp\EmailReminder\Api\EmailReminder_ReplacerClassBase::replace() has invalid typehint type SunnySideUp\EmailReminder\Api\DataObject.         
+  53     Parameter $reminder of method SunnySideUp\EmailReminder\Api\EmailReminder_ReplacerClassBase::replace() has invalid typehint type SunnySideUp\EmailReminder\Api\EmailReminder.    
+  83     Method SunnySideUp\EmailReminder\Api\EmailReminder_ReplacerClassBase::replaceHelpList() should return array but returns string.                                                  
+  96     Parameter $record of method SunnySideUp\EmailReminder\Api\EmailReminder_ReplacerClassBase::PasswordReminderLink() has invalid typehint type                                      
+         SunnySideUp\EmailReminder\Api\DataObject.                                                                                                                                        
+  96     Parameter $reminder of method SunnySideUp\EmailReminder\Api\EmailReminder_ReplacerClassBase::PasswordReminderLink() has invalid typehint type                                    
+         SunnySideUp\EmailReminder\Api\EmailReminder.                                                                                                                                     
+  110    Parameter $record of method SunnySideUp\EmailReminder\Api\EmailReminder_ReplacerClassBase::LoginLink() has invalid typehint type SunnySideUp\EmailReminder\Api\DataObject.       
+  110    Parameter $reminder of method SunnySideUp\EmailReminder\Api\EmailReminder_ReplacerClassBase::LoginLink() has invalid typehint type SunnySideUp\EmailReminder\Api\EmailReminder.  
+  124    Parameter $record of method SunnySideUp\EmailReminder\Api\EmailReminder_ReplacerClassBase::Days() has invalid typehint type SunnySideUp\EmailReminder\Api\DataObject.            
+  124    Parameter $reminder of method SunnySideUp\EmailReminder\Api\EmailReminder_ReplacerClassBase::Days() has invalid typehint type SunnySideUp\EmailReminder\Api\EmailReminder.       
+  138    Parameter $record of method SunnySideUp\EmailReminder\Api\EmailReminder_ReplacerClassBase::BeforeOrAfter() has invalid typehint type SunnySideUp\EmailReminder\Api\DataObject.   
+  138    Parameter $reminder of method SunnySideUp\EmailReminder\Api\EmailReminder_ReplacerClassBase::BeforeOrAfter() has invalid typehint type                                           
+         SunnySideUp\EmailReminder\Api\EmailReminder.                                                                                                                                     
+ ------ --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------------------------- 
+  Line   Email/EmailReminder_Mailer.php                                                          
+ ------ ---------------------------------------------------------------------------------------- 
+  28     Instantiated class Pelago\Emogrifier not found.                                         
+  32     Call to an undefined static method SilverStripe\Control\Email\SwiftMailer::sendHTML().  
+ ------ ---------------------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------------------------------------------------------------------- 
+  Line   Interfaces/EmailReminder_MailOutInterface.php                                                                                        
+ ------ ------------------------------------------------------------------------------------------------------------------------------------- 
+  28     PHPDoc tag @param has invalid value ([type] $request [description]): Unexpected token "[", expected TOKEN_IDENTIFIER at offset 411   
+  28     PHPDoc tag @return has invalid value ([type]          [description]): Unexpected token "[", expected TOKEN_IDENTIFIER at offset 456  
+ ------ ------------------------------------------------------------------------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------------------------------------------------------------------------------- 
+  Line   Interfaces/EmailReminder_ReplacerClassInterface.php                                                                                           
+ ------ ---------------------------------------------------------------------------------------------------------------------------------------------- 
+  17     Parameter $record of method SunnySideUp\EmailReminder\Interfaces\EmailReminder_ReplacerClassInterface::replace() has invalid typehint type    
+         SunnySideUp\EmailReminder\Interfaces\DataObject.                                                                                              
+  17     Parameter $reminder of method SunnySideUp\EmailReminder\Interfaces\EmailReminder_ReplacerClassInterface::replace() has invalid typehint type  
+         SunnySideUp\EmailReminder\Interfaces\EmailReminder_NotificationSchedule.                                                                      
+ ------ ---------------------------------------------------------------------------------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------------------------------------------------------------------------------------------------- 
+  Line   Model/EmailReminder_EmailRecord.php                                                                                                                              
+ ------ ----------------------------------------------------------------------------------------------------------------------------------------------------------------- 
+  93     Return typehint of method SunnySideUp\EmailReminder\Model\EmailReminder_EmailRecord::getCMSFields() has invalid type SunnySideUp\EmailReminder\Model\FieldList.  
+  114    Method SunnySideUp\EmailReminder\Model\EmailReminder_EmailRecord::getCMSFields() should return SunnySideUp\EmailReminder\Model\FieldList but returns             
+         SilverStripe\Forms\FieldList.                                                                                                                                    
+ ------ ----------------------------------------------------------------------------------------------------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
+  Line   Model/EmailReminder_NotificationSchedule.php                                                                                                                                      
+ ------ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
+  52     Static property SunnySideUp\EmailReminder\Model\EmailReminder_NotificationSchedule::$replaceable_record_fields (string) does not accept default value of type array<int,          
+         string>.                                                                                                                                                                          
+  280    If condition is always true.                                                                                                                                                      
+  319    PHPDoc tag @param has invalid value (null): Unexpected token "\n     *", expected TOKEN_VARIABLE at offset 66                                                                     
+  329    PHPDoc tag @param has invalid value (null): Unexpected token "\n     *", expected TOKEN_VARIABLE at offset 64                                                                     
+  375    Return type (bool) of method SunnySideUp\EmailReminder\Model\EmailReminder_NotificationSchedule::validate() should be compatible with return type                                 
+         (SilverStripe\ORM\ValidationResult) of method SilverStripe\ORM\DataObject::validate()                                                                                             
+  387    Method SunnySideUp\EmailReminder\Model\EmailReminder_NotificationSchedule::validate() should return bool but returns SilverStripe\ORM\ValidationResult.                           
+  417    Return typehint of method SunnySideUp\EmailReminder\Model\EmailReminder_NotificationSchedule::getReplacerObject() has invalid type                                                
+         SunnySideUp\EmailReminder\Model\EmailReminder_ReplacerClassInterface.                                                                                                             
+  427    Return typehint of method SunnySideUp\EmailReminder\Model\EmailReminder_NotificationSchedule::getMailOutObject() has invalid type SunnySideUp\EmailReminder\Model\ScheduledTask.  
+  433    Method SunnySideUp\EmailReminder\Model\EmailReminder_NotificationSchedule::getMailOutObject() should return SunnySideUp\EmailReminder\Model\ScheduledTask|null but returns        
+         SilverStripe\Dev\BuildTask.                                                                                                                                                       
+  493    Return typehint of method SunnySideUp\EmailReminder\Model\EmailReminder_NotificationSchedule::CurrentRecords() has invalid type SunnySideUp\EmailReminder\Model\DataList.         
+  568    Variable $includedRecords might not be defined.                                                                                                                                   
+  571    Variable $excludedRecords might not be defined.                                                                                                                                   
+ ------ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
+  Line   Tasks/EmailReminder_DailyMailOut.php                                                                                                                                           
+ ------ ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
+  30     Property SunnySideUp\EmailReminder\Tasks\EmailReminder_DailyMailOut::$replacerObject has unknown class SunnySideUp\EmailReminder\Tasks\EmailReinder_ReplacerClassInterface as  
+         its type.                                                                                                                                                                      
+  68     Parameter $request of method SunnySideUp\EmailReminder\Tasks\EmailReminder_DailyMailOut::run() has invalid typehint type SunnySideUp\EmailReminder\Tasks\SS_Request.           
+  90     Negated boolean expression is always false.                                                                                                                                    
+  99     Method SunnySideUp\EmailReminder\Tasks\EmailReminder_DailyMailOut::getReplacerObject() should return                                                                           
+         SunnySideUp\EmailReminder\Interfaces\EmailReminder_ReplacerClassInterface|null but returns SunnySideUp\EmailReminder\Tasks\EmailReinder_ReplacerClassInterface.                
+  126    Call to an undefined static method SilverStripe\Control\Email\Email::set_mailer().                                                                                             
+  177    Call to an undefined static method SilverStripe\Control\Email\Email::validEmailAddress().                                                                                      
+  195    Variable $record might not be defined.                                                                                                                                         
+  196    Variable $record might not be defined.                                                                                                                                         
+  198    Variable $record might not be defined.                                                                                                                                         
+ ------ ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
+
+ ---------------------------------------------------------------------------------- 
+  Error                                                                             
+ ---------------------------------------------------------------------------------- 
+  Ignored error pattern #with incorrect case:# was not matched in reported errors.  
+ ---------------------------------------------------------------------------------- 
+
+ [ERROR] Found 41 errors                                                                                                
+

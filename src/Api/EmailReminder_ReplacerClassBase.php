@@ -2,47 +2,40 @@
 
 namespace SunnySideUp\EmailReminder\Api;
 
-
-
-
 use SilverStripe\Control\Director;
 use SilverStripe\View\ViewableData;
 use SunnySideUp\EmailReminder\Interfaces\EmailReminder_ReplacerClassInterface;
 
-
-
-
 /**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD:  extends Object (ignore case)
-  * NEW:  extends ViewableData (COMPLEX)
-  * EXP: This used to extend Object, but object does not exist anymore. You can also manually add use Extensible, use Injectable, and use Configurable
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+ * ### @@@@ START REPLACEMENT @@@@ ###
+ * WHY: automated upgrade
+ * OLD:  extends Object (ignore case)
+ * NEW:  extends ViewableData (COMPLEX)
+ * EXP: This used to extend Object, but object does not exist anymore. You can also manually add use Extensible, use Injectable, and use Configurable
+ * ### @@@@ STOP REPLACEMENT @@@@ ###
+ */
 class EmailReminder_ReplacerClassBase extends ViewableData implements EmailReminder_ReplacerClassInterface
 {
-    protected $replaceArray = array(
-        '[PASSWORD_REMINDER_LINK]' => array(
+    protected $replaceArray = [
+        '[PASSWORD_REMINDER_LINK]' => [
             'Title' => 'Password reminder page',
-            'Method' => 'PasswordReminderLink'
-        ),
-        '[LOGIN_LINK]' => array(
+            'Method' => 'PasswordReminderLink',
+        ],
+        '[LOGIN_LINK]' => [
             'Title' => 'Login Page',
-            'Method' => 'LoginLink'
-        ),
-        '[DAYS]' => array(
+            'Method' => 'LoginLink',
+        ],
+        '[DAYS]' => [
             'Title' => 'Replaces with the number of days, as set',
-            'Method' => 'Days'
-        ),
-        '[BEFORE_OR_AFTER]' => array(
+            'Method' => 'Days',
+        ],
+        '[BEFORE_OR_AFTER]' => [
             'Title' => 'Replaces with before or after expiry date, as set',
-            'Method' => 'BeforeOrAfter'
-        )
-    );
+            'Method' => 'BeforeOrAfter',
+        ],
+    ];
 
     /**
-     *
      * @return array
      */
     public function getReplaceArray()
@@ -51,7 +44,6 @@ class EmailReminder_ReplacerClassBase extends ViewableData implements EmailRemin
     }
 
     /**
-     *
      * @param EmailReminder $reminder
      * @param DataObject $record
      * @param string $str
@@ -63,14 +55,12 @@ class EmailReminder_ReplacerClassBase extends ViewableData implements EmailRemin
         $newArray = [];
         foreach ($this->replaceArray as $searchString => $moreInfoArray) {
             $method = $moreInfoArray['Method'];
-            $str = $this->$method($reminder, $record, $searchString, $str);
+            $str = $this->{$method}($reminder, $record, $searchString, $str);
         }
         return $str;
     }
 
-
     /**
-     *
      * @param bool $asHTML
      *
      * @return array
@@ -86,7 +76,7 @@ class EmailReminder_ReplacerClassBase extends ViewableData implements EmailRemin
             <ul class="replace-help-list">';
             foreach ($newArray as $searchString => $title) {
                 $html .= '
-                <li><strong>'.$searchString.':</strong> <span>'.$title.'</span></li>';
+                <li><strong>' . $searchString . ':</strong> <span>' . $title . '</span></li>';
             }
             $html .= '
             </ul>';
@@ -96,7 +86,6 @@ class EmailReminder_ReplacerClassBase extends ViewableData implements EmailRemin
     }
 
     /**
-     *
      * @param EmailReminder $reminder
      * @param DataObject $record
      * @param string $searchString
@@ -107,12 +96,10 @@ class EmailReminder_ReplacerClassBase extends ViewableData implements EmailRemin
     protected function PasswordReminderLink($reminder, $record, $searchString, $str)
     {
         $replace = Director::absoluteURL('Security/lostpassword');
-        $str = str_replace($searchString, $replace, $str);
-        return $str;
+        return str_replace($searchString, $replace, $str);
     }
 
     /**
-     *
      * @param EmailReminder $reminder
      * @param DataObject $record
      * @param string $searchString
@@ -123,12 +110,10 @@ class EmailReminder_ReplacerClassBase extends ViewableData implements EmailRemin
     protected function LoginLink($reminder, $record, $searchString, $str)
     {
         $replace = Director::absoluteURL('Security/login');
-        $str = str_replace($searchString, $replace, $str);
-        return $str;
+        return str_replace($searchString, $replace, $str);
     }
 
     /**
-     *
      * @param EmailReminder $reminder
      * @param DataObject $record
      * @param string $searchString
@@ -139,12 +124,10 @@ class EmailReminder_ReplacerClassBase extends ViewableData implements EmailRemin
     protected function Days($reminder, $record, $searchString, $str)
     {
         $replace = $reminder->Days;
-        $str = str_replace($searchString, $replace, $str);
-        return $str;
+        return str_replace($searchString, $replace, $str);
     }
 
     /**
-     *
      * @param EmailReminder $reminder
      * @param DataObject $record
      * @param string $searchString
@@ -155,8 +138,6 @@ class EmailReminder_ReplacerClassBase extends ViewableData implements EmailRemin
     protected function BeforeOrAfter($reminder, $record, $searchString, $str)
     {
         $replace = $reminder->BeforeAfter;
-        $str = str_replace($searchString, $replace, $str);
-        return $str;
+        return str_replace($searchString, $replace, $str);
     }
 }
-

@@ -2,13 +2,8 @@
 
 namespace SunnySideUp\EmailReminder\Interfaces;
 
-
-
-
-
 interface EmailReminder_ReplacerClassInterface
 {
-
     /**
      * replaces all instances of certain
      * strings in the string and returns the string

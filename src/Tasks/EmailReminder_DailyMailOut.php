@@ -2,52 +2,23 @@
 
 namespace SunnySideUp\EmailReminder\Tasks;
 
-
-
-
-
-
-
-
-
-
-
-
-
-use SunnySideUp\EmailReminder\Api\EmailReminder_ReplacerClassBase;
-use SunnySideUp\EmailReminder\Email\EmailReminder_Mailer;
 use SilverStripe\Control\Email\Email;
-use SunnySideUp\EmailReminder\Model\EmailReminder_NotificationSchedule;
 use SilverStripe\Core\Config\Config;
-use SunnySideUp\EmailReminder\Tasks\EmailReminder_DailyMailOut;
-use SilverStripe\ORM\DataObject;
 use SilverStripe\Core\Injector\Injector;
-use SunnySideUp\EmailReminder\Model\EmailReminder_EmailRecord;
+use SilverStripe\Dev\BuildTask;
+use SilverStripe\ORM\DataObject;
 use SilverStripe\View\ArrayData;
-use SunnySideUp\EmailReminder\Interfaces\EmailReminder_ReplacerClassInterface;
 use SilverStripe\View\Parsers\ShortcodeParser;
 use SilverStripe\View\SSViewer;
-use SilverStripe\Dev\BuildTask;
+use SunnySideUp\EmailReminder\Api\EmailReminder_ReplacerClassBase;
+use SunnySideUp\EmailReminder\Email\EmailReminder_Mailer;
 use SunnySideUp\EmailReminder\Interfaces\EmailReminder_MailOutInterface;
-
-
-
+use SunnySideUp\EmailReminder\Interfaces\EmailReminder_ReplacerClassInterface;
+use SunnySideUp\EmailReminder\Model\EmailReminder_EmailRecord;
+use SunnySideUp\EmailReminder\Model\EmailReminder_NotificationSchedule;
 
 class EmailReminder_DailyMailOut extends BuildTask implements EmailReminder_MailOutInterface
 {
-
-
-    /**
-     * @var int
-     */
-    private static $limit = 20;
-
-    /**
-     * @var string
-     */
-    private static $replacer_class = EmailReminder_ReplacerClassBase::class;
-
-
     protected $verbose = false;
 
     protected $testOnly = false;
@@ -58,6 +29,15 @@ class EmailReminder_DailyMailOut extends BuildTask implements EmailReminder_Mail
      */
     protected $replacerObject = null;
 
+    /**
+     * @var int
+     */
+    private static $limit = 20;
+
+    /**
+     * @var string
+     */
+    private static $replacer_class = EmailReminder_ReplacerClassBase::class;
 
     public function setVerbose($b)
     {
@@ -70,7 +50,6 @@ class EmailReminder_DailyMailOut extends BuildTask implements EmailReminder_Mail
     }
 
     /**
-     *
      * @todo: https://docs.silverstripe.org/en/3.1/developer_guides/extending/injector/ implement
      * for email class to be used...
      *
@@ -92,16 +71,7 @@ class EmailReminder_DailyMailOut extends BuildTask implements EmailReminder_Mail
         $this->runAll();
     }
 
-    protected function startSending()
-    {
-        //CRUCIAL !
-        //
-        Email::set_mailer(new EmailReminder_Mailer());
-    }
-
-
     /**
-     *
      * @param  EmailReminder_NotificationSchedule  $reminder
      * @param  string|DataObject  $recordOrEmail
      * @param  bool $isTestOnly
@@ -110,6 +80,50 @@ class EmailReminder_DailyMailOut extends BuildTask implements EmailReminder_Mail
     {
         $this->startSending();
         $this->sendEmail($reminder, $recordOrEmail, $isTestOnly, $force);
+    }
+
+    /**
+     * @return EmailReminder_ReplacerClassInterface | null
+     */
+    public function getReplacerObject()
+    {
+        if (! $this->replacerObject) {
+            $replacerClass = Config::inst()->get(EmailReminder_DailyMailOut::class, 'replacer_class');
+            if ($replacerClass && class_exists($replacerClass)) {
+                $interfaces = class_implements($replacerClass);
+                if ($interfaces && in_array(EmailReminder_ReplacerClassInterface::class, $interfaces, true)) {
+                    //$this->replacerObject = Injector::inst()->get($replacerClass);
+                }
+            }
+        }
+        return $this->replacerObject;
+    }
+
+    /**
+     * @return string
+     */
+    public function getParsedContent($record, $content)
+    {
+        return ShortcodeParser::get_active()
+            ->parse(
+                /**
+                 * ### @@@@ START REPLACEMENT @@@@ ###
+                 * WHY: automated upgrade
+                 * OLD: ->RenderWith( (ignore case)
+                 * NEW: ->RenderWith( (COMPLEX)
+                 * EXP: Check that the template location is still valid!
+                 * ### @@@@ STOP REPLACEMENT @@@@ ###
+                 */
+                $record->RenderWith(
+                    SSViewer::fromString($content)
+                )
+            );
+    }
+
+    protected function startSending()
+    {
+        //CRUCIAL !
+        Email::set_mailer(new EmailReminder_Mailer());
     }
 
     protected function runAll()
@@ -144,15 +158,14 @@ class EmailReminder_DailyMailOut extends BuildTask implements EmailReminder_Mail
         }
     }
 
-
     protected function sendEmail($reminder, $recordOrEmail, $isTestOnly, $force = false)
     {
-        $filter = array(
+        $filter = [
             'EmailReminder_NotificationScheduleID' => $reminder->ID,
-        );
+        ];
         if ($recordOrEmail instanceof DataObject) {
             $email_field = $reminder->EmailField;
-            $email = $recordOrEmail->$email_field;
+            $email = $recordOrEmail->{$email_field};
             $record = $recordOrEmail;
             $filter['ExternalRecordClassName'] = $recordOrEmail->ClassName;
             $filter['ExternalRecordID'] = $recordOrEmail->ID;
@@ -185,9 +198,9 @@ class EmailReminder_DailyMailOut extends BuildTask implements EmailReminder_Mail
                 $email_content = $this->getParsedContent($record, $email_content);
 
                 /* Parse HTML like a template, and translate any internal links */
-                $data = ArrayData::create(array(
-                    'Content' => $email_content
-                ));
+                $data = ArrayData::create([
+                    'Content' => $email_content,
+                ]);
 
                 // $email_body = $record->renderWith(SSViewer::fromString($reminder->Content));
                 // echo $record->renderWith('Email_Reminder_Standard_Template');//$email_body;
@@ -210,47 +223,5 @@ class EmailReminder_DailyMailOut extends BuildTask implements EmailReminder_Mail
             }
         }
         return false;
-    }
-
-
-    /**
-     * @return EmailReminder_ReplacerClassInterface | null
-     */
-    public function getReplacerObject()
-    {
-        if (! $this->replacerObject) {
-            $replacerClass = Config::inst()->get(EmailReminder_DailyMailOut::class, "replacer_class");
-            if ($replacerClass && class_exists($replacerClass)) {
-                $interfaces = class_implements($replacerClass);
-                if ($interfaces && in_array(EmailReminder_ReplacerClassInterface::class, $interfaces)) {
-                    //$this->replacerObject = Injector::inst()->get($replacerClass);
-                }
-            }
-        }
-        return $this->replacerObject;
-    }
-
-
-    /**
-     *
-     * @return string
-     */
-    public function getParsedContent($record, $content)
-    {
-        return ShortcodeParser::get_active()
-            ->parse(
-
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: ->RenderWith( (ignore case)
-  * NEW: ->RenderWith( (COMPLEX)
-  * EXP: Check that the template location is still valid!
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
-                $record->RenderWith(
-                    SSViewer::fromString($content)
-                )
-            );
     }
 }

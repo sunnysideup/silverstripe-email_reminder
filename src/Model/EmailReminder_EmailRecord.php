@@ -2,72 +2,73 @@
 
 namespace SunnySideUp\EmailReminder\Model;
 
-
-
-use SunnySideUp\EmailReminder\Model\EmailReminder_NotificationSchedule;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\ORM\DataObject;
 
-
-
 class EmailReminder_EmailRecord extends DataObject
 {
-    private static $singular_name = "Email Reminder Record";
-    public function i18n_singular_name()
-    {
-        return self::$singular_name;
-    }
+    private static $singular_name = 'Email Reminder Record';
 
-    private static $plural_name = "Email Reminder Records";
-    public function i18n_plural_name()
-    {
-        return self::$plural_name;
-    }
+    private static $plural_name = 'Email Reminder Records';
 
-
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * OLD: private static $db (case sensitive)
-  * NEW: 
-    private static $table_name = '[SEARCH_REPLACE_CLASS_NAME_GOES_HERE]';
-
+    /**
+     * ### @@@@ START REPLACEMENT @@@@ ###
+     * OLD: private static $db (case sensitive)
+     * NEW:
     private static $db (COMPLEX)
-  * EXP: Check that is class indeed extends DataObject and that it is not a data-extension!
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
-    
+     * EXP: Check that is class indeed extends DataObject and that it is not a data-extension!
+     * ### @@@@ STOP REPLACEMENT @@@@ ###
+     */
     private static $table_name = 'EmailReminder_EmailRecord';
 
-    private static $db = array(
+    private static $db = [
         'EmailTo' => 'Varchar(100)',
         'ExternalRecordClassName' => 'Varchar(100)',
         'ExternalRecordID' => 'Int',
         'Result' => 'Boolean',
         'IsTestOnly' => 'Boolean',
-        'EmailContent' => 'HTMLText'
-    );
+        'EmailContent' => 'HTMLText',
+    ];
 
-    private static $indexes = array(
+    private static $indexes = [
         'EmailTo' => true,
         'ExternalRecordClassName' => true,
         'ExternalRecordID' => true,
         'Result' => true,
-        'Created' => true
-    );
+        'Created' => true,
+    ];
 
-    private static $has_one = array(
-        'EmailReminder_NotificationSchedule' => EmailReminder_NotificationSchedule::class
-    );
+    private static $has_one = [
+        'EmailReminder_NotificationSchedule' => EmailReminder_NotificationSchedule::class,
+    ];
 
-    private static $summary_fields = array(
+    private static $summary_fields = [
         'Created.Nice' => 'When',
         'EmailTo' => 'Sent to',
         'Result.Nice' => 'Sent Succesfully',
-        'IsTestOnly.Nice' => 'Test Only'
-    );
+        'IsTestOnly.Nice' => 'Test Only',
+    ];
 
-    private static $default_sort = array('Created' => 'DESC', 'ID' => 'DESC');
+    private static $default_sort = ['Created' => 'DESC', 'ID' => 'DESC'];
 
+    /**
+     * PartialMatchFilter
+     */
+    private static $searchable_fields = [
+        'EmailTo' => 'PartialMatchFilter',
+        'Result' => 'ExactMatchFilter',
+        'IsTestOnly' => 'ExactMatchFilter',
+    ];
+
+    public function i18n_singular_name()
+    {
+        return self::$singular_name;
+    }
+
+    public function i18n_plural_name()
+    {
+        return self::$plural_name;
+    }
 
     public function canCreate($member = null, $context = [])
     {
@@ -94,14 +95,14 @@ class EmailReminder_EmailRecord extends DataObject
         $fields = parent::getCMSFields();
         $fields->addFieldsToTab(
             'Root.Details',
-            array(
-                $fields->dataFieldByName("EmailTo"),
-                $fields->dataFieldByName("ExternalRecordClassName"),
-                $fields->dataFieldByName("ExternalRecordID"),
-                $fields->dataFieldByName("Result"),
-                $fields->dataFieldByName("IsTestOnly"),
-                $fields->dataFieldByName("EmailReminder_NotificationScheduleID"),
-            )
+            [
+                $fields->dataFieldByName('EmailTo'),
+                $fields->dataFieldByName('ExternalRecordClassName'),
+                $fields->dataFieldByName('ExternalRecordID'),
+                $fields->dataFieldByName('Result'),
+                $fields->dataFieldByName('IsTestOnly'),
+                $fields->dataFieldByName('EmailReminder_NotificationScheduleID'),
+            ]
         );
         $fields->replaceField(
             'EmailContent',
@@ -114,7 +115,6 @@ class EmailReminder_EmailRecord extends DataObject
     }
 
     /**
-     *
      * tests to see if an email can be sent
      * the emails can only be sent once unless previous attempts have failed
      */
@@ -124,40 +124,28 @@ class EmailReminder_EmailRecord extends DataObject
         if ($this->Result) {
             if ($this->IsTestOnly) {
                 return true;
-            } else {
-                $send = false;
-                $numberOfSecondsBeforeYouCanSendAgain = $this->EmailReminder_NotificationSchedule()->RepeatDays * 86400;
-                $todaysTS = strtotime('NOW');
+            }
+            $send = false;
+            $numberOfSecondsBeforeYouCanSendAgain = $this->EmailReminder_NotificationSchedule()->RepeatDays * 86400;
+            $todaysTS = strtotime('NOW');
 
-                $creationTS = strtotime($this->Created);
-                $difference = ($todaysTS - $creationTS);
-                if ($difference > $numberOfSecondsBeforeYouCanSendAgain) {
-                    $send = true;
-                }
+            $creationTS = strtotime($this->Created);
+            $difference = $todaysTS - $creationTS;
+            if ($difference > $numberOfSecondsBeforeYouCanSendAgain) {
+                $send = true;
             }
         }
         return $send;
     }
 
     /**
-     *
-     * PartialMatchFilter
-     */
-    private static $searchable_fields = array(
-        'EmailTo' => 'PartialMatchFilter',
-        'Result' => 'ExactMatchFilter',
-        'IsTestOnly' => 'ExactMatchFilter',
-    );
-
-    /**
      * e.g.
      *    $controller = singleton("MyModelAdmin");
      *    return $controller->Link().$this->ClassName."/EditForm/field/".$this->ClassName."/item/".$this->ID."/edit";
-      */
+     */
     public function CMSEditLink()
     {
     }
-
 
     /**
      * returns list of fields as they are exported
@@ -168,4 +156,3 @@ class EmailReminder_EmailRecord extends DataObject
     {
     }
 }
-
