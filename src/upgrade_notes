@@ -1,0 +1,50 @@
+2020-11-30 01:09
+
+# running php upgrade inspect see: https://github.com/silverstripe/silverstripe-upgrader
+cd /var/www/upgrades/email-reminder
+php /var/www/upgrades/upgrader_tool/vendor/silverstripe/upgrader/bin/upgrade-code inspect /var/www/upgrades/email-reminder/email_reminder/src  --root-dir=/var/www/upgrades/email-reminder --write -vvv
+Array
+(
+    [0] => Running post-upgrade on "/var/www/upgrades/email-reminder/email_reminder/src"
+    [1] => [2020-11-30 13:09:39] Applying ApiChangeWarningsRule to EmailReminder_DailyMailOut.php...
+    [2] => PHP Fatal error:  Class SunnySideUp\EmailReminder\Email\EmailReminder_Mailer cannot extend from interface SilverStripe\Control\Email\Mailer in /var/www/upgrades/email-reminder/email_reminder/src/Email/EmailReminder_Mailer.php on line 16
+)
+
+
+------------------------------------------------------------------------
+To continue, please use the following parameter: startFrom=InspectAPIChanges-1
+e.g. php runme.php startFrom=InspectAPIChanges-1
+------------------------------------------------------------------------
+            
+# running php upgrade inspect see: https://github.com/silverstripe/silverstripe-upgrader
+cd /var/www/upgrades/email-reminder
+php /var/www/upgrades/upgrader_tool/vendor/silverstripe/upgrader/bin/upgrade-code inspect /var/www/upgrades/email-reminder/email_reminder/src  --root-dir=/var/www/upgrades/email-reminder --write -vvv
+Array
+(
+    [0] => Running post-upgrade on "/var/www/upgrades/email-reminder/email_reminder/src"
+    [1] => [2020-11-30 13:14:55] Applying ApiChangeWarningsRule to EmailReminder_DailyMailOut.php...
+    [2] => PHP Fatal error:  Declaration of SilverStripe\Core\Injector\Injector::get($name, $asSingleton = true, $constructorArgs = Array) must be compatible with Psr\Container\ContainerInterface::get(string $id) in /var/www/upgrades/email-reminder/vendor/silverstripe/framework/src/Core/Injector/Injector.php on line 132
+)
+
+
+------------------------------------------------------------------------
+To continue, please use the following parameter: startFrom=InspectAPIChanges-1
+e.g. php runme.php startFrom=InspectAPIChanges-1
+------------------------------------------------------------------------
+            
+# running php upgrade inspect see: https://github.com/silverstripe/silverstripe-upgrader
+cd /var/www/upgrades/email-reminder
+php /var/www/upgrades/upgrader_tool/vendor/silverstripe/upgrader/bin/upgrade-code inspect /var/www/upgrades/email-reminder/email_reminder/src  --root-dir=/var/www/upgrades/email-reminder --write -vvv
+Array
+(
+    [0] => Running post-upgrade on "/var/www/upgrades/email-reminder/email_reminder/src"
+    [1] => [2020-11-30 13:16:48] Applying ApiChangeWarningsRule to EmailReminder_DailyMailOut.php...
+    [2] => PHP Fatal error:  Declaration of SilverStripe\Core\Injector\Injector::get($name, $asSingleton = true, $constructorArgs = Array) must be compatible with Psr\Container\ContainerInterface::get(string $id) in /var/www/upgrades/email-reminder/vendor/silverstripe/framework/src/Core/Injector/Injector.php on line 132
+)
+
+
+------------------------------------------------------------------------
+To continue, please use the following parameter: startFrom=InspectAPIChanges-1
+e.g. php runme.php startFrom=InspectAPIChanges-1
+------------------------------------------------------------------------
+            

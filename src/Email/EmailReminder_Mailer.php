@@ -8,12 +8,12 @@ namespace SunnySideUp\EmailReminder\Email;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Config\Config;
 use SunnySideUp\EmailReminder\Email\EmailReminder_Mailer;
-use SilverStripe\Control\Email\Mailer;
+use SilverStripe\Control\Email\SwiftMailer;
 
 
 
 
-class EmailReminder_Mailer extends Mailer
+class EmailReminder_Mailer extends SwiftMailer
 {
     private static $css_file = 'email_reminder/css/example.css';
 

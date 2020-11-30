@@ -158,7 +158,7 @@ class EmailReminder_DailyMailOut extends BuildTask implements EmailReminder_Mail
             $filter['ExternalRecordID'] = $recordOrEmail->ID;
         } else {
             $email = strtolower(trim($recordOrEmail));
-            $record = Injector::inst()->get($reminder->DataObject);
+            //$record = Injector::inst()->get($reminder->DataObject);
         }
         $filter['EmailTo'] = $email;
         if (Email::validEmailAddress($email)) {
@@ -197,9 +197,9 @@ class EmailReminder_DailyMailOut extends BuildTask implements EmailReminder_Mail
                     $subject
                 );
 
-                $email->setTemplate('Email_Reminder_Standard_Template');
+                $email->setHTMLTemplate('Email_Reminder_Standard_Template');
 
-                $email->populateTemplate($data);
+                $email->setData($data);
 
                 // $email->send();
                 $log->IsTestOnly = $isTestOnly;
@@ -223,7 +223,7 @@ class EmailReminder_DailyMailOut extends BuildTask implements EmailReminder_Mail
             if ($replacerClass && class_exists($replacerClass)) {
                 $interfaces = class_implements($replacerClass);
                 if ($interfaces && in_array(EmailReminder_ReplacerClassInterface::class, $interfaces)) {
-                    $this->replacerObject = Injector::inst()->get($replacerClass);
+                    //$this->replacerObject = Injector::inst()->get($replacerClass);
                 }
             }
         }
@@ -254,4 +254,3 @@ class EmailReminder_DailyMailOut extends BuildTask implements EmailReminder_Mail
             );
     }
 }
-

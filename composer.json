@@ -1,6 +1,6 @@
 {
     "name": "sunnysideup/email_reminder",
-    "type": "silverstripe-module",
+    "type": "silverstripe-vendormodule",
     "description": "Sends email reminders to members / users based on a selectable date field in the Member Record.",
     "keywords": [
         "Silverstripe-CMS",

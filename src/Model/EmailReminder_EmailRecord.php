@@ -66,10 +66,7 @@ class EmailReminder_EmailRecord extends DataObject
         'IsTestOnly.Nice' => 'Test Only'
     );
 
-    public static $default_sort = [
-        'Created' => 'DESC',
-        'ID' => 'DESC'
-    ];
+    private static $default_sort = array('Created' => 'DESC', 'ID' => 'DESC');
 
 
     public function canCreate($member = null, $context = [])
