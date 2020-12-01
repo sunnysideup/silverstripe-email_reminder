@@ -75,7 +75,7 @@ class EmailReminderNotificationSchedule extends DataObject
 
     private static $plural_name = 'Email Reminder Schedules';
 
-    private static $table_name = 'EmailReminder_NotificationSchedule';
+    private static $table_name = 'EmailReminderNotificationSchedule';
 
     private static $db = [
         'DataObject' => 'Varchar(100)',
