@@ -217,7 +217,7 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
                 // $email->send();
                 $log->IsTestOnly = $isTestOnly;
                 $log->Result = $email->send();
-                $log->EmailReminder_NotificationScheduleID = $reminder->ID;
+                $log->EmailReminderNotificationScheduleID = $reminder->ID;
                 $log->EmailContent = $email->body;
                 $log->write();
             }

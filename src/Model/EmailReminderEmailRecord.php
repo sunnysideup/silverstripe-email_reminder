@@ -93,7 +93,7 @@ class EmailReminderEmailRecord extends DataObject
                 $fields->dataFieldByName('ExternalRecordID'),
                 $fields->dataFieldByName('Result'),
                 $fields->dataFieldByName('IsTestOnly'),
-                $fields->dataFieldByName('EmailReminder_NotificationScheduleID'),
+                $fields->dataFieldByName('EmailReminderNotificationScheduleID'),
             ]
         );
         $fields->replaceField(
