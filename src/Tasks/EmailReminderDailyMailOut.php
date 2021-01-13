@@ -123,7 +123,7 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
     protected function startSending()
     {
         //CRUCIAL !
-        Email::set_mailer(new EmailReminderMailer());
+        Injector::inst()->registerService(new EmailReminderMailer(), 'Mailer');
     }
 
     protected function runAll()
@@ -174,7 +174,7 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
             //$record = Injector::inst()->get($reminder->DataObject);
         }
         $filter['EmailTo'] = $email;
-        if (Email::validEmailAddress($email)) {
+        if (Email::is_valid_address($email)) {
             $send = true;
             if (! $force) {
                 $logs = EmailReminderEmailRecord::get()->filter($filter);
@@ -203,14 +203,14 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
                 ]);
 
                 // $email_body = $record->renderWith(SSViewer::fromString($reminder->Content));
-                // echo $record->renderWith('Email_Reminder_Standard_Template');//$email_body;
+                // echo $record->renderWith('SunnySideUp/EmailReminder/Email/EmailReminderStandardTemplate');//$email_body;
                 $email = new Email(
                     $reminder->EmailFrom,
                     $email,
                     $subject
                 );
 
-                $email->setHTMLTemplate('Email_Reminder_Standard_Template');
+                $email->setHTMLTemplate('SunnySideUp/EmailReminder/Email/EmailReminderStandardTemplate');
 
                 $email->setData($data);
 
