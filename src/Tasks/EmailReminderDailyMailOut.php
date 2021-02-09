@@ -121,6 +121,7 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
     protected function runAll()
     {
         $reminders = EmailReminderNotificationSchedule::get();
+
         foreach ($reminders as $reminder) {
             if (! $reminder->hasValidFields()) {
                 continue; // skip if task is not valid
@@ -138,7 +139,8 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
                     }
                 }
             } else {
-                $limit = Config::inst()->get(EmailReminder_DailyMailOut::class, 'daily_limit');
+                $limit = Config::inst()->get(EmailReminderDailyMailOut::class, 'daily_limit');
+
                 $records = $reminder->CurrentRecords();
                 $records = $records->limit($limit);
                 if ($records) {
