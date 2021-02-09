@@ -92,7 +92,7 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
             if ($replacerClass && class_exists($replacerClass)) {
                 $interfaces = class_implements($replacerClass);
                 if ($interfaces && in_array(EmailReminderReplacerClassInterface::class, $interfaces, true)) {
-                    //$this->replacerObject = Injector::inst()->get($replacerClass);
+                    $this->replacerObject = Injector::inst()->get($replacerClass);
                 }
             }
         }
@@ -106,14 +106,6 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
     {
         return ShortcodeParser::get_active()
             ->parse(
-                /**
-                 * ### @@@@ START REPLACEMENT @@@@ ###
-                 * WHY: automated upgrade
-                 * OLD: ->RenderWith( (ignore case)
-                 * NEW: ->RenderWith( (COMPLEX)
-                 * EXP: Check that the template location is still valid!
-                 * ### @@@@ STOP REPLACEMENT @@@@ ###
-                 */
                 $record->RenderWith(
                     SSViewer::fromString($content)
                 )
@@ -160,6 +152,7 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
 
     protected function sendEmail($reminder, $recordOrEmail, $isTestOnly, $force = false)
     {
+
         $filter = [
             'EmailReminderNotificationScheduleID' => $reminder->ID,
         ];
@@ -192,6 +185,7 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
                 $subject = $reminder->EmailSubject;
                 $email_content = $reminder->Content;
                 if ($replacerObject = $this->getReplacerObject()) {
+
                     $email_content = $replacerObject->replace($reminder, $record, $email_content);
                     $subject = $replacerObject->replace($reminder, $record, $subject);
                 }

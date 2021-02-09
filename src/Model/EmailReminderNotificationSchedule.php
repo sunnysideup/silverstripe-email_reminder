@@ -23,6 +23,7 @@ use SilverStripe\ORM\FieldType\DBDate;
 use SilverStripe\Security\Member;
 use SunnySideUp\EmailReminder\Cms\EmailReminderModelAdmin;
 use SunnySideUp\EmailReminder\Tasks\EmailReminderDailyMailOut;
+use Sunnysideup\SanitiseClassName\Sanitiser;
 
 class EmailReminderNotificationSchedule extends DataObject
 {
@@ -443,17 +444,8 @@ class EmailReminderNotificationSchedule extends DataObject
 
     public function CMSEditLink()
     {
-        $controller = singleton(EmailReminde_ModelAdmin::class);
-
-        /**
-         * ### @@@@ START REPLACEMENT @@@@ ###
-         * WHY: automated upgrade
-         * OLD: $this->ClassName (case sensitive)
-         * NEW: $this->ClassName (COMPLEX)
-         * EXP: Check if the class name can still be used as such
-         * ### @@@@ STOP REPLACEMENT @@@@ ###
-         */
-        return $controller->Link() . $this->ClassName . '/EditForm/field/' . $this->ClassName . '/item/' . $this->ID . '/edit';
+        $controller = singleton(EmailReminderModelAdmin::class);
+        return $controller->Link() . Sanitiser::sanitise($this->ClassName) . '/EditForm/field/' . Sanitiser::sanitise($this->ClassName) . '/item/' . $this->ID . '/edit';
     }
 
     /**

@@ -99,7 +99,7 @@
 										<tr>
 											<td valign="top" class="bodyContent" sytle="border-collapse:collapse;">
 												<div sytle="color:#000000;font-family:'Lucida Sans Unicode',sans-serif,Verdana,Arial;font-size:13pt;line-height:140%;text-align:left;">
-													$Content
+													$Content.RAW
 												</div>
 											</td>
 										</tr>

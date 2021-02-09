@@ -6,14 +6,6 @@ use SilverStripe\Control\Director;
 use SilverStripe\View\ViewableData;
 use SunnySideUp\EmailReminder\Interfaces\EmailReminderReplacerClassInterface;
 
-/**
- * ### @@@@ START REPLACEMENT @@@@ ###
- * WHY: automated upgrade
- * OLD:  extends Object (ignore case)
- * NEW:  extends ViewableData (COMPLEX)
- * EXP: This used to extend Object, but object does not exist anymore. You can also manually add use Extensible, use Injectable, and use Configurable
- * ### @@@@ STOP REPLACEMENT @@@@ ###
- */
 class EmailReminderReplacerClassBase extends ViewableData implements EmailReminderReplacerClassInterface
 {
     protected $replaceArray = [
