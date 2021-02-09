@@ -20,6 +20,7 @@ use SilverStripe\Forms\TextareaField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBDate;
+use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\Security\Member;
 use SunnySideUp\EmailReminder\Cms\EmailReminderModelAdmin;
 use SunnySideUp\EmailReminder\Tasks\EmailReminderDailyMailOut;
@@ -199,14 +200,22 @@ class EmailReminderNotificationSchedule extends DataObject
                     ->setRightTitle('Are the days listed above before or after the actual expiration date.'),
 
                 NumericField::create('Days', 'Days')
-                    ->setRightTitle('How many days in advance (before) or in arrears (after) of the expiration date should this email be sent? </br>This field is ignored if set to send immediately.')->setScale(0),
+                    ->setRightTitle(
+                        DBField::create_field(
+                            'HTMLText',
+                            'How many days in advance (before) or in arrears (after) of the expiration date should this email be sent? </br>This field is ignored if set to send immediately.'
+                    ))->setScale(0),
 
                 NumericField::create('RepeatDays', 'Repeat Cycle Days')
                     ->setRightTitle(
-                        '
-                        Number of days after which the same reminder can be sent to the same email address.
-                        <br />We allow an e-mail to be sent to one specific email address for one specific reminder only once.
-                        <br />In this field you can indicate for how long we will apply this rule.'
+                        DBField::create_field(
+                            'HTMLText',
+                                '
+                            Number of days after which the same reminder can be sent to the same email address.
+                            <br />We allow an e-mail to be sent to one specific email address for one specific reminder only once.
+                            <br />In this field you can indicate for how long we will apply this rule.'
+                        )
+
                     )->setScale(0),
             ]
         );
@@ -222,7 +231,7 @@ class EmailReminderNotificationSchedule extends DataObject
             'Root.EmailContent',
             [
                 TextField::create('EmailFrom', 'Email From Address')
-                    ->setRightTitle('The email from address, eg: "My Company &lt;info@example.com&gt;"'),
+                    ->setRightTitle('The email from address, eg: "My Company info@example.com"'),
                 $subjectField = TextField::create('EmailSubject', 'Email Subject Line')
                     ->setRightTitle('The subject of the email'),
                 $contentField = HTMLEditorField::create('Content', 'Email Content')
@@ -234,7 +243,7 @@ class EmailReminderNotificationSchedule extends DataObject
             $otherFieldsThatCanBeUsed = $this->getFieldsFromDataObject(['*']);
             $replaceableFields = $this->Config()->get('replaceable_record_fields');
             if (count($otherFieldsThatCanBeUsed)) {
-                $html .= '<h3>You can also use the record fields (not replaced in tests):</h3><ul>';
+                $html .= '<strong>You can also use the record fields (not replaced in tests):</strong><br><ul>';
                 foreach ($otherFieldsThatCanBeUsed as $key => $value) {
                     if (in_array($key, $replaceableFields, true)) {
                         $html .= '<li><strong>$' . $key . '</strong> <span>' . $value . '</span></li>';
@@ -243,7 +252,12 @@ class EmailReminderNotificationSchedule extends DataObject
             }
             $html .= '</ul>';
             $subjectField->setRightTitle('for replacement options, please see below ...');
-            $contentField->setRightTitle($html);
+            $contentField->setRightTitle(
+                DBField::create_field(
+                    'HTMLText',
+                    $html
+                )
+            );
         }
         $fields->addFieldsToTab(
             'Root.Sent',

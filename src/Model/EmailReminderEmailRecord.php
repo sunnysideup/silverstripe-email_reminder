@@ -118,7 +118,7 @@ class EmailReminderEmailRecord extends DataObject
                 return true;
             }
             $send = false;
-            $numberOfSecondsBeforeYouCanSendAgain = $this->EmailReminder_NotificationSchedule()->RepeatDays * 86400;
+            $numberOfSecondsBeforeYouCanSendAgain = $this->EmailReminderNotificationSchedule()->RepeatDays * 86400;
             $todaysTS = strtotime('NOW');
 
             $creationTS = strtotime($this->Created);
