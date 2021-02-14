@@ -134,7 +134,7 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
             if ($this->testOnly) {
                 if ($reminder->SendTestTo) {
                     $emails = explode(',', $reminder->SendTestTo);
-                    foreach ($emails as $key => $email) {
+                    foreach ($emails as $email) {
                         $this->sendEmail($reminder, $email, $isTestOnly = true);
                     }
                 }
@@ -154,7 +154,6 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
 
     protected function sendEmail($reminder, $recordOrEmail, $isTestOnly, $force = false)
     {
-
         $filter = [
             'EmailReminderNotificationScheduleID' => $reminder->ID,
         ];
@@ -187,7 +186,6 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
                 $subject = $reminder->EmailSubject;
                 $email_content = $reminder->Content;
                 if ($replacerObject = $this->getReplacerObject()) {
-
                     $email_content = $replacerObject->replace($reminder, $record, $email_content);
                     $subject = $replacerObject->replace($reminder, $record, $subject);
                 }

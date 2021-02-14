@@ -44,7 +44,6 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
      */
     public function replace($reminder, $record, $str)
     {
-        $newArray = [];
         foreach ($this->replaceArray as $searchString => $moreInfoArray) {
             $method = $moreInfoArray['Method'];
             $str = $this->{$method}($reminder, $record, $searchString, $str);

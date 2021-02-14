@@ -7,16 +7,16 @@ use SunnySideUp\EmailReminder\Model\EmailReminderNotificationSchedule;
 
 class EmailReminderModelAdmin extends ModelAdmin
 {
+    // public static $menu_priority = 2;
+
+    /* Prevent importing of CSV */
+    public $showImportForm = false;
+
     private static $managed_models = [
-        EmailReminderNotificationSchedule::class
+        EmailReminderNotificationSchedule::class,
     ];
 
     private static $url_segment = 'emailreminders';
 
     private static $menu_title = 'Email Reminders';
-
-    // public static $menu_priority = 2;
-
-    /* Prevent importing of CSV */
-    public $showImportForm = false;
 }

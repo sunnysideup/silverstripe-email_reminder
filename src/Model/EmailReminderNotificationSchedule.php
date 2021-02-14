@@ -10,7 +10,6 @@ use SilverStripe\Dev\BuildTask;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\DateField;
 use SilverStripe\Forms\DropdownField;
-use SilverStripe\Forms\EmailField;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
 use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
@@ -19,7 +18,6 @@ use SilverStripe\Forms\NumericField;
 use SilverStripe\Forms\TextareaField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataObject;
-use SilverStripe\ORM\FieldType\DBDate;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\Security\Member;
 use SunnySideUp\EmailReminder\Cms\EmailReminderModelAdmin;
@@ -146,7 +144,6 @@ class EmailReminderNotificationSchedule extends DataObject
             CheckboxField::create('Disable', $disableLabel)->setDescription('If checked this email will not be sent during the daily mail out, however it can still be sent programatically')
         );
 
-
         $fields->addFieldToTab(
             'Root.Main',
             $dataObjectField = DropdownField::create(
@@ -156,7 +153,7 @@ class EmailReminderNotificationSchedule extends DataObject
             )
                 ->setRightTitle('Type a valid table/class name')
         );
-        if ($this->Config()->get('default_data_object') ) {
+        if ($this->Config()->get('default_data_object')) {
             $fields->replaceField('DataObject', $dataObjectField->performReadonlyTransformation());
         }
 
@@ -204,18 +201,18 @@ class EmailReminderNotificationSchedule extends DataObject
                         DBField::create_field(
                             'HTMLText',
                             'How many days in advance (before) or in arrears (after) of the expiration date should this email be sent? </br>This field is ignored if set to send immediately.'
-                    ))->setScale(0),
+                        )
+                    )->setScale(0),
 
                 NumericField::create('RepeatDays', 'Repeat Cycle Days')
                     ->setRightTitle(
                         DBField::create_field(
                             'HTMLText',
-                                '
+                            '
                             Number of days after which the same reminder can be sent to the same email address.
                             <br />We allow an e-mail to be sent to one specific email address for one specific reminder only once.
                             <br />In this field you can indicate for how long we will apply this rule.'
                         )
-
                     )->setScale(0),
             ]
         );
@@ -437,9 +434,6 @@ class EmailReminderNotificationSchedule extends DataObject
     public function SampleFieldDataForRecords($limit = 200)
     {
         if ($this->hasValidFields()) {
-
-
-
             $className = $this->DataObject;
 
             /**
@@ -468,7 +462,6 @@ class EmailReminderNotificationSchedule extends DataObject
     public function CurrentRecords()
     {
         if ($this->hasValidFields()) {
-
             $className = $this->DataObject;
 
             // Use StartsWith to match Date and DateTime fields
