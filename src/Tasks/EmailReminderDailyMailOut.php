@@ -3,6 +3,8 @@
 namespace SunnySideUp\EmailReminder\Tasks;
 
 use SilverStripe\Control\Email\Email;
+
+use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\BuildTask;
@@ -63,7 +65,7 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
      * min: current date - 7
      * max current date - 7 - grace days
      *
-     * @param  SS_Request $request
+     * @param HTTPRequest $request
      */
     public function run($request)
     {
@@ -83,7 +85,7 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
     }
 
     /**
-     * @return EmailReminderReplacerClassInterface | null
+     * @return EmailReminderReplacerClassInterface|null
      */
     public function getReplacerObject()
     {
@@ -165,7 +167,7 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
             $filter['ExternalRecordID'] = $recordOrEmail->ID;
         } else {
             $email = strtolower(trim($recordOrEmail));
-            //$record = Injector::inst()->get($reminder->DataObject);
+            $record = Injector::inst()->get($reminder->DataObject);
         }
         $filter['EmailTo'] = $email;
         if (Email::is_valid_address($email)) {

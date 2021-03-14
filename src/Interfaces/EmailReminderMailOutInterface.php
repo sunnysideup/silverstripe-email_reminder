@@ -28,7 +28,7 @@ interface EmailReminderMailOutInterface
     public function run($request);
 
     /**
-     * @return EmailReminderReplacerClassInterface | null
+     * @return EmailReminderReplacerClassInterface|null
      */
     public function getReplacerObject();
 

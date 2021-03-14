@@ -17,10 +17,14 @@ use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\NumericField;
 use SilverStripe\Forms\TextareaField;
 use SilverStripe\Forms\TextField;
+use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
+
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\Security\Member;
 use SunnySideUp\EmailReminder\Cms\EmailReminderModelAdmin;
+use SunnySideUp\EmailReminder\Interfaces\EmailReminderReplacerClassInterface;
+
 use SunnySideUp\EmailReminder\Tasks\EmailReminderDailyMailOut;
 use Sunnysideup\SanitiseClassName\Sanitiser;
 
@@ -403,7 +407,7 @@ class EmailReminderNotificationSchedule extends DataObject
     }
 
     /**
-     * @return EmailReminder_ReplacerClassInterface|null
+     * @return EmailReminderReplacerClassInterface|null
      */
     public function getReplacerObject()
     {
@@ -457,13 +461,16 @@ class EmailReminderNotificationSchedule extends DataObject
     }
 
     /**
-     * @return DataList | null
+     * @return DataList|null
      */
     public function CurrentRecords()
     {
         if ($this->hasValidFields()) {
             $className = $this->DataObject;
-
+            $hasExcludeMethod = false;
+            $excludedRecords = [];
+            $hasIncludeMethod = false;
+            $includedRecords = [];
             // Use StartsWith to match Date and DateTime fields
             $records = $className::get()->where($this->whereStatementForDays());
             //sample record
@@ -474,14 +481,12 @@ class EmailReminderNotificationSchedule extends DataObject
                 $excludeMethod = $this->Config()->get('exclude_method');
 
                 //included method?
-                $hasIncludeMethod = false;
                 if ($firstRecord->hasMethod($includeMethod)) {
                     $includedRecords = [0 => 0];
                     $hasIncludeMethod = true;
                 }
 
                 //excluded method?
-                $hasExcludeMethod = false;
                 if ($firstRecord->hasMethod($excludeMethod)) {
                     $excludedRecords = [0 => 0];
                     $hasExcludeMethod = true;
@@ -506,10 +511,10 @@ class EmailReminderNotificationSchedule extends DataObject
                 }
 
                 //apply inclusions and exclusions
-                if ($hasIncludeMethod) {
+                if ($hasIncludeMethod && count($includedRecords)) {
                     $records = $className::get()->filter(['ID' => $includedRecords]);
                 }
-                if ($hasExcludeMethod) {
+                if ($hasExcludeMethod && count($excludedRecords)) {
                     $records = $records->exclude(['ID' => $excludedRecords]);
                 }
             }

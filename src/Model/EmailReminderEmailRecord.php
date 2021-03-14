@@ -2,6 +2,7 @@
 
 namespace SunnySideUp\EmailReminder\Model;
 
+use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\ORM\DataObject;
 
@@ -128,23 +129,5 @@ class EmailReminderEmailRecord extends DataObject
             }
         }
         return $send;
-    }
-
-    /**
-     * e.g.
-     *    $controller = singleton("MyModelAdmin");
-     *    return $controller->Link().$this->ClassName."/EditForm/field/".$this->ClassName."/item/".$this->ID."/edit";
-     */
-    public function CMSEditLink()
-    {
-    }
-
-    /**
-     * returns list of fields as they are exported
-     * @return array
-     * Field => Label
-     */
-    public function getExportFields()
-    {
     }
 }

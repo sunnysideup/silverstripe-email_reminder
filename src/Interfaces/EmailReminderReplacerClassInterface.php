@@ -2,19 +2,23 @@
 
 namespace SunnySideUp\EmailReminder\Interfaces;
 
+use SilverStripe\ORM\DataObject;
+
+use SunnySideUp\EmailReminder\Model\EmailReminderNotificationSchedule;
+
 interface EmailReminderReplacerClassInterface
 {
     /**
      * replaces all instances of certain
      * strings in the string and returns the string
      *
-     * @param EmailReminderNotificationSchedule  $reminder
+     * @param EmailReminderNotificationSchedule   $reminder
      * @param DataObject                          $record
      * @param string                              $str
      *
      * @return string
      */
-    public function replace($reminder, $record, $str);
+    public function replace($reminder, $record, string $str): string;
 
     /**
      * provides and array of replacements like this:
@@ -24,5 +28,5 @@ interface EmailReminderReplacerClassInterface
      *
      * @return array
      */
-    public function replaceHelpList($asHTML = false);
+    public function replaceHelpList(?bool $asHTML = false): array;
 }
