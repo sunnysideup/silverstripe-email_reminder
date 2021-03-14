@@ -7,7 +7,6 @@ use SunnySideUp\EmailReminder\Model\EmailReminderNotificationSchedule;
 
 class EmailReminderModelAdmin extends ModelAdmin
 {
-    // public static $menu_priority = 2;
 
     /* Prevent importing of CSV */
     public $showImportForm = false;
