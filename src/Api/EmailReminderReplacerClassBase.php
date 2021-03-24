@@ -3,12 +3,12 @@
 namespace SunnySideUp\EmailReminder\Api;
 
 use SilverStripe\Control\Director;
-use SilverStripe\View\ViewableData;
-
 use SilverStripe\ORM\DataObject;
-use SunnySideUp\EmailReminder\Interfaces\EmailReminderReplacerClassInterface;
 
+use SilverStripe\View\ViewableData;
 use SunnySideUp\EmailReminder\Email\EmailReminderMailer;
+
+use SunnySideUp\EmailReminder\Interfaces\EmailReminderReplacerClassInterface;
 
 class EmailReminderReplacerClassBase extends ViewableData implements EmailReminderReplacerClassInterface
 {
@@ -46,7 +46,7 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
      *
      * @return string
      */
-    public function replace($reminder, $record, string $str) : string
+    public function replace($reminder, $record, string $str): string
     {
         foreach ($this->replaceArray as $searchString => $moreInfoArray) {
             $method = $moreInfoArray['Method'];
@@ -60,7 +60,7 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
      *
      * @return array
      */
-    public function replaceHelpList(?bool $asHTML = false) : array
+    public function replaceHelpList(?bool $asHTML = false): array
     {
         $newArray = [];
         foreach ($this->replaceArray as $searchString => $moreInfoArray) {
@@ -130,7 +130,7 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
      *
      * @return string
      */
-    protected function BeforeOrAfter($reminder, $record, string $searchString, string $str) : string
+    protected function BeforeOrAfter($reminder, $record, string $searchString, string $str): string
     {
         $replace = $reminder->BeforeAfter;
         return str_replace($searchString, $replace, $str);
