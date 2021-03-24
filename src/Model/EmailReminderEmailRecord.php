@@ -38,8 +38,8 @@ class EmailReminderEmailRecord extends DataObject
     private static $summary_fields = [
         'Created.Nice' => 'When',
         'EmailTo' => 'Sent to',
-        'Result.Nice' => 'Sent Succesfully',
-        'IsTestOnly.Nice' => 'Test Only',
+        'Result.NiceAndColourfull' => 'Sent Succesfully',
+        'IsTestOnly.NiceAndColourfullInvertedColours' => 'Test Only',
     ];
 
     private static $default_sort = ['Created' => 'DESC', 'ID' => 'DESC'];
