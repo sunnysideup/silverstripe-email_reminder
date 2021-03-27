@@ -42,9 +42,6 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
     /**
      * @param EmailReminderMailer $reminder
      * @param DataObject $record
-     * @param string $str
-     *
-     * @return string
      */
     public function replace($reminder, $record, string $str): string
     {
@@ -83,10 +80,6 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
     /**
      * @param EmailReminderMailer $reminder
      * @param DataObject $record
-     * @param string $searchString
-     * @param string $str
-     *
-     * @return string
      */
     protected function PasswordReminderLink($reminder, $record, string $searchString, string $str): string
     {
@@ -97,10 +90,6 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
     /**
      * @param EmailReminderMailer $reminder
      * @param DataObject $record
-     * @param string $searchString
-     * @param string $str
-     *
-     * @return string
      */
     protected function LoginLink($reminder, $record, string $searchString, string $str): string
     {
@@ -111,10 +100,6 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
     /**
      * @param EmailReminderMailer $reminder
      * @param DataObject $record
-     * @param string $searchString
-     * @param string $str
-     *
-     * @return string
      */
     protected function Days($reminder, $record, string $searchString, string $str): string
     {
@@ -125,10 +110,6 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
     /**
      * @param EmailReminderMailer $reminder
      * @param DataObject $record
-     * @param string $searchString
-     * @param string $str
-     *
-     * @return string
      */
     protected function BeforeOrAfter($reminder, $record, string $searchString, string $str): string
     {
