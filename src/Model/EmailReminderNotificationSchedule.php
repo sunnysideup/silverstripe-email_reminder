@@ -15,6 +15,7 @@ use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
 use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\NumericField;
+use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\Forms\TextareaField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataList;
@@ -145,20 +146,24 @@ class EmailReminderNotificationSchedule extends DataObject
         $disableLabel = $this->Config()->get('disabled_checkbox_label');
         $fields->addFieldToTab(
             'Root.Main',
-            CheckboxField::create('Disable', $disableLabel)->setDescription('If checked this email will not be sent during the daily mail out, however it can still be sent programatically')
+            CheckboxField::create('Disable', $disableLabel)->setDescription('If checked this email will not be sent during the daily mail out, instead it will be sent after an event like a form submission.')
         );
-
+        $whatIsThis = 'UNKNNOWN';
+        $obj = Injector::inst()->get($this->DataObject);
+        if ($obj) {
+            $whatIsThis = $obj->i18n_singular_name();
+        }
         $fields->addFieldToTab(
             'Root.Main',
             $dataObjectField = DropdownField::create(
                 'DataObject',
-                'Table/Class Name',
+                'Works on ... ',
                 $this->dataObjectOptions()
             )
-                ->setRightTitle('Type a valid table/class name')
+                ->setDescription('This is a : ' . $whatIsThis)
         );
         if ($this->Config()->get('default_data_object')) {
-            $fields->replaceField('DataObject', $dataObjectField->performReadonlyTransformation());
+            $fields->replaceField('DataObject', ReadonlyField ::create('DataObjectNice', 'Works on ...', $whatIsThis));
         }
 
         $fields->addFieldToTab(
@@ -168,7 +173,7 @@ class EmailReminderNotificationSchedule extends DataObject
                 'Email Field',
                 $this->emailFieldOptions()
             )
-                ->setRightTitle('Select the field that will contain a valid email address')
+                ->setDescription('Select the field that will contain a valid email address')
                 ->setEmptyString('[ Please select ]')
         );
         if ($this->Config()->get('default_email_field')) {
@@ -182,7 +187,7 @@ class EmailReminderNotificationSchedule extends DataObject
                 'Date Field',
                 $this->dateFieldOptions()
             )
-                ->setRightTitle('Select a valid Date field to calculate when reminders should be sent')
+                ->setDescription('Select a valid Date field to calculate when reminders should be sent')
                 ->setEmptyString('[ Please select ]')
         );
 
@@ -198,10 +203,10 @@ class EmailReminderNotificationSchedule extends DataObject
             'Root.Main',
             [
                 DropdownField::create('BeforeAfter', 'Before / After Expiration', ['before' => 'before', 'after' => 'after', 'immediately' => 'immediately'])
-                    ->setRightTitle('Are the days listed above before or after the actual expiration date.'),
+                    ->setDescription('Are the days listed above before or after the actual expiration date.'),
 
                 NumericField::create('Days', 'Days')
-                    ->setRightTitle(
+                    ->setDescription(
                         DBField::create_field(
                             'HTMLText',
                             'How many days in advance (before) or in arrears (after) of the expiration date should this email be sent? </br>This field is ignored if set to send immediately.'
@@ -209,7 +214,7 @@ class EmailReminderNotificationSchedule extends DataObject
                     )->setScale(0),
 
                 NumericField::create('RepeatDays', 'Repeat Cycle Days')
-                    ->setRightTitle(
+                    ->setDescription(
                         DBField::create_field(
                             'HTMLText',
                             '
@@ -232,9 +237,9 @@ class EmailReminderNotificationSchedule extends DataObject
             'Root.EmailContent',
             [
                 TextField::create('EmailFrom', 'Email From Address')
-                    ->setRightTitle('The email from address, eg: "My Company info@example.com"'),
+                    ->setDescription('The email from address, eg: "My Company info@example.com"'),
                 $subjectField = TextField::create('EmailSubject', 'Email Subject Line')
-                    ->setRightTitle('The subject of the email'),
+                    ->setDescription('The subject of the email'),
                 $contentField = HTMLEditorField::create('Content', 'Email Content')
                     ->SetRows(20),
             ]
@@ -244,16 +249,15 @@ class EmailReminderNotificationSchedule extends DataObject
             $otherFieldsThatCanBeUsed = $this->getFieldsFromDataObject(['*']);
             $replaceableFields = $this->Config()->get('replaceable_record_fields');
             if (count($otherFieldsThatCanBeUsed)) {
-                $html .= '<strong>You can also use the record fields (not replaced in tests):</strong><br><ul>';
                 foreach ($otherFieldsThatCanBeUsed as $key => $value) {
                     if (in_array($key, $replaceableFields, true)) {
                         $html .= '<li><strong>$' . $key . '</strong> <span>' . $value . '</span></li>';
                     }
                 }
             }
-            $html .= '</ul>';
-            $subjectField->setRightTitle('for replacement options, please see below ...');
-            $contentField->setRightTitle(
+            $html .= '</ul><hr /><hr /><hr />';
+            $subjectField->setDescription('for replacement options, please see below ...');
+            $contentField->setDescription(
                 DBField::create_field(
                     'HTMLText',
                     $html
@@ -264,7 +268,7 @@ class EmailReminderNotificationSchedule extends DataObject
             'Root.Sent',
             [
                 TextareaField::create('SendTestTo', 'Send test email to ...')
-                    ->setRightTitle(
+                    ->setDescription(
                         '
                         Separate emails by commas, a test email will be sent every time you save this Email Reminder, if you do not want test emails to be sent make sure this field is empty
                         '

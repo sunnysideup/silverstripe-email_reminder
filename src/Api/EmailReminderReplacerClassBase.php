@@ -58,9 +58,9 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
     /**
      * @param bool $asHTML
      *
-     * @return array
+     * @return array|string
      */
-    public function replaceHelpList(?bool $asHTML = false): array
+    public function replaceHelpList(?bool $asHTML = false)
     {
         $newArray = [];
         foreach ($this->replaceArray as $searchString => $moreInfoArray) {

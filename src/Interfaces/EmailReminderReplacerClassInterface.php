@@ -26,7 +26,7 @@ interface EmailReminderReplacerClassInterface
      *     [string to replace] => 'description of what it does'
      * @param bool $asHTML
      *
-     * @return array
+     * @return array|string
      */
-    public function replaceHelpList(?bool $asHTML = false): array;
+    public function replaceHelpList(?bool $asHTML = false);
 }
