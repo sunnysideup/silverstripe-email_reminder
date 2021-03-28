@@ -248,11 +248,9 @@ class EmailReminderNotificationSchedule extends DataObject
             $html = $obj->replaceHelpList($asHTML = true);
             $otherFieldsThatCanBeUsed = $this->getFieldsFromDataObject(['*']);
             $replaceableFields = $this->Config()->get('replaceable_record_fields');
-            if (count($otherFieldsThatCanBeUsed) > 0) {
-                foreach ($otherFieldsThatCanBeUsed as $key => $value) {
-                    if (in_array($key, $replaceableFields, true)) {
-                        $html .= '<li><strong>$' . $key . '</strong> <span>' . $value . '</span></li>';
-                    }
+            foreach ($otherFieldsThatCanBeUsed as $key => $value) {
+                if (in_array($key, $replaceableFields, true)) {
+                    $html .= '<li><strong>$' . $key . '</strong> <span>' . $value . '</span></li>';
                 }
             }
             $html .= '</ul><hr /><hr /><hr />';
