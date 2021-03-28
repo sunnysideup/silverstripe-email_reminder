@@ -11,7 +11,7 @@ class EmailReminderTest extends SapphireTest
     public function TestDevBuild()
     {
         $exitStatus = shell_exec('php vendor/bin/sake dev/build flush=all  > dev/null; echo $?');
-        $exitStatus = intval(trim($exitStatus));
+        $exitStatus = (int) trim($exitStatus);
         $this->assertSame(0, $exitStatus);
     }
 }

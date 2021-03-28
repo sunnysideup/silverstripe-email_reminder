@@ -29,7 +29,7 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
      * The object that replaces tags in the subject and content.
      * @var EmailReinder_ReplacerClassInterface
      */
-    protected $replacerObject = null;
+    protected $replacerObject;
 
     /**
      * @var int
@@ -187,7 +187,7 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
 
                 $subject = $reminder->EmailSubject;
                 $email_content = $reminder->Content;
-                if ($replacerObject = $this->getReplacerObject()) {
+                if (($replacerObject = $this->getReplacerObject()) !== null) {
                     $email_content = $replacerObject->replace($reminder, $record, $email_content);
                     $subject = $replacerObject->replace($reminder, $record, $subject);
                 }
