@@ -90,6 +90,7 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
     public function getReplacerObject()
     {
         if (! $this->replacerObject) {
+            $this->replacerObject = null;
             $replacerClass = Config::inst()->get(EmailReminderDailyMailOut::class, 'replacer_class');
             if ($replacerClass && class_exists($replacerClass)) {
                 $interfaces = class_implements($replacerClass);
@@ -187,7 +188,8 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
 
                 $subject = $reminder->EmailSubject;
                 $email_content = $reminder->Content;
-                if (($replacerObject = $this->getReplacerObject()) !== null) {
+                $replacerObject = $this->getReplacerObject();
+                if ($replacerObject !== null) {
                     $email_content = $replacerObject->replace($reminder, $record, $email_content);
                     $subject = $replacerObject->replace($reminder, $record, $subject);
                 }
