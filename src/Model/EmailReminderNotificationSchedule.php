@@ -244,7 +244,8 @@ class EmailReminderNotificationSchedule extends DataObject
                     ->SetRows(20),
             ]
         );
-        if (($obj = $this->getReplacerObject()) !== null) {
+        $obj = $this->getReplacerObject();
+        if ($obj !== null) {
             $html = $obj->replaceHelpList($asHTML = true);
             $otherFieldsThatCanBeUsed = $this->getFieldsFromDataObject(['*']);
             $replaceableFields = $this->Config()->get('replaceable_record_fields');
@@ -394,7 +395,8 @@ class EmailReminderNotificationSchedule extends DataObject
     {
         parent::onAfterWrite();
         if ($this->SendTestTo) {
-            if (($mailOutObject = $this->getMailOutObject()) !== null) {
+            $mailOutObject = $this->getMailOutObject();
+            if ($mailOutObject && $mailOutObject instanceof BuildTask) {
                 $mailOutObject->setTestOnly(true);
                 $mailOutObject->setVerbose(true);
                 $mailOutObject->run(null);
@@ -407,13 +409,16 @@ class EmailReminderNotificationSchedule extends DataObject
      */
     public function getReplacerObject()
     {
-        if (($mailOutObject = $this->getMailOutObject()) !== null) {
+        $mailOutObject = $this->getMailOutObject();
+        if ($mailOutObject && $mailOutObject instanceof BuildTask) {
             return $mailOutObject->getReplacerObject();
         }
+
+        return null;
     }
 
     /**
-     * @return ScheduledTask|null
+     * @return BuildTask|null
      */
     public function getMailOutObject()
     {
@@ -425,6 +430,8 @@ class EmailReminderNotificationSchedule extends DataObject
             }
             user_error($mailOutClass . ' needs to be an instance of a Scheduled Task');
         }
+
+        return null;
     }
 
     /**
