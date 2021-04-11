@@ -22,17 +22,21 @@ interface EmailReminderMailOutInterface
      * min: current date - 7
      * max current date - 7 - grace days
      *
-     * @param  [type] $request [description]
-     * @return [type]          [description]
+     * @param [type] $request [description]
+     *
+     * @return [type] [description]
      */
     public function run($request);
 
     /**
-     * @return EmailReminderReplacerClassInterface|null
+     * @return null|EmailReminderReplacerClassInterface
      */
     public function getReplacerObject();
 
     /**
+     * @param mixed $record
+     * @param mixed $content
+     *
      * @return string
      */
     public function getParsedContent($record, $content);

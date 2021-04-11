@@ -5,7 +5,6 @@ namespace SunnySideUp\EmailReminder\Model;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\ORM\DataObject;
-
 use Sunnysideup\CmsEditLinkField\Forms\Fields\CMSEditLinkField;
 
 class EmailReminderEmailRecord extends DataObject
@@ -52,7 +51,7 @@ class EmailReminderEmailRecord extends DataObject
     private static $default_sort = ['Created' => 'DESC', 'ID' => 'DESC'];
 
     /**
-     * PartialMatchFilter
+     * PartialMatchFilter.
      */
     private static $searchable_fields = [
         'EmailTo' => 'PartialMatchFilter',
@@ -114,12 +113,13 @@ class EmailReminderEmailRecord extends DataObject
                 $this->EmailContent
             )
         );
+
         return $fields;
     }
 
     /**
      * tests to see if an email can be sent
-     * the emails can only be sent once unless previous attempts have failed
+     * the emails can only be sent once unless previous attempts have failed.
      */
     public function canSendAgain()
     {
@@ -138,6 +138,7 @@ class EmailReminderEmailRecord extends DataObject
                 $send = true;
             }
         }
+
         return $send;
     }
 
@@ -151,6 +152,7 @@ class EmailReminderEmailRecord extends DataObject
             $className = $this->ExternalRecordClassName;
             $linkedObject = $className::get()->byID($this->ExternalRecordID);
         }
+
         return $linkedObject ?: $this;
     }
 }

@@ -20,12 +20,10 @@ use SilverStripe\Forms\TextareaField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
-
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\Security\Member;
 use SunnySideUp\EmailReminder\Cms\EmailReminderModelAdmin;
 use SunnySideUp\EmailReminder\Interfaces\EmailReminderReplacerClassInterface;
-
 use SunnySideUp\EmailReminder\Tasks\EmailReminderDailyMailOut;
 use Sunnysideup\SanitiseClassName\Sanitiser;
 
@@ -226,7 +224,7 @@ class EmailReminderNotificationSchedule extends DataObject
             ]
         );
 
-        if ($this->BeforeAfter === 'immediately') {
+        if ('immediately' === $this->BeforeAfter) {
             $fields->removeFieldsFromTab(
                 'Root.Main',
                 ['Days', 'RepeatDays']
@@ -245,7 +243,7 @@ class EmailReminderNotificationSchedule extends DataObject
             ]
         );
         $obj = $this->getReplacerObject();
-        if ($obj !== null) {
+        if (null !== $obj) {
             $html = $obj->replaceHelpList($asHTML = true);
             $otherFieldsThatCanBeUsed = $this->getFieldsFromDataObject(['*']);
             $replaceableFields = $this->Config()->get('replaceable_record_fields');
@@ -275,7 +273,7 @@ class EmailReminderNotificationSchedule extends DataObject
                     ->SetRows(3),
             ]
         );
-        if ($emailsSentField !== null) {
+        if (null !== $emailsSentField) {
             $config = $emailsSentField->getConfig();
             $config->removeComponentsByType(GridFieldAddExistingAutocompleter::class);
             $fields->addFieldToTab(
@@ -306,13 +304,16 @@ class EmailReminderNotificationSchedule extends DataObject
                 ]
             );
         }
+
         return $fields;
     }
 
     /**
-     * Test if valid classname has been set
+     * Test if valid classname has been set.
+     *
      * @param null
-     * @return boolean
+     *
+     * @return bool
      */
     public function hasValidDataObject()
     {
@@ -320,9 +321,11 @@ class EmailReminderNotificationSchedule extends DataObject
     }
 
     /**
-     * Test if valid fields have been set
+     * Test if valid fields have been set.
+     *
      * @param null
-     * @return boolean
+     *
+     * @return bool
      */
     public function hasValidDataObjectFields()
     {
@@ -334,6 +337,7 @@ class EmailReminderNotificationSchedule extends DataObject
             return false;
         }
         $dateFieldOptions = $this->dateFieldOptions();
+
         return isset($dateFieldOptions[$this->DateField]);
     }
 
@@ -343,12 +347,13 @@ class EmailReminderNotificationSchedule extends DataObject
     public function getTitle()
     {
         $niceTitle = '[' . $this->EmailSubject . '] // send ';
-        $niceTitle .= $this->BeforeAfter === 'immediately' ? $this->BeforeAfter : $this->Days . ' days ' . $this->BeforeAfter . ' Expiration Date';
+        $niceTitle .= 'immediately' === $this->BeforeAfter ? $this->BeforeAfter : $this->Days . ' days ' . $this->BeforeAfter . ' Expiration Date';
+
         return $this->hasValidDataObjectFields() ? $niceTitle : 'uncompleted';
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function hasValidFields()
     {
@@ -358,11 +363,12 @@ class EmailReminderNotificationSchedule extends DataObject
         if (! $this->hasValidDataObjectFields()) {
             return false;
         }
+
         return $this->EmailFrom && $this->EmailSubject && $this->Content;
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function validate()
     {
@@ -376,36 +382,12 @@ class EmailReminderNotificationSchedule extends DataObject
                 $valid->error('Please fill in all fields.  Make sure not to forget the email details (from who, subject, content)');
             }
         }
+
         return $valid;
     }
 
-    protected function onBeforeWrite()
-    {
-        parent::onBeforeWrite();
-        if ($this->RepeatDays < ($this->Days * 3)) {
-            $this->RepeatDays = $this->Days * 3;
-        }
-
-        if ($this->BeforeAfter === 'immediately') {
-            $this->Days = 0;
-        }
-    }
-
-    protected function onAfterWrite()
-    {
-        parent::onAfterWrite();
-        if ($this->SendTestTo) {
-            $mailOutObject = $this->getMailOutObject();
-            if ($mailOutObject && $mailOutObject instanceof BuildTask) {
-                $mailOutObject->setTestOnly(true);
-                $mailOutObject->setVerbose(true);
-                $mailOutObject->run(null);
-            }
-        }
-    }
-
     /**
-     * @return EmailReminderReplacerClassInterface|null
+     * @return null|EmailReminderReplacerClassInterface
      */
     public function getReplacerObject()
     {
@@ -418,7 +400,7 @@ class EmailReminderNotificationSchedule extends DataObject
     }
 
     /**
-     * @return BuildTask|null
+     * @return null|BuildTask
      */
     public function getMailOutObject()
     {
@@ -436,6 +418,7 @@ class EmailReminderNotificationSchedule extends DataObject
 
     /**
      * @param int $limit
+     *
      * @return array
      */
     public function SampleFieldDataForRecords($limit = 200)
@@ -445,14 +428,16 @@ class EmailReminderNotificationSchedule extends DataObject
 
             /**
              * ### @@@@ START REPLACEMENT @@@@ ###
-             * WHY: this throws an errror in SS4
+             * WHY: this throws an errror in SS4.
              */
             $objects = $className::get()->sort('RAND()')
                 ->where('"' . $this->DateField . '" IS NOT NULL AND "' . $this->DateField . '" <> \'\' AND "' . $this->DateField . '" <> 0')
-                ->limit($limit);
+                ->limit($limit)
+            ;
             if ($objects->count()) {
                 return array_unique($objects->column($this->DateField));
             }
+
             return [];
         }
     }
@@ -460,11 +445,12 @@ class EmailReminderNotificationSchedule extends DataObject
     public function CMSEditLink()
     {
         $controller = \Singleton(EmailReminderModelAdmin::class);
+
         return $controller->Link() . Sanitiser::sanitise($this->ClassName) . '/EditForm/field/' . Sanitiser::sanitise($this->ClassName) . '/item/' . $this->ID . '/edit';
     }
 
     /**
-     * @return DataList|null
+     * @return null|DataList
      */
     public function CurrentRecords()
     {
@@ -500,13 +486,13 @@ class EmailReminderNotificationSchedule extends DataObject
                     foreach ($records as $record) {
                         if ($hasIncludeMethod) {
                             $in = $record->{$includeMethod}($this, $records);
-                            if ($in === true) {
+                            if (true === $in) {
                                 $includedRecords[$record->ID] = $record->ID;
                             }
                         }
                         if ($hasExcludeMethod) {
                             $out = $record->{$excludeMethod}($this, $records);
-                            if ($out === true) {
+                            if (true === $out) {
                                 $excludedRecords[$record->ID] = $record->ID;
                             }
                         }
@@ -521,7 +507,33 @@ class EmailReminderNotificationSchedule extends DataObject
                     $records = $records->exclude(['ID' => $excludedRecords]);
                 }
             }
+
             return $records;
+        }
+    }
+
+    protected function onBeforeWrite()
+    {
+        parent::onBeforeWrite();
+        if ($this->RepeatDays < ($this->Days * 3)) {
+            $this->RepeatDays = $this->Days * 3;
+        }
+
+        if ('immediately' === $this->BeforeAfter) {
+            $this->Days = 0;
+        }
+    }
+
+    protected function onAfterWrite()
+    {
+        parent::onAfterWrite();
+        if ($this->SendTestTo) {
+            $mailOutObject = $this->getMailOutObject();
+            if ($mailOutObject && $mailOutObject instanceof BuildTask) {
+                $mailOutObject->setTestOnly(true);
+                $mailOutObject->setVerbose(true);
+                $mailOutObject->run(null);
+            }
         }
     }
 
@@ -531,6 +543,7 @@ class EmailReminderNotificationSchedule extends DataObject
     protected function dataObjectOptions()
     {
         $subClasses = ClassInfo::subclassesFor(DataObject::class, false);
+
         return array_combine(array_values($subClasses), array_values($subClasses));
     }
 
@@ -551,8 +564,10 @@ class EmailReminderNotificationSchedule extends DataObject
     }
 
     /**
-     * list of database fields available
-     * @param  array $fieldTypeMatchArray - strpos filter
+     * list of database fields available.
+     *
+     * @param array $fieldTypeMatchArray - strpos filter
+     *
      * @return array
      */
     protected function getFieldsFromDataObject($fieldTypeMatchArray = [])
@@ -566,7 +581,7 @@ class EmailReminderNotificationSchedule extends DataObject
                 $fieldLabels = $object->fieldLabels();
                 foreach ($allOptions as $fieldName => $fieldType) {
                     foreach ($fieldTypeMatchArray as $matchString) {
-                        if ((strpos($fieldType, $matchString) !== false) || $matchString === '*') {
+                        if ((false !== strpos($fieldType, $matchString)) || '*' === $matchString) {
                             $label = isset($fieldLabels[$fieldName]) ? $fieldLabels[$fieldName] : $fieldName;
                             $array[$fieldName] = $label;
                         }
@@ -574,6 +589,7 @@ class EmailReminderNotificationSchedule extends DataObject
                 }
             }
         }
+
         return $array;
     }
 
@@ -582,17 +598,17 @@ class EmailReminderNotificationSchedule extends DataObject
      * Days = 3
      * GraceDays = 2
      *  -> minDays = -5 days start of day
-     *  -> maxDays = -3 days end of day
+     *  -> maxDays = -3 days end of day.
      *
      * @return string
      */
     protected function whereStatementForDays()
     {
         if ($this->hasValidFields()) {
-            $sign = $this->BeforeAfter === 'before' ? '+' : '-';
+            $sign = 'before' === $this->BeforeAfter ? '+' : '-';
             $graceDays = Config::inst()->get(EmailReminderNotificationSchedule::class, 'grace_days');
 
-            if ($sign === '+') {
+            if ('+' === $sign) {
                 $minDays = $sign . ($this->Days - $graceDays) . ' days';
                 $maxDays = $sign . $this->Days . ' days';
                 $minDate = date('Y-m-d', strtotime($minDays)) . ' 00:00:00';
@@ -607,6 +623,7 @@ class EmailReminderNotificationSchedule extends DataObject
 
             return '("' . $this->DateField . '" BETWEEN \'' . $minDate . "' AND '" . $maxDate . "')";
         }
+
         return '1 == 2';
     }
 }

@@ -3,7 +3,6 @@
 namespace SunnySideUp\EmailReminder\Tasks;
 
 use SilverStripe\Control\Email\Email;
-
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
@@ -27,6 +26,7 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
 
     /**
      * The object that replaces tags in the subject and content.
+     *
      * @var EmailReinder_ReplacerClassInterface
      */
     protected $replacerObject;
@@ -74,9 +74,10 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
     }
 
     /**
-     * @param  EmailReminderNotificationSchedule  $reminder
-     * @param  string|DataObject  $recordOrEmail
-     * @param  bool $isTestOnly
+     * @param EmailReminderNotificationSchedule $reminder
+     * @param DataObject|string                 $recordOrEmail
+     * @param bool                              $isTestOnly
+     * @param mixed                             $force
      */
     public function runOne($reminder, $recordOrEmail, $isTestOnly = false, $force = false)
     {
@@ -85,7 +86,7 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
     }
 
     /**
-     * @return EmailReminderReplacerClassInterface|null
+     * @return null|EmailReminderReplacerClassInterface
      */
     public function getReplacerObject()
     {
@@ -99,10 +100,14 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
                 }
             }
         }
+
         return $this->replacerObject;
     }
 
     /**
+     * @param mixed $record
+     * @param mixed $content
+     *
      * @return string
      */
     public function getParsedContent($record, $content)
@@ -112,7 +117,8 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
                 $record->RenderWith(
                     SSViewer::fromString($content)
                 )
-            );
+            )
+        ;
     }
 
     protected function startSending()
@@ -179,6 +185,7 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
                 foreach ($logs as $log) {
                     if (! $log->canSendAgain()) {
                         $send = false;
+
                         break;
                     }
                 }
@@ -188,13 +195,13 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
                 $subject = $reminder->EmailSubject;
                 $email_content = $reminder->Content;
                 $replacerObject = $this->getReplacerObject();
-                if ($replacerObject !== null) {
+                if (null !== $replacerObject) {
                     $email_content = $replacerObject->replace($reminder, $record, $email_content);
                     $subject = $replacerObject->replace($reminder, $record, $subject);
                 }
                 $email_content = $this->getParsedContent($record, $email_content);
 
-                /* Parse HTML like a template, and translate any internal links */
+                // Parse HTML like a template, and translate any internal links
                 $data = ArrayData::create([
                     'Content' => $email_content,
                 ]);
@@ -216,13 +223,14 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
                 $outcome = $email->send();
                 $log->HasTried = true;
                 $log->write();
-                $log->Result = $outcome === false ? false : true;
+                $log->Result = false !== $outcome;
                 $log->EmailReminderNotificationScheduleID = $reminder->ID;
                 $log->Subject = $subject;
                 $log->EmailContent = $email->body;
                 $log->write();
             }
         }
+
         return false;
     }
 }

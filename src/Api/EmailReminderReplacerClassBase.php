@@ -4,10 +4,8 @@ namespace SunnySideUp\EmailReminder\Api;
 
 use SilverStripe\Control\Director;
 use SilverStripe\ORM\DataObject;
-
 use SilverStripe\View\ViewableData;
 use SunnySideUp\EmailReminder\Email\EmailReminderMailer;
-
 use SunnySideUp\EmailReminder\Interfaces\EmailReminderReplacerClassInterface;
 
 class EmailReminderReplacerClassBase extends ViewableData implements EmailReminderReplacerClassInterface
@@ -41,7 +39,7 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
 
     /**
      * @param EmailReminderMailer $reminder
-     * @param DataObject $record
+     * @param DataObject          $record
      */
     public function replace($reminder, $record, string $str): string
     {
@@ -49,6 +47,7 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
             $method = $moreInfoArray['Method'];
             $str = $this->{$method}($reminder, $record, $searchString, $str);
         }
+
         return $str;
     }
 
@@ -72,48 +71,54 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
             }
             $html .= '
             </ul>';
+
             return $html;
         }
+
         return $newArray;
     }
 
     /**
      * @param EmailReminderMailer $reminder
-     * @param DataObject $record
+     * @param DataObject          $record
      */
     protected function PasswordReminderLink($reminder, $record, string $searchString, string $str): string
     {
         $replace = Director::absoluteURL('Security/lostpassword');
+
         return str_replace($searchString, $replace, $str);
     }
 
     /**
      * @param EmailReminderMailer $reminder
-     * @param DataObject $record
+     * @param DataObject          $record
      */
     protected function LoginLink($reminder, $record, string $searchString, string $str): string
     {
         $replace = Director::absoluteURL('Security/login');
+
         return str_replace($searchString, $replace, $str);
     }
 
     /**
      * @param EmailReminderMailer $reminder
-     * @param DataObject $record
+     * @param DataObject          $record
      */
     protected function Days($reminder, $record, string $searchString, string $str): string
     {
         $replace = $reminder->Days;
+
         return str_replace($searchString, $replace, $str);
     }
 
     /**
      * @param EmailReminderMailer $reminder
-     * @param DataObject $record
+     * @param DataObject          $record
      */
     protected function BeforeOrAfter($reminder, $record, string $searchString, string $str): string
     {
         $replace = $reminder->BeforeAfter;
+
         return str_replace($searchString, $replace, $str);
     }
 }
