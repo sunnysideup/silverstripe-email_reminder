@@ -184,7 +184,6 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
             }
             if ($send) {
                 $log = EmailReminderEmailRecord::create($filter);
-
                 $subject = $reminder->EmailSubject;
                 $email_content = $reminder->Content;
                 if (($replacerObject = $this->getReplacerObject()) !== null) {
@@ -212,8 +211,12 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
 
                 // $email->send();
                 $log->IsTestOnly = $isTestOnly;
-                $log->Result = $email->send();
+                $outcome = $email->send();
+                $log->HasTried = true;
+                $log->write();
+                $log->Result = $outcome === false ? false : true;
                 $log->EmailReminderNotificationScheduleID = $reminder->ID;
+                $log->Subject = $subject;
                 $log->EmailContent = $email->body;
                 $log->write();
             }

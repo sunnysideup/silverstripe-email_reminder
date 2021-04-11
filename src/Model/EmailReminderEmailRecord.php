@@ -6,6 +6,8 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\ORM\DataObject;
 
+use Sunnysideup\CmsEditLinkField\Forms\Fields\CMSEditLinkField;
+
 class EmailReminderEmailRecord extends DataObject
 {
     private static $singular_name = 'Email Reminder Record';
@@ -19,7 +21,9 @@ class EmailReminderEmailRecord extends DataObject
         'ExternalRecordClassName' => 'Varchar(100)',
         'ExternalRecordID' => 'Int',
         'Result' => 'Boolean',
+        'HasTried' => 'Boolean',
         'IsTestOnly' => 'Boolean',
+        'Subject' => 'Varchar',
         'EmailContent' => 'HTMLText',
     ];
 
@@ -28,6 +32,7 @@ class EmailReminderEmailRecord extends DataObject
         'ExternalRecordClassName' => true,
         'ExternalRecordID' => true,
         'Result' => true,
+        'HasTried' => true,
         'Created' => true,
     ];
 
@@ -38,6 +43,8 @@ class EmailReminderEmailRecord extends DataObject
     private static $summary_fields = [
         'Created.Nice' => 'When',
         'EmailTo' => 'Sent to',
+        'Subject' => 'Subject',
+        'HasTried.NiceAndColourfull' => 'Has Sent',
         'Result.NiceAndColourfull' => 'Sent Succesfully',
         'IsTestOnly.NiceAndColourfullInvertedColours' => 'Test Only',
     ];
@@ -50,6 +57,8 @@ class EmailReminderEmailRecord extends DataObject
     private static $searchable_fields = [
         'EmailTo' => 'PartialMatchFilter',
         'Result' => 'ExactMatchFilter',
+        'Subject' => 'ExactMatchFilter',
+        'HasTried' => 'ExactMatchFilter',
         'IsTestOnly' => 'ExactMatchFilter',
     ];
 
@@ -86,12 +95,13 @@ class EmailReminderEmailRecord extends DataObject
     public function getCMSFields()
     {
         $fields = parent::getCMSFields();
+        $linkedObject = $this->FindLinkedObject();
         $fields->addFieldsToTab(
             'Root.Details',
             [
                 $fields->dataFieldByName('EmailTo'),
-                $fields->dataFieldByName('ExternalRecordClassName'),
-                $fields->dataFieldByName('ExternalRecordID'),
+                CMSEditLinkField::create('LinksTo', 'Linked To', $linkedObject),
+                $fields->dataFieldByName('HasTried'),
                 $fields->dataFieldByName('Result'),
                 $fields->dataFieldByName('IsTestOnly'),
                 $fields->dataFieldByName('EmailReminderNotificationScheduleID'),
@@ -129,5 +139,18 @@ class EmailReminderEmailRecord extends DataObject
             }
         }
         return $send;
+    }
+
+    /**
+     * @return mixed (DataObject)
+     */
+    public function FindLinkedObject()
+    {
+        $linkedObject = null;
+        if (class_exists($this->ExternalRecordClassName)) {
+            $className = $this->ExternalRecordClassName;
+            $linkedObject = $className::get()->byID($this->ExternalRecordID);
+        }
+        return $linkedObject ?: $this;
     }
 }

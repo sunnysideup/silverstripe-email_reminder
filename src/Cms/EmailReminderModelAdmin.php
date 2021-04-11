@@ -3,6 +3,7 @@
 namespace SunnySideUp\EmailReminder\Cms;
 
 use SilverStripe\Admin\ModelAdmin;
+use SunnySideUp\EmailReminder\Model\EmailReminderEmailRecord;
 use SunnySideUp\EmailReminder\Model\EmailReminderNotificationSchedule;
 
 class EmailReminderModelAdmin extends ModelAdmin
@@ -12,6 +13,7 @@ class EmailReminderModelAdmin extends ModelAdmin
 
     private static $managed_models = [
         EmailReminderNotificationSchedule::class,
+        EmailReminderEmailRecord::class,
     ];
 
     private static $url_segment = 'emailreminders';
