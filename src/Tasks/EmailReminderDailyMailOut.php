@@ -27,7 +27,7 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
     /**
      * The object that replaces tags in the subject and content.
      *
-     * @var EmailReinder_ReplacerClassInterface
+     * @var EmailReminderReplacerClassInterface
      */
     protected $replacerObject;
 

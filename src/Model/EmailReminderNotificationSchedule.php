@@ -50,7 +50,7 @@ class EmailReminderNotificationSchedule extends DataObject
     private static $default_email_field = '';
 
     /**
-     * @var string
+     * @var array[string]
      */
     private static $replaceable_record_fields = ['FirstName', 'Surname', 'Email'];
 
@@ -74,10 +74,19 @@ class EmailReminderNotificationSchedule extends DataObject
      */
     private static $disabled_checkbox_label = 'Disable';
 
+    /**
+     * @var string
+     */
     private static $singular_name = 'Email Reminder Schedule';
 
+    /**
+     * @var string
+     */
     private static $plural_name = 'Email Reminder Schedules';
 
+    /**
+     * @var string
+     */
     private static $table_name = 'EmailReminderNotificationSchedule';
 
     private static $db = [
@@ -123,7 +132,7 @@ class EmailReminderNotificationSchedule extends DataObject
 
     public function populateDefaults()
     {
-        parent::populateDefaults();
+        $return = parent::populateDefaults();
         $this->DataObject = $this->Config()->get('default_data_object');
         $this->EmailField = $this->Config()->get('default_email_field');
         $this->DateField = $this->Config()->get('default_date_field');
@@ -132,6 +141,7 @@ class EmailReminderNotificationSchedule extends DataObject
         $this->BeforeAfter = 'before';
         $this->EmailFrom = Config::inst()->get(Email::class, 'admin_email');
         $this->EmailSubject = 'Your memberships expires in [days] days';
+        return $return;
     }
 
     public function getCMSFields()
@@ -311,11 +321,9 @@ class EmailReminderNotificationSchedule extends DataObject
     /**
      * Test if valid classname has been set.
      *
-     * @param null
-     *
      * @return bool
      */
-    public function hasValidDataObject()
+    public function hasValidDataObject() : bool
     {
         return ! $this->DataObject || ClassInfo::exists($this->DataObject);
     }
@@ -323,11 +331,9 @@ class EmailReminderNotificationSchedule extends DataObject
     /**
      * Test if valid fields have been set.
      *
-     * @param null
-     *
      * @return bool
      */
-    public function hasValidDataObjectFields()
+    public function hasValidDataObjectFields() : bool
     {
         if (! $this->hasValidDataObject()) {
             return false;
@@ -344,7 +350,7 @@ class EmailReminderNotificationSchedule extends DataObject
     /**
      * @return string
      */
-    public function getTitle()
+    public function getTitle() : string
     {
         $niceTitle = '[' . $this->EmailSubject . '] // send ';
         $niceTitle .= 'immediately' === $this->BeforeAfter ? $this->BeforeAfter : $this->Days . ' days ' . $this->BeforeAfter . ' Expiration Date';
@@ -421,7 +427,7 @@ class EmailReminderNotificationSchedule extends DataObject
      *
      * @return array
      */
-    public function SampleFieldDataForRecords($limit = 200)
+    public function SampleFieldDataForRecords(?int $limit = 200) : array
     {
         if ($this->hasValidFields()) {
             $className = $this->DataObject;
@@ -438,8 +444,8 @@ class EmailReminderNotificationSchedule extends DataObject
                 return array_unique($objects->column($this->DateField));
             }
 
-            return [];
         }
+        return [];
     }
 
     public function CMSEditLink()
@@ -510,6 +516,8 @@ class EmailReminderNotificationSchedule extends DataObject
 
             return $records;
         }
+
+        return null;
     }
 
     protected function onBeforeWrite()

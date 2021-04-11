@@ -2,6 +2,9 @@
 
 namespace SunnySideUp\EmailReminder\Interfaces;
 
+use SunnySideUp\EmailReminder\Interfaces\EmailReminderReplacerClassInterface;
+use SilverStripe\Control\HTTPRequest;
+
 interface EmailReminderMailOutInterface
 {
     public function setVerbose($b);
@@ -22,9 +25,7 @@ interface EmailReminderMailOutInterface
      * min: current date - 7
      * max current date - 7 - grace days
      *
-     * @param [type] $request [description]
-     *
-     * @return [type] [description]
+     * @param HTTPRequest $request
      */
     public function run($request);
 
