@@ -95,6 +95,8 @@ class EmailReminderEmailRecord extends DataObject
     {
         $fields = parent::getCMSFields();
         $linkedObject = $this->FindLinkedObject();
+        $fields->removeByName('ExternalRecordClassName');
+        $fields->removeByName('ExternalRecordID');
         $fields->addFieldsToTab(
             'Root.Details',
             [
