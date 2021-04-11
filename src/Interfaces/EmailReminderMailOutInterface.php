@@ -2,7 +2,6 @@
 
 namespace SunnySideUp\EmailReminder\Interfaces;
 
-use SunnySideUp\EmailReminder\Interfaces\EmailReminderReplacerClassInterface;
 use SilverStripe\Control\HTTPRequest;
 
 interface EmailReminderMailOutInterface

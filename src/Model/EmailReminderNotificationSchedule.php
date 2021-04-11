@@ -141,6 +141,7 @@ class EmailReminderNotificationSchedule extends DataObject
         $this->BeforeAfter = 'before';
         $this->EmailFrom = Config::inst()->get(Email::class, 'admin_email');
         $this->EmailSubject = 'Your memberships expires in [days] days';
+
         return $return;
     }
 
@@ -320,20 +321,16 @@ class EmailReminderNotificationSchedule extends DataObject
 
     /**
      * Test if valid classname has been set.
-     *
-     * @return bool
      */
-    public function hasValidDataObject() : bool
+    public function hasValidDataObject(): bool
     {
         return ! $this->DataObject || ClassInfo::exists($this->DataObject);
     }
 
     /**
      * Test if valid fields have been set.
-     *
-     * @return bool
      */
-    public function hasValidDataObjectFields() : bool
+    public function hasValidDataObjectFields(): bool
     {
         if (! $this->hasValidDataObject()) {
             return false;
@@ -347,10 +344,7 @@ class EmailReminderNotificationSchedule extends DataObject
         return isset($dateFieldOptions[$this->DateField]);
     }
 
-    /**
-     * @return string
-     */
-    public function getTitle() : string
+    public function getTitle(): string
     {
         $niceTitle = '[' . $this->EmailSubject . '] // send ';
         $niceTitle .= 'immediately' === $this->BeforeAfter ? $this->BeforeAfter : $this->Days . ' days ' . $this->BeforeAfter . ' Expiration Date';
@@ -424,10 +418,8 @@ class EmailReminderNotificationSchedule extends DataObject
 
     /**
      * @param int $limit
-     *
-     * @return array
      */
-    public function SampleFieldDataForRecords(?int $limit = 200) : array
+    public function SampleFieldDataForRecords(?int $limit = 200): array
     {
         if ($this->hasValidFields()) {
             $className = $this->DataObject;
@@ -443,8 +435,8 @@ class EmailReminderNotificationSchedule extends DataObject
             if ($objects->count()) {
                 return array_unique($objects->column($this->DateField));
             }
-
         }
+
         return [];
     }
 
