@@ -34,7 +34,7 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
     /**
      * @var int
      */
-    private static $limit = 20;
+    private static $limit = 200;
 
     /**
      * @var string
@@ -150,8 +150,7 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
             } else {
                 $limit = Config::inst()->get(EmailReminderDailyMailOut::class, 'daily_limit');
 
-                $records = $reminder->CurrentRecords();
-                $records = $records->limit($limit);
+                $records = $reminder->CurrentRecords()->limit($limit);
                 if ($records) {
                     foreach ($records as $record) {
                         $this->sendEmail($reminder, $record, $isTestOnly = false);

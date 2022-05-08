@@ -17,8 +17,9 @@ class EmailReminderMailer
         $subject,
         $htmlContent
     ) {
-        $cssFileLocation = Director::baseFolder() . '/' . Config::inst()->get(EmailReminderMailer::class, 'css_file');
-        if ('' !== $cssFileLocation) {
+        $cssFile = Config::inst()->get(EmailReminderMailer::class, 'css_file');
+        if ('' !== $cssFile) {
+            $cssFileLocation = Director::baseFolder() . '/' . $cssFile;
             if (file_exists($cssFileLocation)) {
                 $css = file_get_contents($cssFileLocation);
                 $htmlContent = CssInliner::fromHtml($htmlContent)->inlineCss($css)->render();

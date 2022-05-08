@@ -324,7 +324,11 @@ class EmailReminderNotificationSchedule extends DataObject
      */
     public function hasValidDataObject(): bool
     {
-        return ! $this->DataObject || ClassInfo::exists($this->DataObject);
+        // nothing set yet - return true
+        if (! $this->DataObject) {
+            return true;
+        }
+        return ClassInfo::exists($this->DataObject);
     }
 
     /**
@@ -442,7 +446,7 @@ class EmailReminderNotificationSchedule extends DataObject
 
     public function CMSEditLink()
     {
-        $controller = \Singleton(EmailReminderModelAdmin::class);
+        $controller = Injector::inst()->get(EmailReminderModelAdmin::class);
 
         return $controller->Link() . Sanitiser::sanitise($this->ClassName) . '/EditForm/field/' . Sanitiser::sanitise($this->ClassName) . '/item/' . $this->ID . '/edit';
     }
