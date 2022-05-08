@@ -1,23 +1,20 @@
 <?php
 
-namespace SunnySideUp\EmailReminder\Email;
+namespace SunnySideUp\EmailReminder\Api;
 
+use SilverStripe\View\ViewableData;
 use Pelago\Emogrifier\CssInliner;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\Email\Email;
 use SilverStripe\Core\Config\Config;
 
-class EmailReminderMailer
+class EmailEmogrifier extends ViewableData
 {
     private static $css_file = 'vendor/sunnysideup/email_reminder/client/css/example.css';
 
-    public function sendHTML(
-        $to,
-        $from,
-        $subject,
-        $htmlContent
-    ) {
-        $cssFile = Config::inst()->get(EmailReminderMailer::class, 'css_file');
+    public static function emogrify(string $htmlContent) : string
+    {
+        $cssFile = Config::inst()->get(EmailEmogrifier::class, 'css_file');
         if ('' !== $cssFile) {
             $cssFileLocation = Director::baseFolder() . '/' . $cssFile;
             if (file_exists($cssFileLocation)) {
@@ -25,12 +22,6 @@ class EmailReminderMailer
                 $htmlContent = CssInliner::fromHtml($htmlContent)->inlineCss($css)->render();
             }
         }
-        (new Email())
-            ->setTo($to)
-            ->setFrom($from)
-            ->setSubject($subject)
-            ->setBody($htmlContent)
-            ->send()
-        ;
+        return $htmlContent;
     }
 }

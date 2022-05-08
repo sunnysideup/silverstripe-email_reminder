@@ -26,9 +26,18 @@ use SunnySideUp\EmailReminder\Cms\EmailReminderModelAdmin;
 use SunnySideUp\EmailReminder\Interfaces\EmailReminderReplacerClassInterface;
 use SunnySideUp\EmailReminder\Tasks\EmailReminderDailyMailOut;
 use Sunnysideup\SanitiseClassName\Sanitiser;
+use SunnySideUp\EmailReminder\Api\EmailSender;
 
 class EmailReminderNotificationSchedule extends DataObject
 {
+
+    protected const BEFORE_NOW_AFTER_ARRAY = [
+        'before' => 'before',
+        'after' => 'after',
+        'immediately' =>
+        'immediately'
+    ];
+
     /**
      * @var int
      */
@@ -67,7 +76,7 @@ class EmailReminderNotificationSchedule extends DataObject
     /**
      * @var string
      */
-    private static $mail_out_class = EmailReminderDailyMailOut::class;
+    private static $mail_out_class = EmailSender::class;
 
     /**
      * @var string
@@ -211,7 +220,7 @@ class EmailReminderNotificationSchedule extends DataObject
         $fields->addFieldsToTab(
             'Root.Main',
             [
-                DropdownField::create('BeforeAfter', 'Before / After Expiration', ['before' => 'before', 'after' => 'after', 'immediately' => 'immediately'])
+                DropdownField::create('BeforeAfter', 'Before / After Expiration', self::BEFORE_NOW_AFTER_ARRAY)
                     ->setDescription('Are the days listed above before or after the actual expiration date.'),
 
                 NumericField::create('Days', 'Days')
@@ -238,7 +247,10 @@ class EmailReminderNotificationSchedule extends DataObject
         if ('immediately' === $this->BeforeAfter) {
             $fields->removeFieldsFromTab(
                 'Root.Main',
-                ['Days', 'RepeatDays']
+                [
+                    'Days',
+                    'RepeatDays'
+                ]
             );
         }
 
