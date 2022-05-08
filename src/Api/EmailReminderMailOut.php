@@ -40,8 +40,6 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
      */
     private static $template = 'SunnySideUp/EmailReminder/Email/EmailReminderStandardTemplate';
 
-    protected $verbose = false;
-
     protected $testOnly = false;
 
     /**
@@ -51,9 +49,10 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
      */
     protected $replacerObject;
 
-    public function setTestOnly($b)
+    public function setTestOnly(?bool $b = true) : self
     {
         $this->testOnly = $b;
+        return $this;
     }
 
     /**
@@ -62,9 +61,9 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
      * @param bool                              $isTestOnly
      * @param mixed                             $force
      */
-    public function send($reminder, $recordOrEmail, $isTestOnly = false, $force = false)
+    public function send($reminder, $recordOrEmail, ?bool $isTestOnly = false, ?bool $force = false) : bool
     {
-        $this->sendEmail($reminder, $recordOrEmail, $isTestOnly, $force);
+        return $this->sendEmail($reminder, $recordOrEmail, $isTestOnly, $force);
     }
 
     /**
@@ -100,7 +99,7 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
         ;
     }
 
-    protected function sendEmail($reminder, $recordOrEmail, $isTestOnly, $force = false)
+    protected function sendEmail($reminder, $recordOrEmail, $isTestOnly, $force = false) : bool
     {
         $filter = [
             'EmailReminderNotificationScheduleID' => $reminder->ID,
@@ -166,11 +165,12 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
                 $outcome = $email->send();
                 $log->HasTried = true;
                 $log->write();
-                $log->Result = false !== $outcome;
+                $log->Result = (bool) $outcome;
                 $log->EmailReminderNotificationScheduleID = $reminder->ID;
                 $log->Subject = $subject;
                 $log->EmailContent = $email->body;
                 $log->write();
+                return (bool) $log->Result;
             }
         }
 

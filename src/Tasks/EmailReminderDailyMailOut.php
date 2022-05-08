@@ -20,28 +20,11 @@ use SunnySideUp\EmailReminder\Interfaces\EmailReminderReplacerClassInterface;
 use SunnySideUp\EmailReminder\Model\EmailReminderEmailRecord;
 use SunnySideUp\EmailReminder\Model\EmailReminderNotificationSchedule;
 
-class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOutInterface
+class EmailReminderDailyMailOut extends BuildTask
 {
     protected $verbose = false;
 
     protected $testOnly = false;
-
-    /**
-     * The object that replaces tags in the subject and content.
-     *
-     * @var EmailReminderReplacerClassInterface
-     */
-    protected $replacerObject;
-
-    /**
-     * @var int
-     */
-    private static $limit = 200;
-
-    /**
-     * @var string
-     */
-    private static $replacer_class = EmailReminderReplacerClassBase::class;
 
     public function setVerbose($b)
     {

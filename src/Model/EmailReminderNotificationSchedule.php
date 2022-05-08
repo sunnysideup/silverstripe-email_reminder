@@ -133,6 +133,13 @@ class EmailReminderNotificationSchedule extends DataObject
         'BeforeAfter' => 'When to send',
     ];
 
+    public function sendOne($recordOrEmail, $isTestOnly = false, $force = false)
+    {
+        $mailerClassName = Config::inst()->get(EmailReminderNotificationSchedule::class, 'mail_out_class');
+        $mailer = Injector::inst()->get($mailerClassName);
+        return $mailer->send($this, $isTestOnly, $force);
+    }
+
     public function i18n_singular_name()
     {
         return self::$singular_name;
