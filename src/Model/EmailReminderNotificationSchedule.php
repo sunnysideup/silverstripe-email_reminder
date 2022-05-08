@@ -140,6 +140,11 @@ class EmailReminderNotificationSchedule extends DataObject
         return $mailer->send($this, $isTestOnly, $force);
     }
 
+    public function IsImmediate() : bool
+    {
+        return $this->BeforeAfter === 'immediately';
+    }
+
     public function i18n_singular_name()
     {
         return self::$singular_name;
@@ -255,7 +260,7 @@ class EmailReminderNotificationSchedule extends DataObject
             ]
         );
 
-        if ('immediately' === $this->BeforeAfter) {
+        if ($this->IsImmediate()) {
             $fields->removeFieldsFromTab(
                 'Root.Main',
                 [
@@ -374,7 +379,7 @@ class EmailReminderNotificationSchedule extends DataObject
     public function getTitle(): string
     {
         $niceTitle = '[' . $this->EmailSubject . '] // send ';
-        $niceTitle .= 'immediately' === $this->BeforeAfter ? $this->BeforeAfter : $this->Days . ' days ' . $this->BeforeAfter . ' Expiration Date';
+        $niceTitle .= $this->IsImmediate() ? $this->BeforeAfter : $this->Days . ' days ' . $this->BeforeAfter . ' Expiration Date';
 
         return $this->hasValidDataObjectFields() ? $niceTitle : 'uncompleted';
     }
@@ -546,7 +551,7 @@ class EmailReminderNotificationSchedule extends DataObject
             $this->RepeatDays = $this->Days * 3;
         }
 
-        if ('immediately' === $this->BeforeAfter) {
+        if ($this->IsImmediate()) {
             $this->Days = 0;
         }
     }
