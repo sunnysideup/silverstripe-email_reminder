@@ -13,7 +13,7 @@ use SilverStripe\View\Parsers\ShortcodeParser;
 
 use SilverStripe\View\ViewableData;
 use SilverStripe\View\SSViewer;
-use SunnySideUp\EmailReminder\Api\EmailEmogrifier;
+use SunnySideUp\EmailReminder\Api\EmailReminderEmogrifier;
 use SunnySideUp\EmailReminder\Api\EmailReminderReplacerClassBase;
 use SunnySideUp\EmailReminder\Email\EmailReminderMailer;
 use SunnySideUp\EmailReminder\Interfaces\EmailReminderMailOutInterface;
@@ -21,7 +21,7 @@ use SunnySideUp\EmailReminder\Interfaces\EmailReminderReplacerClassInterface;
 use SunnySideUp\EmailReminder\Model\EmailReminderEmailRecord;
 use SunnySideUp\EmailReminder\Model\EmailReminderNotificationSchedule;
 
-class EmailSender extends ViewableData implements EmailReminderMailOutInterface
+class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutInterface
 {
 
     /**
@@ -50,10 +50,6 @@ class EmailSender extends ViewableData implements EmailReminderMailOutInterface
      * @var EmailReminderReplacerClassInterface
      */
     protected $replacerObject;
-    public function setVerbose($b)
-    {
-        $this->verbose = $b;
-    }
 
     public function setTestOnly($b)
     {
@@ -68,34 +64,19 @@ class EmailSender extends ViewableData implements EmailReminderMailOutInterface
      */
     public function send($reminder, $recordOrEmail, $isTestOnly = false, $force = false)
     {
-        $this->startSending();
         $this->sendEmail($reminder, $recordOrEmail, $isTestOnly, $force);
-        $this->endSending();
-    }
-
-    protected function startSending()
-    {
-
-    }
-
-    protected function endSending()
-    {
-
     }
 
     /**
      * @return null|EmailReminderReplacerClassInterface
      */
-    protected function getReplacerObject()
+    public function getReplacerObject(): ?EmailReminderReplacerClassInterface
     {
         if (! $this->replacerObject) {
             $this->replacerObject = null;
-            $replacerClass = Config::inst()->get(EmailSender::class, 'replacer_class');
-            if ($replacerClass && class_exists($replacerClass)) {
-                $interfaces = class_implements($replacerClass);
-                if ($interfaces && in_array(EmailReminderReplacerClassInterface::class, $interfaces, true)) {
-                    $this->replacerObject = Injector::inst()->get($replacerClass);
-                }
+            $replacerClass = Config::inst()->get(EmailReminderMailOut::class, 'replacer_class');
+            if ($replacerClass && class_exists($replacerClass) && $replacerClass instanceof EmailReminderReplacerClassInterface) {
+                $this->replacerObject = Injector::inst()->get($replacerClass);
             }
         }
 
@@ -108,7 +89,7 @@ class EmailSender extends ViewableData implements EmailReminderMailOutInterface
      *
      * @return string
      */
-    public function getParsedContent($record, $content)
+    public function getParsedContent($record, $content) : string
     {
         return ShortcodeParser::get_active()
             ->parse(
@@ -125,15 +106,16 @@ class EmailSender extends ViewableData implements EmailReminderMailOutInterface
             'EmailReminderNotificationScheduleID' => $reminder->ID,
         ];
         if ($recordOrEmail instanceof DataObject) {
-            $email_field = $reminder->EmailField;
-            $email = $recordOrEmail->{$email_field};
+            $emailField = $reminder->EmailField;
+            $email = $recordOrEmail->{$emailField};
             $record = $recordOrEmail;
             $filter['ExternalRecordClassName'] = $recordOrEmail->ClassName;
             $filter['ExternalRecordID'] = $recordOrEmail->ID;
         } else {
-            $email = strtolower(trim($recordOrEmail));
+            $email = $recordOrEmail;
             $record = Injector::inst()->get($reminder->DataObject);
         }
+        $email = strtolower(trim($email));
         $filter['EmailTo'] = $email;
         if (Email::is_valid_address($email)) {
             $send = true;
@@ -158,7 +140,9 @@ class EmailSender extends ViewableData implements EmailReminderMailOutInterface
                     $subject = $replacerObject->replace($reminder, $record, $subject);
                 }
                 $emailContent = $this->getParsedContent($record, $emailContent);
-                $emailContent = EmailEmogrifier::emogrify($emailContent);
+
+                //emogrify the content
+                $emailContent = EmailReminderEmogrifier::emogrify($emailContent);
 
                 // Parse HTML like a template, and translate any internal links
                 $data = ArrayData::create([
@@ -173,7 +157,7 @@ class EmailSender extends ViewableData implements EmailReminderMailOutInterface
                     $subject
                 );
 
-                $email->setHTMLTemplate(Config::inst()->get(EmailSender::class, 'template'));
+                $email->setHTMLTemplate(Config::inst()->get(EmailReminderMailOut::class, 'template'));
 
                 $email->setData($data);
 

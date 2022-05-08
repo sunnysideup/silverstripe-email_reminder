@@ -23,10 +23,11 @@ use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\Security\Member;
 use SunnySideUp\EmailReminder\Cms\EmailReminderModelAdmin;
+use SunnySideUp\EmailReminder\Interfaces\EmailReminderMailOutInterface;
 use SunnySideUp\EmailReminder\Interfaces\EmailReminderReplacerClassInterface;
 use SunnySideUp\EmailReminder\Tasks\EmailReminderDailyMailOut;
 use Sunnysideup\SanitiseClassName\Sanitiser;
-use SunnySideUp\EmailReminder\Api\EmailSender;
+use SunnySideUp\EmailReminder\Api\EmailReminderMailOut;
 
 class EmailReminderNotificationSchedule extends DataObject
 {
@@ -34,8 +35,7 @@ class EmailReminderNotificationSchedule extends DataObject
     protected const BEFORE_NOW_AFTER_ARRAY = [
         'before' => 'before',
         'after' => 'after',
-        'immediately' =>
-        'immediately'
+        'immediately' => 'immediately',
     ];
 
     /**
@@ -61,7 +61,11 @@ class EmailReminderNotificationSchedule extends DataObject
     /**
      * @var array[string]
      */
-    private static $replaceable_record_fields = ['FirstName', 'Surname', 'Email'];
+    private static $replaceable_record_fields = [
+        'FirstName',
+        'Surname',
+        'Email'
+    ];
 
     /**
      * @var string
@@ -76,7 +80,7 @@ class EmailReminderNotificationSchedule extends DataObject
     /**
      * @var string
      */
-    private static $mail_out_class = EmailSender::class;
+    private static $mail_out_class = EmailReminderMailOut::class;
 
     /**
      * @var string
@@ -423,7 +427,7 @@ class EmailReminderNotificationSchedule extends DataObject
         $mailOutClass = $this->Config()->get('mail_out_class');
         if (class_exists($mailOutClass)) {
             $obj = Injector::inst()->get($mailOutClass);
-            if ($obj instanceof BuildTask) {
+            if ($obj instanceof EmailReminderMailOutInterface) {
                 return $obj;
             }
             user_error($mailOutClass . ' needs to be an instance of a Scheduled Task');

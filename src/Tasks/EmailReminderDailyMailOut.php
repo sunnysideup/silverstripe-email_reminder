@@ -11,7 +11,8 @@ use SilverStripe\ORM\DataObject;
 use SilverStripe\View\ArrayData;
 use SilverStripe\View\Parsers\ShortcodeParser;
 use SilverStripe\View\SSViewer;
-use SunnySideUp\EmailReminder\Api\EmailEmogrifier;
+use SunnySideUp\EmailReminder\Api\EmailReminderMailOut;
+use SunnySideUp\EmailReminder\Api\EmailReminderEmogrifier;
 use SunnySideUp\EmailReminder\Api\EmailReminderReplacerClassBase;
 use SunnySideUp\EmailReminder\Email\EmailReminderMailer;
 use SunnySideUp\EmailReminder\Interfaces\EmailReminderMailOutInterface;
@@ -70,67 +71,13 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
      */
     public function run($request)
     {
-        $this->startSending();
         $this->runAll();
-        $this->endSending();
-    }
-
-    /**
-     * @param EmailReminderNotificationSchedule $reminder
-     * @param DataObject|string                 $recordOrEmail
-     * @param bool                              $isTestOnly
-     * @param mixed                             $force
-     */
-    public function runOne($reminder, $recordOrEmail, $isTestOnly = false, $force = false)
-    {
-        $this->startSending();
-        $this->sendEmail($reminder, $recordOrEmail, $isTestOnly, $force);
-        $this->endSending();
-    }
-
-    /**
-     * @return null|EmailReminderReplacerClassInterface
-     */
-    public function getReplacerObject()
-    {
-        if (! $this->replacerObject) {
-            $this->replacerObject = null;
-            $replacerClass = Config::inst()->get(EmailReminderDailyMailOut::class, 'replacer_class');
-            if ($replacerClass && class_exists($replacerClass)) {
-                $interfaces = class_implements($replacerClass);
-                if ($interfaces && in_array(EmailReminderReplacerClassInterface::class, $interfaces, true)) {
-                    $this->replacerObject = Injector::inst()->get($replacerClass);
-                }
-            }
-        }
-
-        return $this->replacerObject;
-    }
-
-    /**
-     * @param mixed $record
-     * @param mixed $content
-     *
-     * @return string
-     */
-    public function getParsedContent($record, $content)
-    {
-        return ShortcodeParser::get_active()
-            ->parse(
-                $record->RenderWith(
-                    SSViewer::fromString($content)
-                )
-            )
-        ;
-    }
-
-    protected function startSending()
-    {
-
     }
 
     protected function runAll()
     {
+        $mailerClassName = Config::inst()->get(EmailReminderNotificationSchedule::class, 'mail_out_class');
+        $mailer = Injector::inst()->get($mailerClassName);
         $reminders = EmailReminderNotificationSchedule::get();
 
         foreach ($reminders as $reminder) {
@@ -146,7 +93,7 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
                 if ($reminder->SendTestTo) {
                     $emails = explode(',', $reminder->SendTestTo);
                     foreach ($emails as $email) {
-                        $this->sendEmail($reminder, $email, $isTestOnly = true);
+                        $mailer->send($reminder, $email, $isTestOnly = true);
                     }
                 }
             } else {
@@ -155,84 +102,11 @@ class EmailReminderDailyMailOut extends BuildTask implements EmailReminderMailOu
                 $records = $reminder->CurrentRecords()->limit($limit);
                 if ($records) {
                     foreach ($records as $record) {
-                        $this->sendEmail($reminder, $record, $isTestOnly = false);
+                        $mailer->send($reminder, $record, $isTestOnly = false);
                     }
                 }
             }
         }
     }
 
-    protected function sendEmail($reminder, $recordOrEmail, $isTestOnly, $force = false)
-    {
-        $filter = [
-            'EmailReminderNotificationScheduleID' => $reminder->ID,
-        ];
-        if ($recordOrEmail instanceof DataObject) {
-            $email_field = $reminder->EmailField;
-            $email = $recordOrEmail->{$email_field};
-            $record = $recordOrEmail;
-            $filter['ExternalRecordClassName'] = $recordOrEmail->ClassName;
-            $filter['ExternalRecordID'] = $recordOrEmail->ID;
-        } else {
-            $email = strtolower(trim($recordOrEmail));
-            $record = Injector::inst()->get($reminder->DataObject);
-        }
-        $filter['EmailTo'] = $email;
-        if (Email::is_valid_address($email)) {
-            $send = true;
-            if (! $force) {
-                $logs = EmailReminderEmailRecord::get()->filter($filter);
-                $send = true;
-                foreach ($logs as $log) {
-                    if (! $log->canSendAgain()) {
-                        $send = false;
-
-                        break;
-                    }
-                }
-            }
-            if ($send) {
-                $log = EmailReminderEmailRecord::create($filter);
-                $subject = $reminder->EmailSubject;
-                $emailContent = $reminder->Content;
-                $replacerObject = $this->getReplacerObject();
-                if (null !== $replacerObject) {
-                    $emailContent = $replacerObject->replace($reminder, $record, $emailContent);
-                    $subject = $replacerObject->replace($reminder, $record, $subject);
-                }
-                $emailContent = $this->getParsedContent($record, $emailContent);
-                $emailContent = EmailEmogrifier::emogrify($emailContent);
-
-                // Parse HTML like a template, and translate any internal links
-                $data = ArrayData::create([
-                    'Content' => $emailContent,
-                ]);
-
-                // $email_body = $record->renderWith(SSViewer::fromString($reminder->Content));
-                // echo $record->renderWith('SunnySideUp/EmailReminder/Email/EmailReminderStandardTemplate');//$email_body;
-                $email = new Email(
-                    $reminder->EmailFrom,
-                    $email,
-                    $subject
-                );
-
-                $email->setHTMLTemplate('SunnySideUp/EmailReminder/Email/EmailReminderStandardTemplate');
-
-                $email->setData($data);
-
-                // $email->send();
-                $log->IsTestOnly = $isTestOnly;
-                $outcome = $email->send();
-                $log->HasTried = true;
-                $log->write();
-                $log->Result = false !== $outcome;
-                $log->EmailReminderNotificationScheduleID = $reminder->ID;
-                $log->Subject = $subject;
-                $log->EmailContent = $email->body;
-                $log->write();
-            }
-        }
-
-        return false;
-    }
 }
