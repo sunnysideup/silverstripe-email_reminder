@@ -103,7 +103,8 @@ class EmailReminderNotificationSchedule extends DataObject
     private static $table_name = 'EmailReminderNotificationSchedule';
 
     private static $db = [
-        'DataObject' => 'Varchar(100)',
+        'Code' => 'Varchar(20)',
+        'DataObject' => 'Varchar(255)',
         'EmailField' => 'Varchar(100)',
         'DateField' => 'Varchar(100)',
         'Days' => 'Int',
@@ -133,7 +134,11 @@ class EmailReminderNotificationSchedule extends DataObject
         'BeforeAfter' => 'When to send',
     ];
 
-    public function sendOne($recordOrEmail, $isTestOnly = false, $force = false)
+    private static $indexes = [
+        'Code' => true,
+    ];
+
+    public function sendOne($recordOrEmail, ?bool $isTestOnly = false, ?bool $force = false) : bool
     {
         $mailerClassName = Config::inst()->get(EmailReminderNotificationSchedule::class, 'mail_out_class');
         $mailer = Injector::inst()->get($mailerClassName);
@@ -381,7 +386,7 @@ class EmailReminderNotificationSchedule extends DataObject
         $niceTitle = '[' . $this->EmailSubject . '] // send ';
         $niceTitle .= $this->IsImmediate() ? $this->BeforeAfter : $this->Days . ' days ' . $this->BeforeAfter . ' Expiration Date';
 
-        return $this->hasValidDataObjectFields() ? $niceTitle : 'uncompleted';
+        return $this->Code . ' - ' . $this->hasValidDataObjectFields() ? $niceTitle : 'uncompleted';
     }
 
     /**
@@ -553,6 +558,9 @@ class EmailReminderNotificationSchedule extends DataObject
 
         if ($this->IsImmediate()) {
             $this->Days = 0;
+        }
+        if (! $this->Code) {
+            $this->Code = $this->i18n_singular_name() . ' #' . $this->ID;
         }
     }
 

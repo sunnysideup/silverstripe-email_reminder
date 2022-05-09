@@ -59,10 +59,7 @@ class EmailReminderDailyMailOut extends BuildTask
 
     protected function runAll()
     {
-        $mailerClassName = Config::inst()->get(EmailReminderNotificationSchedule::class, 'mail_out_class');
-        $mailer = Injector::inst()->get($mailerClassName);
         $reminders = EmailReminderNotificationSchedule::get();
-
         foreach ($reminders as $reminder) {
             if (! $reminder->hasValidFields()) {
                 continue; // skip if task is not valid
@@ -76,7 +73,7 @@ class EmailReminderDailyMailOut extends BuildTask
                 if ($reminder->SendTestTo) {
                     $emails = explode(',', $reminder->SendTestTo);
                     foreach ($emails as $email) {
-                        $mailer->send($reminder, $email, $isTestOnly = true);
+                        $reminder->sendOne($email, $isTestOnly = true);
                     }
                 }
             } else {
@@ -85,7 +82,7 @@ class EmailReminderDailyMailOut extends BuildTask
                 $records = $reminder->CurrentRecords()->limit($limit);
                 if ($records) {
                     foreach ($records as $record) {
-                        $mailer->send($reminder, $record, $isTestOnly = false);
+                        $reminder->sendOne($record, $isTestOnly = false);
                     }
                 }
             }
