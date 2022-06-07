@@ -28,6 +28,7 @@ use SunnySideUp\EmailReminder\Interfaces\EmailReminderReplacerClassInterface;
 use SunnySideUp\EmailReminder\Tasks\EmailReminderDailyMailOut;
 use Sunnysideup\SanitiseClassName\Sanitiser;
 use SunnySideUp\EmailReminder\Api\EmailReminderMailOut;
+use SilverStripe\Control\Director;
 
 class EmailReminderNotificationSchedule extends DataObject
 {
@@ -373,12 +374,12 @@ class EmailReminderNotificationSchedule extends DataObject
             return false;
         }
         $emailFieldOptions = $this->emailFieldOptions();
-        if (! isset($emailFieldOptions[$this->EmailField])) {
+        if (!empty($emailFieldOptions) && ! isset($emailFieldOptions[$this->EmailField])) {
             return false;
         }
         $dateFieldOptions = $this->dateFieldOptions();
 
-        return isset($dateFieldOptions[$this->DateField]);
+        return empty($dateFieldOptions) || isset($dateFieldOptions[$this->DateField]);
     }
 
     public function getTitle(): string
@@ -414,7 +415,11 @@ class EmailReminderNotificationSchedule extends DataObject
             if (! $this->hasValidDataObject()) {
                 $valid->addError('Please enter valid Table/Class name ("' . htmlspecialchars($this->DataObject) . '" does not exist)');
             } elseif (! $this->hasValidDataObjectFields()) {
-                $valid->addError('Please select valid fields for both Email & Date');
+                if(Director::isDev()) {
+                    $valid->addError('Please select valid fields for both Email & Date. '.print_r($this->emailFieldOptions(), 1).print_r($this->dateFieldOptions(), 1));
+                } else {
+                    $valid->addError('Please select valid fields for both Email & Date.');
+                }
             } elseif (! $this->hasValidFields()) {
                 $valid->addError('Please fill in all fields.  Make sure not to forget the email details (from who, subject, content)');
             }
