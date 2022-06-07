@@ -412,11 +412,11 @@ class EmailReminderNotificationSchedule extends DataObject
         $valid = parent::validate();
         if ($this->exists()) {
             if (! $this->hasValidDataObject()) {
-                $valid->error('Please enter valid Table/Class name ("' . htmlspecialchars($this->DataObject) . '" does not exist)');
+                $valid->addError('Please enter valid Table/Class name ("' . htmlspecialchars($this->DataObject) . '" does not exist)');
             } elseif (! $this->hasValidDataObjectFields()) {
-                $valid->error('Please select valid fields for both Email & Date');
+                $valid->addError('Please select valid fields for both Email & Date');
             } elseif (! $this->hasValidFields()) {
-                $valid->error('Please fill in all fields.  Make sure not to forget the email details (from who, subject, content)');
+                $valid->addError('Please fill in all fields.  Make sure not to forget the email details (from who, subject, content)');
             }
         }
 
