@@ -117,6 +117,8 @@ class EmailReminderNotificationSchedule extends DataObject
         'EmailFrom' => 'Varchar(100)',
         'EmailSubject' => 'Varchar(100)',
         'Content' => 'HTMLText',
+
+        //  other
         'Disable' => 'Boolean',
         'SendTestTo' => 'Text',
     ];
@@ -144,9 +146,10 @@ class EmailReminderNotificationSchedule extends DataObject
 
     /**
      *
-     * @param  EmailReminderNotificationSchedule  $recordOrEmail
-     * @param  boolean $isTestOnly
-     * @param  boolean $force
+     * @param  DataObject|string  $recordOrEmail
+     * @param  bool               $isTestOnly optional
+     * @param  bool               $force optional
+     *
      * @return bool
      */
     public function sendOne($recordOrEmail, ?bool $isTestOnly = false, ?bool $force = false) : bool
@@ -583,7 +586,7 @@ class EmailReminderNotificationSchedule extends DataObject
             $this->Days = 0;
         }
         if (! $this->Code) {
-            $this->Code = $this->i18n_singular_name() . ' #' . $this->ID;
+            $this->Code = md5($this->ClassName . '_'.$this->ID);
         }
     }
 
