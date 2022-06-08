@@ -27,6 +27,10 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
             'Title' => 'Replaces with before or after expiry date, as set',
             'Method' => 'BeforeOrAfter',
         ],
+        '[VERIFICATION_LINK]' => [
+            'Title' => 'A verification link provided by the action',
+            'Method' => 'VerificationLink',
+        ],
     ];
 
     /**
@@ -86,7 +90,7 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
     {
         $replace = Director::absoluteURL('Security/lostpassword');
 
-        return str_replace($searchString, $replace, $str);
+        return $this->replacerInner($searchString, $replace, $str);
     }
 
     /**
@@ -97,7 +101,7 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
     {
         $replace = Director::absoluteURL('Security/login');
 
-        return str_replace($searchString, $replace, $str);
+        return $this->replacerInner($searchString, $replace, $str);
     }
 
     /**
@@ -108,7 +112,7 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
     {
         $replace = $reminder->Days;
 
-        return str_replace($searchString, $replace, $str);
+        return $this->replacerInner($searchString, $replace, $str);
     }
 
     /**
@@ -119,6 +123,26 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
     {
         $replace = $reminder->BeforeAfter;
 
+        return $this->replacerInner($searchString, $replace, $str);
+    }
+    /**
+     * @param EmailReminderMailer $reminder
+     * @param DataObject          $record
+     */
+    protected function VerificationLink($reminder, $record, string $searchString, string $str): string
+    {
+        $replace = '/';
+        if($record->hasMethod('EmailReminderVerificationLink')) {
+            $replace = $reminder->EmailReminderVerificationLink();
+        }
+        $replace = Director::absoluteURL($replace);
+
+        return $this->replacerInner($searchString, $replace, $str);
+
+    }
+
+    protected function replacerInner(string $searchString, string $replace, string $str)
+    {
         return str_replace($searchString, $replace, $str);
     }
 }

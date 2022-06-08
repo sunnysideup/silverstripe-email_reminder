@@ -107,10 +107,13 @@ class EmailReminderNotificationSchedule extends DataObject
         'Code' => 'Varchar(64)',
         'DataObject' => 'Varchar(255)',
         'EmailField' => 'Varchar(100)',
+        // days stuff
+        'BeforeAfter' => "Enum('before,after,immediately','before')",
         'DateField' => 'Varchar(100)',
         'Days' => 'Int',
         'RepeatDays' => 'Int',
-        'BeforeAfter' => "Enum('before,after,immediately','before')",
+
+        // email stuff
         'EmailFrom' => 'Varchar(100)',
         'EmailSubject' => 'Varchar(100)',
         'Content' => 'HTMLText',
