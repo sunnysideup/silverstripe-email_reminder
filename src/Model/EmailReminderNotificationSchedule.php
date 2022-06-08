@@ -192,6 +192,10 @@ class EmailReminderNotificationSchedule extends DataObject
     public function getCMSFields()
     {
         $fields = parent::getCMSFields();
+        $fields->replaceField(
+            'Code',
+            ReadonlyField::create('Code')
+        );
 
         $emailsSentField = $fields->dataFieldByName('EmailsSent');
         $fields->removeFieldFromTab('Root', 'EmailsSent');
