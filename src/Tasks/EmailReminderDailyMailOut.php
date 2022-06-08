@@ -64,6 +64,9 @@ class EmailReminderDailyMailOut extends BuildTask
             if (! $reminder->hasValidFields()) {
                 continue; // skip if task is not valid
             }
+            if (! $reminder->IsImmediate()) {
+                continue; // skip if they are sent on the fly...
+            }
             if ($reminder->Disable) {
                 continue; // skip if task is disable
             }

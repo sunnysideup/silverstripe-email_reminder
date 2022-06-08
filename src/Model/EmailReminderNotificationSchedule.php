@@ -203,9 +203,10 @@ class EmailReminderNotificationSchedule extends DataObject
         $disableLabel = $this->Config()->get('disabled_checkbox_label');
         $fields->addFieldToTab(
             'Root.Main',
-            CheckboxField::create('Disable', $disableLabel)->setDescription('If checked this email will not be sent during the daily mail out, instead it will be sent after an event like a form submission.')
+            CheckboxField::create('Disable', $disableLabel)
+                ->setDescription('If checked this email will not be sent during the daily mail out, instead it will be sent after an event like a form submission.')
         );
-        $whatIsThis = 'UNKNNOWN';
+        $whatIsThis = 'ERROR';
         $obj = Injector::inst()->get($this->DataObject);
         if ($obj) {
             $whatIsThis = $obj->i18n_singular_name();
@@ -237,64 +238,48 @@ class EmailReminderNotificationSchedule extends DataObject
             $fields->replaceField('EmailField', $emailFieldField->performReadonlyTransformation());
         }
         if($this->IsImmediate()) {
-            $fields->removeByName(['DateField']);
+            $fields->removeByName(['DateField', 'Days', 'RepeatDays']);
         } else {
-            $fields->addFieldToTab(
-                'Root.Main',
-                $dateFieldField = DropdownField::create(
-                    'DateField',
-                    'Date Field',
-                    $this->dateFieldOptions()
-                )
-                    ->setDescription('Select a valid Date field to calculate when reminders should be sent')
-                    ->setEmptyString('[ Please select ]')
-            );
-        }
-        if ($this->Config()->get('default_date_field')) {
-            $fields->replaceField('DateField', $dateFieldField->performReadonlyTransformation());
-        }
-
-        $fields->removeFieldsFromTab(
-            'Root.Main',
-            ['Days', 'BeforeAfter', 'RepeatDays']
-        );
-        $fields->addFieldsToTab(
-            'Root.Main',
-            [
-                DropdownField::create('BeforeAfter', 'Before / After Expiration', self::BEFORE_NOW_AFTER_ARRAY)
-                    ->setDescription('Are the days listed above before or after the actual expiration date.'),
-
-                NumericField::create('Days', 'Days')
-                    ->setDescription(
-                        DBField::create_field(
-                            'HTMLText',
-                            'How many days in advance (before) or in arrears (after) of the expiration date should this email be sent? </br>This field is ignored if set to send immediately.'
-                        )
-                    )->setScale(0),
-
-                NumericField::create('RepeatDays', 'Repeat Cycle Days')
-                    ->setDescription(
-                        DBField::create_field(
-                            'HTMLText',
-                            '
-                            Number of days after which the same reminder can be sent to the same email address.
-                            <br />We allow an e-mail to be sent to one specific email address for one specific reminder only once.
-                            <br />In this field you can indicate for how long we will apply this rule.
-                            <br />If set to set to zero, no reminders will be sent.
-                            '
-                        )
-                    )->setScale(0),
-            ]
-        );
-
-        if ($this->IsImmediate()) {
-            $fields->removeFieldsFromTab(
+            $fields->addFieldsToTab(
                 'Root.Main',
                 [
-                    'Days',
-                    'RepeatDays'
+                    $dateFieldField = DropdownField::create(
+                        'DateField',
+                        'Date Field',
+                        $this->dateFieldOptions()
+                    )
+                    ->setDescription('Select a valid Date field to calculate when reminders should be sent')
+                    ->setEmptyString('[ Please select ]'),
+
+                    DropdownField::create('BeforeAfter', 'Before / After Expiration', self::BEFORE_NOW_AFTER_ARRAY)
+                        ->setDescription('Are the days listed above before or after the actual expiration date.'),
+
+                    NumericField::create('Days', 'Days')
+                        ->setDescription(
+                            DBField::create_field(
+                                'HTMLText',
+                                'How many days in advance (before) or in arrears (after) of the expiration date should this email be sent? </br>This field is ignored if set to send immediately.'
+                            )
+                        )->setScale(0),
+
+                    NumericField::create('RepeatDays', 'Repeat Cycle Days')
+                        ->setDescription(
+                            DBField::create_field(
+                                'HTMLText',
+                                '
+                                Number of days after which the same reminder can be sent to the same email address.
+                                <br />We allow an e-mail to be sent to one specific email address for one specific reminder only once.
+                                <br />In this field you can indicate for how long we will apply this rule.
+                                <br />If set to set to zero, no reminders will be sent.
+                                '
+                            )
+                        )->setScale(0),
                 ]
             );
+
+            if ($this->Config()->get('default_date_field')) {
+                $fields->replaceField('DateField', $dateFieldField->performReadonlyTransformation());
+            }
         }
 
         $fields->addFieldsToTab(
