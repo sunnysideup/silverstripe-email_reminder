@@ -138,11 +138,18 @@ class EmailReminderNotificationSchedule extends DataObject
         'Code' => true,
     ];
 
+    /**
+     *
+     * @param  EmailReminderNotificationSchedule  $recordOrEmail
+     * @param  boolean $isTestOnly
+     * @param  boolean $force
+     * @return bool
+     */
     public function sendOne($recordOrEmail, ?bool $isTestOnly = false, ?bool $force = false) : bool
     {
         $mailerClassName = Config::inst()->get(EmailReminderNotificationSchedule::class, 'mail_out_class');
         $mailer = Injector::inst()->get($mailerClassName);
-        return $mailer->send($this, $isTestOnly, $force);
+        return $mailer->send($this, $recordOrEmail, $isTestOnly, $force);
     }
 
     public function IsImmediate() : bool

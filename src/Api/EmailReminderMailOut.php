@@ -99,7 +99,7 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
         ;
     }
 
-    protected function sendEmail($reminder, $recordOrEmail, $isTestOnly, $force = false) : bool
+    protected function sendEmail($reminder, $recordOrEmail, ?bool $isTestOnly = false, ?bool $force = false) : bool
     {
         $filter = [
             'EmailReminderNotificationScheduleID' => $reminder->ID,
@@ -111,7 +111,7 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
             $filter['ExternalRecordClassName'] = $recordOrEmail->ClassName;
             $filter['ExternalRecordID'] = $recordOrEmail->ID;
         } else {
-            $email = $recordOrEmail;
+            $email = (string) $recordOrEmail;
             $record = Injector::inst()->get($reminder->DataObject);
         }
         $email = strtolower(trim($email));
@@ -130,50 +130,67 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
                 }
             }
             if ($send) {
-                $log = EmailReminderEmailRecord::create($filter);
-                $subject = $reminder->EmailSubject;
-                $emailContent = $reminder->Content;
-                $replacerObject = $this->getReplacerObject();
-                if (null !== $replacerObject) {
-                    $emailContent = $replacerObject->replace($reminder, $record, $emailContent);
-                    $subject = $replacerObject->replace($reminder, $record, $subject);
-                }
-                $emailContent = $this->getParsedContent($record, $emailContent);
-
-                //emogrify the content
-                $emailContent = EmailReminderEmogrifier::emogrify($emailContent);
-
-                // Parse HTML like a template, and translate any internal links
-                $data = ArrayData::create([
-                    'Content' => $emailContent,
-                ]);
-
-                // $email_body = $record->renderWith(SSViewer::fromString($reminder->Content));
-                // echo $record->renderWith('SunnySideUp/EmailReminder/Email/EmailReminderStandardTemplate');//$email_body;
-                $email = new Email(
-                    $reminder->EmailFrom,
-                    $email,
-                    $subject
-                );
-
-                $email->setHTMLTemplate(Config::inst()->get(EmailReminderMailOut::class, 'template'));
-
-                $email->setData($data);
-
-                // $email->send();
-                $log->IsTestOnly = $isTestOnly;
-                $outcome = $email->send();
-                $log->HasTried = true;
-                $log->write();
-                $log->Result = (bool) $outcome;
-                $log->EmailReminderNotificationScheduleID = $reminder->ID;
-                $log->Subject = $subject;
-                $log->EmailContent = $email->body;
-                $log->write();
-                return (bool) $log->Result;
+                return (bool) $this->sendInner($email, $reminder, $record, $filter, $isTestOnly);
             }
         }
 
         return false;
+    }
+
+    /**
+     *
+     * @param  string                            $email
+     * @param  EmailReminderNotificationSchedule $reminder
+     * @param  DataObject $record
+     * @param  array  $filter
+     * @param  bool  $isTestOnly
+     *
+     * @return bool
+     */
+    protected function sendInner(string $email, $reminder, $record, array $filter, ?bool $isTestOnly = false) : bool
+    {
+        // build email
+        $subject = $reminder->EmailSubject;
+        $emailContent = $reminder->Content;
+        $replacerObject = $this->getReplacerObject();
+        if (null !== $replacerObject) {
+            $emailContent = $replacerObject->replace($reminder, $record, $emailContent);
+            $subject = $replacerObject->replace($reminder, $record, $subject);
+        }
+        $emailContent = $this->getParsedContent($record, $emailContent);
+
+        //emogrify the content
+        $emailContent = EmailReminderEmogrifier::emogrify($emailContent);
+
+        // Parse HTML like a template, and translate any internal links
+        $data = ArrayData::create([
+            'Content' => $emailContent,
+        ]);
+
+        // $email_body = $record->renderWith(SSViewer::fromString($reminder->Content));
+        // echo $record->renderWith('SunnySideUp/EmailReminder/Email/EmailReminderStandardTemplate');//$email_body;
+        $email = new Email(
+            $reminder->EmailFrom,
+            $email,
+            $subject
+        );
+
+        $email->setHTMLTemplate(Config::inst()->get(EmailReminderMailOut::class, 'template'));
+
+        $email->setData($data);
+
+        // send email
+        $log = EmailReminderEmailRecord::create($filter);
+        // $email->send();
+        $log->IsTestOnly = $isTestOnly;
+        $outcome = $email->send();
+        $log->HasTried = true;
+        $log->write();
+        $log->Result = (bool) $outcome;
+        $log->EmailReminderNotificationScheduleID = $reminder->ID;
+        $log->Subject = $subject;
+        $log->EmailContent = $email->body;
+        $log->write();
+        return (bool) $log->Result;
     }
 }
