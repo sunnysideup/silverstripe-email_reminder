@@ -384,9 +384,13 @@ class EmailReminderNotificationSchedule extends DataObject
         if (!empty($emailFieldOptions) && ! isset($emailFieldOptions[$this->EmailField])) {
             return false;
         }
-        $dateFieldOptions = $this->dateFieldOptions();
-
-        return empty($dateFieldOptions) || isset($dateFieldOptions[$this->DateField]);
+        if($this->IsImmediate() === false) {
+            $dateFieldOptions = $this->dateFieldOptions();
+            if (!empty($dateFieldOptions) && ! isset($dateFieldOptions[$this->DateField])) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public function getTitle(): string
