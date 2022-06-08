@@ -226,18 +226,20 @@ class EmailReminderNotificationSchedule extends DataObject
         if ($this->Config()->get('default_email_field')) {
             $fields->replaceField('EmailField', $emailFieldField->performReadonlyTransformation());
         }
-
-        $fields->addFieldToTab(
-            'Root.Main',
-            $dateFieldField = DropdownField::create(
-                'DateField',
-                'Date Field',
-                $this->dateFieldOptions()
-            )
-                ->setDescription('Select a valid Date field to calculate when reminders should be sent')
-                ->setEmptyString('[ Please select ]')
-        );
-
+        if($this->IsImmediate()) {
+            $fields->removeByName(['DateField']);
+        } else {
+            $fields->addFieldToTab(
+                'Root.Main',
+                $dateFieldField = DropdownField::create(
+                    'DateField',
+                    'Date Field',
+                    $this->dateFieldOptions()
+                )
+                    ->setDescription('Select a valid Date field to calculate when reminders should be sent')
+                    ->setEmptyString('[ Please select ]')
+            );
+        }
         if ($this->Config()->get('default_date_field')) {
             $fields->replaceField('DateField', $dateFieldField->performReadonlyTransformation());
         }
@@ -267,7 +269,9 @@ class EmailReminderNotificationSchedule extends DataObject
                             '
                             Number of days after which the same reminder can be sent to the same email address.
                             <br />We allow an e-mail to be sent to one specific email address for one specific reminder only once.
-                            <br />In this field you can indicate for how long we will apply this rule.'
+                            <br />In this field you can indicate for how long we will apply this rule.
+                            <br />If set to set to zero, no reminders will be sent.
+                            '
                         )
                     )->setScale(0),
             ]
