@@ -659,7 +659,7 @@ class EmailReminderNotificationSchedule extends DataObject
      */
     protected function whereStatementForDays()
     {
-        if ($this->hasValidFields()) {
+        if ($this->DateField && $this->hasValidFields() ) {
             $sign = 'before' === $this->BeforeAfter ? '+' : '-';
             $graceDays = Config::inst()->get(EmailReminderNotificationSchedule::class, 'grace_days');
 
@@ -672,13 +672,13 @@ class EmailReminderNotificationSchedule extends DataObject
                 $minDays = $sign . $this->Days . ' days';
                 $maxDays = $sign . ($this->Days - $graceDays) . ' days';
                 //we purposely change these days around here ...
-                $minDate = date('Y-m-d', strtotime($maxDays)) . ' 00:00:00';
-                $maxDate = date('Y-m-d', strtotime($minDays)) . ' 23:59:59';
+                $minDate = date('Y-m-d', strtotime($minDays)) . ' 00:00:00';
+                $maxDate = date('Y-m-d', strtotime($maxDays)) . ' 23:59:59';
             }
 
             return '("' . $this->DateField . '" BETWEEN \'' . $minDate . "' AND '" . $maxDate . "')";
         }
 
-        return '1 == 2';
+        return '1 = 2';
     }
 }
