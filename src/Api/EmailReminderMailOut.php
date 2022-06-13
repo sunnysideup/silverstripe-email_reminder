@@ -74,8 +74,12 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
         if (! $this->replacerObject) {
             $this->replacerObject = null;
             $replacerClass = Config::inst()->get(EmailReminderMailOut::class, 'replacer_class');
-            if ($replacerClass && class_exists($replacerClass) && $replacerClass instanceof EmailReminderReplacerClassInterface) {
+            if ($replacerClass && class_exists($replacerClass)) {
                 $this->replacerObject = Injector::inst()->get($replacerClass);
+                if(!$this->replacerObject instanceof EmailReminderReplacerClassInterface) {
+                    $this->replacerObject = null;
+                    user_error('Replacer object needs to be a EmailReminderReplacerClassInterface');
+                }
             }
         }
 

@@ -47,7 +47,7 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
      */
     public function replace($reminder, $record, string $str): string
     {
-        foreach ($this->replaceArray as $searchString => $moreInfoArray) {
+        foreach ($this->getReplaceArray() as $searchString => $moreInfoArray) {
             $method = $moreInfoArray['Method'];
             $str = $this->{$method}($reminder, $record, $searchString, $str);
         }
@@ -133,7 +133,7 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
     {
         $replace = '/';
         if($record->hasMethod('EmailReminderVerificationLink')) {
-            $replace = $reminder->EmailReminderVerificationLink();
+            $replace = $record->EmailReminderVerificationLink();
         }
         $replace = Director::absoluteURL($replace);
 
