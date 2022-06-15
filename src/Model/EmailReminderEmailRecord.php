@@ -127,11 +127,11 @@ class EmailReminderEmailRecord extends DataObject
     {
         $canSendAgain = true;
         if ($this->Result) {
-            $repeatValue = $this->EmailReminderNotificationSchedule()->RepeatDays;
             if ($this->IsTestOnly) {
                 return true;
             }
             $canSendAgain = false;
+            $repeatValue = $this->EmailReminderNotificationSchedule()->RepeatDays;
             if($repeatValue) {
                 $numberOfSecondsBeforeYouCanSendAgain =  $repeatValue * 86400;
                 $todaysTS = strtotime('NOW');

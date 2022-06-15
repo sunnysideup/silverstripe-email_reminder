@@ -105,24 +105,29 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
 
     protected function sendEmail($reminder, $recordOrEmail, ?bool $isTestOnly = false, ?bool $force = false) : bool
     {
+        // always send test
+        if($isTestOnly) {
+            $force = true;
+        }
         $filter = [
             'EmailReminderNotificationScheduleID' => $reminder->ID,
+            'IsTestOnly' => $isTestOnly,
         ];
         if ($recordOrEmail instanceof DataObject) {
             $emailField = $reminder->EmailField;
             $email = $recordOrEmail->{$emailField};
             $record = $recordOrEmail;
-            $filter['ExternalRecordClassName'] = $recordOrEmail->ClassName;
-            $filter['ExternalRecordID'] = $recordOrEmail->ID;
         } else {
             $email = (string) $recordOrEmail;
             $record = Injector::inst()->get($reminder->DataObject);
         }
         $email = strtolower(trim($email));
-        $filter['EmailTo'] = $email;
         if (Email::is_valid_address($email)) {
+            $filter['ExternalRecordClassName'] = $record->ClassName;
+            $filter['ExternalRecordID'] = $record->ID;
+            $filter['EmailTo'] = $email;
             $send = true;
-            if (! $force) {
+            if ($force !== true) {
                 $logs = EmailReminderEmailRecord::get()->filter($filter);
                 $send = true;
                 foreach ($logs as $log) {
@@ -184,14 +189,12 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
         $email->setData($data);
 
         // send email
-        $log = EmailReminderEmailRecord::create($filter);
-        // $email->send();
-        $log->IsTestOnly = $isTestOnly;
         $outcome = $email->send();
+
+        // create log - using filter as starting point
+        $log = EmailReminderEmailRecord::create($filter);
         $log->HasTried = true;
-        $log->write();
         $log->Result = (bool) $outcome;
-        $log->EmailReminderNotificationScheduleID = $reminder->ID;
         $log->Subject = $subject;
         $log->EmailContent = $email->body;
         $log->write();

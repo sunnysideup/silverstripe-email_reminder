@@ -394,7 +394,7 @@ class EmailReminderNotificationSchedule extends DataObject
 
     public function getTitle(): string
     {
-        $niceTitle = '[' . $this->EmailSubject . '] // send ';
+        $niceTitle = $this->EmailSubject . ' // send ';
         $niceTitle .= $this->IsImmediate() ? $this->BeforeAfter : $this->Days . ' days ' . $this->BeforeAfter . ' Expiration Date';
 
         return $this->Code . ' - ' . $this->hasValidDataObjectFields() ? $niceTitle : 'uncompleted';
@@ -452,7 +452,7 @@ class EmailReminderNotificationSchedule extends DataObject
     }
 
     /**
-     * @return null|BuildTask
+     * @return null|EmailReminderMailOutInterface
      */
     public function getMailOutObject()
     {
@@ -462,7 +462,7 @@ class EmailReminderNotificationSchedule extends DataObject
             if ($obj instanceof EmailReminderMailOutInterface) {
                 return $obj;
             }
-            user_error($mailOutClass . ' needs to be an instance of a Scheduled Task');
+            user_error($mailOutClass . ' needs to be an instance of a EmailReminderMailOutInterface');
         }
 
         return null;
@@ -577,19 +577,20 @@ class EmailReminderNotificationSchedule extends DataObject
         if (! $this->Code) {
             $this->Code = md5($this->ClassName . '_'.$this->ID);
         }
+        if ($this->SendTestTo) {
+            $mailOutObject = $this->getMailOutObject();
+            $emails = array_filter(explode(', ', $this->SendTestTo));
+            foreach($emails as $email) {
+                $email = trim($email);
+                $mailOutObject->send($this, $email, true, true);
+            }
+        }
     }
 
     protected function onAfterWrite()
     {
         parent::onAfterWrite();
-        if ($this->SendTestTo) {
-            $mailOutObject = $this->getMailOutObject();
-            if ($mailOutObject && $mailOutObject instanceof BuildTask) {
-                $mailOutObject->setTestOnly(true);
-                $mailOutObject->setVerbose(true);
-                $mailOutObject->run(null);
-            }
-        }
+
     }
 
     /**

@@ -34,6 +34,7 @@ table {
     mso-table-lspace: 0pt;
     mso-table-rspace: 0pt;
     width: 100%;
+    max-width: 100%;
 }
 table td {
     font-family: sans-serif;
