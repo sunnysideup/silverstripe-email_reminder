@@ -86,7 +86,7 @@ class EmailReminderNotificationSchedule extends DataObject
     /**
      * @var string
      */
-    private static $disabled_checkbox_label = 'Disable';
+    private static $disabled_checkbox_label = 'Do not include in daily mailouts';
 
     /**
      * @var string
@@ -192,51 +192,11 @@ class EmailReminderNotificationSchedule extends DataObject
     public function getCMSFields()
     {
         $fields = parent::getCMSFields();
-        $fields->replaceField(
-            'Code',
-            ReadonlyField::create('Code')
-        );
+
 
         $emailsSentField = $fields->dataFieldByName('EmailsSent');
         $fields->removeFieldFromTab('Root', 'EmailsSent');
 
-        $disableLabel = $this->Config()->get('disabled_checkbox_label');
-        $fields->addFieldToTab(
-            'Root.Main',
-            CheckboxField::create('Disable', $disableLabel)
-                ->setDescription('If checked this email will not be sent during the daily mail out, instead it will be sent after an event like a form submission.')
-        );
-        $whatIsThis = 'ERROR';
-        $obj = Injector::inst()->get($this->DataObject);
-        if ($obj) {
-            $whatIsThis = $obj->i18n_singular_name();
-        }
-        $fields->addFieldToTab(
-            'Root.Main',
-            $dataObjectField = DropdownField::create(
-                'DataObject',
-                'Works on ... ',
-                $this->dataObjectOptions()
-            )
-                ->setDescription('This is a : ' . $whatIsThis)
-        );
-        if ($this->Config()->get('default_data_object')) {
-            $fields->replaceField('DataObject', ReadonlyField ::create('DataObjectNice', 'Works on ...', $whatIsThis));
-        }
-
-        $fields->addFieldToTab(
-            'Root.Main',
-            $emailFieldField = DropdownField::create(
-                'EmailField',
-                'Email Field',
-                $this->emailFieldOptions()
-            )
-                ->setDescription('Select the field that will contain a valid email address')
-                ->setEmptyString('[ Please select ]')
-        );
-        if ($this->Config()->get('default_email_field')) {
-            $fields->replaceField('EmailField', $emailFieldField->performReadonlyTransformation());
-        }
         if($this->IsImmediate()) {
             $fields->removeByName(['DateField', 'Days', 'RepeatDays']);
         } else {
@@ -355,7 +315,50 @@ class EmailReminderNotificationSchedule extends DataObject
                 ]
             );
         }
+        $fields->addFieldsToTab(
+            'Root.Advanced',
+            [
+                ReadonlyField::create('Code')
+                    ->setDescription('Used to uniquely identiy this record.')
+            ]
+        );
+        $disableLabel = $this->Config()->get('disabled_checkbox_label');
+        $fields->addFieldToTab(
+            'Root.Advanced',
+            CheckboxField::create('Disable', $disableLabel)
+                ->setDescription('If checked this email will not be sent during the daily mail out, instead it will be sent after an event like a form submission.')
+        );
+        $whatIsThis = 'ERROR';
+        $obj = Injector::inst()->get($this->DataObject);
+        if ($obj) {
+            $whatIsThis = $obj->i18n_singular_name();
+        }
+        $fields->addFieldToTab(
+            'Root.Advanced',
+            $dataObjectField = DropdownField::create(
+                'DataObject',
+                'Works on ... ',
+                $this->dataObjectOptions()
+            )
+                ->setDescription('This is a : ' . $whatIsThis)
+        );
+        if ($this->Config()->get('default_data_object')) {
+            $fields->replaceField('DataObject', ReadonlyField ::create('DataObjectNice', 'Works on ...', $whatIsThis));
+        }
 
+        $fields->addFieldToTab(
+            'Root.Advanced',
+            $emailFieldField = DropdownField::create(
+                'EmailField',
+                'Email Field',
+                $this->emailFieldOptions()
+            )
+                ->setDescription('Select the field that will contain a valid email address')
+                ->setEmptyString('[ Please select ]')
+        );
+        if ($this->Config()->get('default_email_field')) {
+            $fields->replaceField('EmailField', $emailFieldField->performReadonlyTransformation());
+        }
         return $fields;
     }
 
