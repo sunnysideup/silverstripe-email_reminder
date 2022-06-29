@@ -51,10 +51,11 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
     }
 
     /**
+     * returns true on success
      * @param EmailReminderNotificationSchedule $reminder
      * @param DataObject|string                 $recordOrEmail
      * @param bool                              $isTestOnly
-     * @param mixed                             $force
+     * @param bool                              $force
      */
     public function send($reminder, $recordOrEmail, ?bool $isTestOnly = false, ?bool $force = false): bool
     {
@@ -93,7 +94,20 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
         ;
     }
 
+<<<<<<< HEAD
     protected function sendEmail($reminder, $recordOrEmail, ?bool $isTestOnly = false, ?bool $force = false): bool
+=======
+    /**
+     * returns true on success
+     * @param  EmailReminderNotificationSchedule     $reminder
+     * @param  DataObject|string                     $recordOrEmail
+     * @param  bool                                  $isTestOnly
+     * @param  bool                                  $force
+     *
+     * @return bool
+     */
+    protected function sendEmail($reminder, $recordOrEmail, ?bool $isTestOnly = false, ?bool $force = false) : bool
+>>>>>>> c698b286346322cb043d8441b4ea680983368d01
     {
         // always send test
         if ($isTestOnly) {
