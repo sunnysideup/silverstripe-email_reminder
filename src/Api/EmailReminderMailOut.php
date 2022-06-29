@@ -3,19 +3,13 @@
 namespace SunnySideUp\EmailReminder\Api;
 
 use SilverStripe\Control\Email\Email;
-use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
-use SilverStripe\Dev\BuildTask;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\View\ArrayData;
 use SilverStripe\View\Parsers\ShortcodeParser;
-
-use SilverStripe\View\ViewableData;
 use SilverStripe\View\SSViewer;
-use SunnySideUp\EmailReminder\Api\EmailReminderEmogrifier;
-use SunnySideUp\EmailReminder\Api\EmailReminderReplacerClassBase;
-use SunnySideUp\EmailReminder\Email\EmailReminderMailer;
+use SilverStripe\View\ViewableData;
 use SunnySideUp\EmailReminder\Interfaces\EmailReminderMailOutInterface;
 use SunnySideUp\EmailReminder\Interfaces\EmailReminderReplacerClassInterface;
 use SunnySideUp\EmailReminder\Model\EmailReminderEmailRecord;
@@ -23,6 +17,14 @@ use SunnySideUp\EmailReminder\Model\EmailReminderNotificationSchedule;
 
 class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutInterface
 {
+    protected $testOnly = false;
+
+    /**
+     * The object that replaces tags in the subject and content.
+     *
+     * @var EmailReminderReplacerClassInterface
+     */
+    protected $replacerObject;
 
     /**
      * @var int
@@ -35,23 +37,16 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
     private static $replacer_class = EmailReminderReplacerClassBase::class;
 
     /**
-     * template used for emails
+     * template used for emails.
+     *
      * @var string
      */
     private static $template = 'SunnySideUp/EmailReminder/Email/EmailReminderStandardTemplate';
 
-    protected $testOnly = false;
-
-    /**
-     * The object that replaces tags in the subject and content.
-     *
-     * @var EmailReminderReplacerClassInterface
-     */
-    protected $replacerObject;
-
-    public function setTestOnly(?bool $b = true) : self
+    public function setTestOnly(?bool $b = true): self
     {
         $this->testOnly = $b;
+
         return $this;
     }
 
@@ -61,14 +56,11 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
      * @param bool                              $isTestOnly
      * @param mixed                             $force
      */
-    public function send($reminder, $recordOrEmail, ?bool $isTestOnly = false, ?bool $force = false) : bool
+    public function send($reminder, $recordOrEmail, ?bool $isTestOnly = false, ?bool $force = false): bool
     {
         return $this->sendEmail($reminder, $recordOrEmail, $isTestOnly, $force);
     }
 
-    /**
-     * @return null|EmailReminderReplacerClassInterface
-     */
     public function getReplacerObject(): ?EmailReminderReplacerClassInterface
     {
         if (! $this->replacerObject) {
@@ -76,7 +68,7 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
             $replacerClass = Config::inst()->get(EmailReminderMailOut::class, 'replacer_class');
             if ($replacerClass && class_exists($replacerClass)) {
                 $this->replacerObject = Injector::inst()->get($replacerClass);
-                if(!$this->replacerObject instanceof EmailReminderReplacerClassInterface) {
+                if (! $this->replacerObject instanceof EmailReminderReplacerClassInterface) {
                     $this->replacerObject = null;
                     user_error('Replacer object needs to be a EmailReminderReplacerClassInterface');
                 }
@@ -89,10 +81,8 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
     /**
      * @param mixed $record
      * @param mixed $content
-     *
-     * @return string
      */
-    public function getParsedContent($record, $content) : string
+    public function getParsedContent($record, $content): string
     {
         return ShortcodeParser::get_active()
             ->parse(
@@ -103,12 +93,13 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
         ;
     }
 
-    protected function sendEmail($reminder, $recordOrEmail, ?bool $isTestOnly = false, ?bool $force = false) : bool
+    protected function sendEmail($reminder, $recordOrEmail, ?bool $isTestOnly = false, ?bool $force = false): bool
     {
         // always send test
-        if($isTestOnly) {
+        if ($isTestOnly) {
             $force = true;
         }
+
         $filter = [
             'EmailReminderNotificationScheduleID' => $reminder->ID,
             'IsTestOnly' => $isTestOnly,
@@ -121,13 +112,14 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
             $email = (string) $recordOrEmail;
             $record = Injector::inst()->get($reminder->DataObject);
         }
+
         $email = strtolower(trim($email));
         if (Email::is_valid_address($email)) {
             $filter['ExternalRecordClassName'] = $record->ClassName;
             $filter['ExternalRecordID'] = $record->ID;
             $filter['EmailTo'] = $email;
             $send = true;
-            if ($force !== true) {
+            if (true !== $force) {
                 $logs = EmailReminderEmailRecord::get()->filter($filter);
                 $send = true;
                 foreach ($logs as $log) {
@@ -138,6 +130,7 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
                     }
                 }
             }
+
             if ($send) {
                 return (bool) $this->sendInner($email, $reminder, $record, $filter, $isTestOnly);
             }
@@ -147,16 +140,11 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
     }
 
     /**
-     *
-     * @param  string                            $email
-     * @param  EmailReminderNotificationSchedule $reminder
-     * @param  DataObject $record
-     * @param  array  $filter
-     * @param  bool  $isTestOnly
-     *
-     * @return bool
+     * @param EmailReminderNotificationSchedule $reminder
+     * @param DataObject                        $record
+     * @param bool                              $isTestOnly
      */
-    protected function sendInner(string $email, $reminder, $record, array $filter, ?bool $isTestOnly = false) : bool
+    protected function sendInner(string $email, $reminder, $record, array $filter, ?bool $isTestOnly = false): bool
     {
         // build email
         $subject = $reminder->EmailSubject;
@@ -166,6 +154,7 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
             $emailContent = $replacerObject->replace($reminder, $record, $emailContent);
             $subject = $replacerObject->replace($reminder, $record, $subject);
         }
+
         $emailContent = $this->getParsedContent($record, $emailContent);
 
         //emogrify the content
@@ -198,6 +187,7 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
         $log->Subject = $subject;
         $log->EmailContent = $email->body;
         $log->write();
+
         return (bool) $log->Result;
     }
 }

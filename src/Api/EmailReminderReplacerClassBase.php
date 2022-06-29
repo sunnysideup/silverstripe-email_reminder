@@ -66,6 +66,7 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
         foreach ($this->replaceArray as $searchString => $moreInfoArray) {
             $newArray[$searchString] = $moreInfoArray['Title'];
         }
+
         if ($asHTML) {
             $html = '
             <ul class="replace-help-list">';
@@ -73,6 +74,7 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
                 $html .= '
                 <li><strong>' . $searchString . ':</strong> <span>' . $title . '</span></li>';
             }
+
             $html .= '
             </ul>';
 
@@ -125,6 +127,7 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
 
         return $this->replacerInner($searchString, $replace, $str);
     }
+
     /**
      * @param EmailReminderMailer $reminder
      * @param DataObject          $record
@@ -132,13 +135,13 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
     protected function VerificationLink($reminder, $record, string $searchString, string $str): string
     {
         $replace = '/';
-        if($record->hasMethod('EmailReminderVerificationLink')) {
+        if ($record->hasMethod('EmailReminderVerificationLink')) {
             $replace = $record->EmailReminderVerificationLink();
         }
+
         $replace = Director::absoluteURL($replace);
 
         return $this->replacerInner($searchString, $replace, $str);
-
     }
 
     protected function replacerInner(string $searchString, string $replace, string $str)

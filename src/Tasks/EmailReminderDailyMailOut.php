@@ -7,17 +7,6 @@ use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\BuildTask;
-use SilverStripe\ORM\DataObject;
-use SilverStripe\View\ArrayData;
-use SilverStripe\View\Parsers\ShortcodeParser;
-use SilverStripe\View\SSViewer;
-use SunnySideUp\EmailReminder\Api\EmailReminderMailOut;
-use SunnySideUp\EmailReminder\Api\EmailReminderEmogrifier;
-use SunnySideUp\EmailReminder\Api\EmailReminderReplacerClassBase;
-use SunnySideUp\EmailReminder\Email\EmailReminderMailer;
-use SunnySideUp\EmailReminder\Interfaces\EmailReminderMailOutInterface;
-use SunnySideUp\EmailReminder\Interfaces\EmailReminderReplacerClassInterface;
-use SunnySideUp\EmailReminder\Model\EmailReminderEmailRecord;
 use SunnySideUp\EmailReminder\Model\EmailReminderNotificationSchedule;
 
 class EmailReminderDailyMailOut extends BuildTask
@@ -64,9 +53,11 @@ class EmailReminderDailyMailOut extends BuildTask
             if (! $reminder->hasValidFields()) {
                 continue; // skip if task is not valid
             }
+
             if (! $reminder->IsImmediate()) {
                 continue; // skip if they are sent on the fly...
             }
+
             if ($reminder->Disable) {
                 continue; // skip if task is disable
             }
@@ -91,5 +82,4 @@ class EmailReminderDailyMailOut extends BuildTask
             }
         }
     }
-
 }

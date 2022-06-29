@@ -122,17 +122,18 @@ class EmailReminderEmailRecord extends DataObject
      * tests to see if an email can be sent
      * the emails can only be sent once unless previous attempts have failed.
      */
-    public function canSendAgain() : bool
+    public function canSendAgain(): bool
     {
         $canSendAgain = true;
         if ($this->Result) {
             if ($this->IsTestOnly) {
                 return true;
             }
+
             $canSendAgain = false;
             $repeatValue = $this->EmailReminderNotificationSchedule()->RepeatDays;
-            if($repeatValue) {
-                $numberOfSecondsBeforeYouCanSendAgain =  $repeatValue * 86400;
+            if ($repeatValue) {
+                $numberOfSecondsBeforeYouCanSendAgain = $repeatValue * 86400;
                 $todaysTS = strtotime('NOW');
                 $creationTS = strtotime($this->Created);
                 $difference = $todaysTS - $creationTS;
