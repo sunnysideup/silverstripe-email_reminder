@@ -94,9 +94,6 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
         ;
     }
 
-<<<<<<< HEAD
-    protected function sendEmail($reminder, $recordOrEmail, ?bool $isTestOnly = false, ?bool $force = false): bool
-=======
     /**
      * returns true on success
      * @param  EmailReminderNotificationSchedule     $reminder
@@ -107,7 +104,7 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
      * @return bool
      */
     protected function sendEmail($reminder, $recordOrEmail, ?bool $isTestOnly = false, ?bool $force = false) : bool
->>>>>>> c698b286346322cb043d8441b4ea680983368d01
+
     {
         // always send test
         if ($isTestOnly) {
