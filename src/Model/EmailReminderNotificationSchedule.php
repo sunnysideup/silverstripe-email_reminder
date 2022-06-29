@@ -263,7 +263,7 @@ class EmailReminderNotificationSchedule extends DataObject
                     $html .= '<li><strong>$' . $key . '</strong> <span>' . $value . '</span></li>';
                 }
             }
-            $html .= '</ul><hr /><hr /><hr />';
+            $html .= '</ul>';
             $subjectField->setDescription('for replacement options, please see below ...');
             $contentField->setDescription(
                 DBField::create_field(
@@ -447,7 +447,7 @@ class EmailReminderNotificationSchedule extends DataObject
     public function getReplacerObject()
     {
         $mailOutObject = $this->getMailOutObject();
-        if ($mailOutObject && $mailOutObject instanceof BuildTask) {
+        if ($mailOutObject) {
             return $mailOutObject->getReplacerObject();
         }
 
