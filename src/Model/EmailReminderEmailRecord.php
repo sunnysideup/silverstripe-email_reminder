@@ -100,7 +100,6 @@ class EmailReminderEmailRecord extends DataObject
         $fields->addFieldsToTab(
             'Root.Details',
             [
-                $fields->dataFieldByName('EmailTo'),
                 CMSEditLinkField::create('LinksTo', 'Linked To', $linkedObject),
                 $fields->dataFieldByName('HasTried'),
                 $fields->dataFieldByName('Result'),
