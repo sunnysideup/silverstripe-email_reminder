@@ -91,6 +91,7 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
     protected function PasswordReminderLink($reminder, $record, string $searchString, string $str): string
     {
         $replace = Director::absoluteURL('Security/lostpassword');
+        $replace = $this->removeLinkExtras($replace);
 
         return $this->replacerInner($searchString, $replace, $str);
     }
@@ -102,6 +103,7 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
     protected function LoginLink($reminder, $record, string $searchString, string $str): string
     {
         $replace = Director::absoluteURL('Security/login');
+        $replace = $this->removeLinkExtras($replace);
 
         return $this->replacerInner($searchString, $replace, $str);
     }
@@ -140,6 +142,7 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
         }
 
         $replace = Director::absoluteURL($replace);
+        $replace = $this->removeLinkExtras($replace);
 
         return $this->replacerInner($searchString, $replace, $str);
     }
@@ -147,5 +150,15 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
     protected function replacerInner(string $searchString, string $replace, string $str)
     {
         return str_replace($searchString, $replace, $str);
+    }
+
+    protected function removeLinkExtras(string $link) : string
+    {
+        $link = str_replace('?stage=Stage', '?', $link);
+        $link = str_replace('&stage=Stage', '&', $link);
+        $link = rtrim($link, '?');
+        $link = rtrim($link, '&');
+
+        return $link;
     }
 }
