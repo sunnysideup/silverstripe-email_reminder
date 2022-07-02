@@ -19,8 +19,8 @@ class EmailReminderEmailRecord extends DataObject
         'EmailTo' => 'Varchar(100)',
         'ExternalRecordClassName' => 'Varchar(255)',
         'ExternalRecordID' => 'Int',
-        'Result' => 'Boolean',
         'HasTried' => 'Boolean',
+        'Result' => 'Boolean',
         'IsTestOnly' => 'Boolean',
         'Subject' => 'Varchar',
         'EmailContent' => 'HTMLText',
@@ -33,6 +33,13 @@ class EmailReminderEmailRecord extends DataObject
         'Result' => true,
         'HasTried' => true,
         'Created' => true,
+    ];
+    private static $field_labels = [
+        'EmailTo' => 'To',
+        'ExternalRecordClassName' => true,
+        'ExternalRecordID' => true,
+        'HasTried' => 'Tried to sent',
+        'Result' => 'Has been sent',
     ];
 
     private static $has_one = [
