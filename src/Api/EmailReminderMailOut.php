@@ -43,6 +43,13 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
      */
     private static $template = 'SunnySideUp/EmailReminder/Email/EmailReminderStandardTemplate';
 
+    /**
+     * emails always to be included in mail out, even if sent already...
+     * @var array
+     */
+    private static $always_send_to = [];
+
+
     public function setTestOnly(?bool $b = true): self
     {
         $this->testOnly = $b;
@@ -104,7 +111,6 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
      * @return bool
      */
     protected function sendEmail($reminder, $recordOrEmail, ?bool $isTestOnly = false, ?bool $force = false) : bool
-
     {
         // always send test
         if ($isTestOnly) {
@@ -129,6 +135,13 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
             $filter['ExternalRecordClassName'] = $record->ClassName;
             $filter['ExternalRecordID'] = $record->ID;
             $filter['EmailTo'] = $email;
+            // always send to email
+            if($email === Config::inst()->get(Email::class, 'admin_email')) {
+                $force = true;
+            }
+            if(in_array($email, $this->Config()->get('always_send_to'))) {
+                $force = true;
+            }
             $send = true;
             if (true !== $force) {
                 $logs = EmailReminderEmailRecord::get()->filter($filter);
