@@ -152,13 +152,12 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
         return str_replace($searchString, $replace, $str);
     }
 
-    protected function removeLinkExtras(string $link) : string
+    protected function removeLinkExtras(string $link): string
     {
         $link = str_replace('?stage=Stage', '?', $link);
         $link = str_replace('&stage=Stage', '&', $link);
         $link = rtrim($link, '?');
-        $link = rtrim($link, '&');
 
-        return $link;
+        return rtrim($link, '&');
     }
 }

@@ -45,10 +45,10 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
 
     /**
      * emails always to be included in mail out, even if sent already...
+     *
      * @var array
      */
     private static $always_send_to = [];
-
 
     public function setTestOnly(?bool $b = true): self
     {
@@ -58,7 +58,8 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
     }
 
     /**
-     * returns true on success
+     * returns true on success.
+     *
      * @param EmailReminderNotificationSchedule $reminder
      * @param DataObject|string                 $recordOrEmail
      * @param bool                              $isTestOnly
@@ -102,15 +103,14 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
     }
 
     /**
-     * returns true on success
-     * @param  EmailReminderNotificationSchedule     $reminder
-     * @param  DataObject|string                     $recordOrEmail
-     * @param  bool                                  $isTestOnly
-     * @param  bool                                  $force
+     * returns true on success.
      *
-     * @return bool
+     * @param EmailReminderNotificationSchedule $reminder
+     * @param DataObject|string                 $recordOrEmail
+     * @param bool                              $isTestOnly
+     * @param bool                              $force
      */
-    protected function sendEmail($reminder, $recordOrEmail, ?bool $isTestOnly = false, ?bool $force = false) : bool
+    protected function sendEmail($reminder, $recordOrEmail, ?bool $isTestOnly = false, ?bool $force = false): bool
     {
         // always send test
         if ($isTestOnly) {
@@ -136,12 +136,14 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
             $filter['ExternalRecordID'] = $record->ID;
             $filter['EmailTo'] = $email;
             // always send to email
-            if($email === Config::inst()->get(Email::class, 'admin_email')) {
+            if ($email === Config::inst()->get(Email::class, 'admin_email')) {
                 $force = true;
             }
-            if(in_array($email, $this->Config()->get('always_send_to'))) {
+
+            if (in_array($email, $this->Config()->get('always_send_to'), true)) {
                 $force = true;
             }
+
             $send = true;
             if (true !== $force) {
                 $logs = EmailReminderEmailRecord::get()->filter($filter);

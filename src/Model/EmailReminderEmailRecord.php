@@ -34,6 +34,7 @@ class EmailReminderEmailRecord extends DataObject
         'HasTried' => true,
         'Created' => true,
     ];
+
     private static $field_labels = [
         'EmailTo' => 'To',
         'ExternalRecordClassName' => true,
