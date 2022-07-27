@@ -2,24 +2,8 @@
 name: EmailReminder
 ---
 
-EmailReminder_DailyMailOut:
-  daily_limit: 20
-  replacer_class: 'MyReplacerClass'
-
-EmailReminder_ModelAdmin:
-  menu_icon: 'CoolStuff.png'
-  menu_priority: 3
-
-EmailReminder_Mailer:
-  css_file: ''
-
-EmailReminder_NotificationSchedule:
-  grace_days: 3
-  default_data_object: 'Member'
-  default_email_field: 'Email'
-  default_date_field: 'ExpiresDateField'
-  mail_out_class: 'MyScheduledMailOutClass'
-  disabled_checkbox_label: 'Disable'
-  replaceableFields:
-    - MyField1
-    - MyField2
+SunnySideUp\EmailReminder\Api\EmailReminderEmogrifier:
+  css_file: 'vendor/sunnysideup/email_reminder/client/css/example.css'
+SunnySideUp\EmailReminder\Api\EmailReminderMailOut:
+  always_send_to:
+    - a@b.com

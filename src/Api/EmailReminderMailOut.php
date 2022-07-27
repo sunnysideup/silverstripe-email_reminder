@@ -135,19 +135,17 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
             $filter['ExternalRecordClassName'] = $record->ClassName;
             $filter['ExternalRecordID'] = $record->ID;
             $filter['EmailTo'] = $email;
-            // always send to email
-            if ($email === Config::inst()->get(Email::class, 'admin_email')) {
-                $force = true;
-            }
-
-            if (in_array($email, $this->Config()->get('always_send_to'), true)) {
+            // always send to admin
+            if (
+                $email === Config::inst()->get(Email::class, 'admin_email') ||
+                in_array($email, $this->Config()->get('always_send_to'), true)
+            ) {
                 $force = true;
             }
 
             $send = true;
             if (true !== $force) {
                 $logs = EmailReminderEmailRecord::get()->filter($filter);
-                $send = true;
                 foreach ($logs as $log) {
                     if (! $log->canSendAgain()) {
                         $send = false;
@@ -168,6 +166,7 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
     /**
      * @param EmailReminderNotificationSchedule $reminder
      * @param DataObject                        $record
+     * @param array                             $filter
      * @param bool                              $isTestOnly
      */
     protected function sendInner(string $email, $reminder, $record, array $filter, ?bool $isTestOnly = false): bool
