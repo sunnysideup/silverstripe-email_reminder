@@ -7,3 +7,5 @@ SunnySideUp\EmailReminder\Api\EmailReminderEmogrifier:
 SunnySideUp\EmailReminder\Api\EmailReminderMailOut:
   always_send_to:
     - a@b.com
+SunnySideUp\EmailReminder\Api\EmailReminderMailOut:
+  template: Sunnysideup/EmailReminder/Email/EmailReminderStandardTemplate

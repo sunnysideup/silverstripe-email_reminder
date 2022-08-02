@@ -41,7 +41,7 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
      *
      * @var string
      */
-    private static $template = 'SunnySideUp/EmailReminder/Email/EmailReminderStandardTemplate';
+    private static $template = 'Sunnysideup/EmailReminder/Email/EmailReminderStandardTemplate';
 
     /**
      * emails always to be included in mail out, even if sent already...
