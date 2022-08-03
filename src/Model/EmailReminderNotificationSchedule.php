@@ -272,7 +272,7 @@ class EmailReminderNotificationSchedule extends DataObject
         }
 
         $fields->addFieldsToTab(
-            'Root.Sent',
+            'Root.Test',
             [
                 TextareaField::create('SendTestTo', 'Send test email to ...')
                     ->setDescription(
