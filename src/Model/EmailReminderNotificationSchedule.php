@@ -195,7 +195,7 @@ class EmailReminderNotificationSchedule extends DataObject
         $fields->removeFieldFromTab('Root', 'EmailsSent');
 
         if ($this->IsImmediate()) {
-            $fields->removeByName(['DateField', 'Days', 'RepeatDays']);
+            $fields->removeByName(['DateField', 'Days',]);
         } else {
             $fields->addFieldsToTab(
                 'Root.Main',
@@ -218,19 +218,6 @@ class EmailReminderNotificationSchedule extends DataObject
                                 'How many days in advance (before) or in arrears (after) of the expiration date should this email be sent? </br>This field is ignored if set to send immediately.'
                             )
                         )->setScale(0),
-
-                    NumericField::create('RepeatDays', 'Repeat Cycle Days')
-                        ->setDescription(
-                            DBField::create_field(
-                                'HTMLText',
-                                '
-                                Number of days after which the same reminder can be sent to the same email address.
-                                <br />We allow an e-mail to be sent to one specific email address for one specific reminder only once.
-                                <br />In this field you can indicate for how long we will apply this rule.
-                                <br />If set to set to zero, no reminders will be sent.
-                                '
-                            )
-                        )->setScale(0),
                 ]
             );
 
@@ -238,7 +225,23 @@ class EmailReminderNotificationSchedule extends DataObject
                 $fields->replaceField('DateField', $dateFieldField->performReadonlyTransformation());
             }
         }
-
+        $fields->addFieldsToTab(
+            'Root.Main',
+            [
+                NumericField::create('RepeatDays', 'Repeat Cycle Days')
+                    ->setDescription(
+                        DBField::create_field(
+                            'HTMLText',
+                            '
+                            Number of days after which the same reminder can be sent to the same email address.
+                            <br />We allow an e-mail to be sent to one specific email address for one specific reminder only once.
+                            <br />In this field you can indicate for how long we will apply this rule.
+                            <br />If set to set to zero, no reminders will be sent.
+                            '
+                        )
+                    )->setScale(0),
+            ]
+        );
         $fields->addFieldsToTab(
             'Root.EmailContent',
             [
@@ -633,7 +636,7 @@ class EmailReminderNotificationSchedule extends DataObject
      */
     protected function dateFieldOptions()
     {
-        return $this->getFieldsFromDataObject(['Date']);
+        return $this->getFieldsFromDataObject(['Date', 'DBDatetime']);
     }
 
     /**
@@ -650,7 +653,9 @@ class EmailReminderNotificationSchedule extends DataObject
             $object = Injector::inst()->get($this->DataObject);
 
             if ($object) {
-                $allOptions = $object->stat('db');
+                $allOptions = $object->config()->get('db');
+                $allOptions['Created'] = 'DBDatetime';
+                $allOptions['LastEdited'] = 'DBDatetime';
                 $fieldLabels = $object->fieldLabels();
                 foreach ($allOptions as $fieldName => $fieldType) {
                     foreach ($fieldTypeMatchArray as $matchString) {
@@ -698,5 +703,13 @@ class EmailReminderNotificationSchedule extends DataObject
         }
 
         return '1 = 2';
+    }
+
+    public function canDelete($member = null)
+    {
+        if($this->EmailsSent()->exists()) {
+            return false;
+        }
+        return parent::canDelete($member);
     }
 }
