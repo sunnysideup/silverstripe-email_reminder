@@ -156,6 +156,8 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
     {
         $link = str_replace('?stage=Stage', '?', $link);
         $link = str_replace('&stage=Stage', '&', $link);
+        $link = str_replace('??', '?', $link);
+        $link = str_replace('&&', '&', $link);
         $link = rtrim($link, '?');
 
         return rtrim($link, '&');
