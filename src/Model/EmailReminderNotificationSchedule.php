@@ -595,7 +595,7 @@ class EmailReminderNotificationSchedule extends DataObject
         }
 
         if (! $this->Code) {
-            $this->Code = md5($this->ClassName . \_::class . $this->ID);
+            $this->Code = md5($this->ClassName . '_' . $this->ID);
         }
 
         if ($this->SendTestTo) {
