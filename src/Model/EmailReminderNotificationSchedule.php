@@ -162,16 +162,6 @@ class EmailReminderNotificationSchedule extends DataObject
         return 'immediately' === $this->BeforeAfter;
     }
 
-    public function i18n_singular_name()
-    {
-        return self::$singular_name;
-    }
-
-    public function i18n_plural_name()
-    {
-        return self::$plural_name;
-    }
-
     public function populateDefaults()
     {
         $return = parent::populateDefaults();
