@@ -60,7 +60,7 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
             } else {
                 $recordMethod = $moreInfoArray['RecordMethod'] ?? '';
                 if($recordMethod) {
-                    $str = $this->basicReplacement($method, $reminder, $record, $searchString, $str);
+                    $str = $this->basicReplacement($recordMethod, $record, $searchString, $str);
                 }
             }
         }
@@ -76,7 +76,7 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
     public function replaceHelpList(?bool $asHTML = false)
     {
         $newArray = [];
-        foreach ($this->replaceArray as $searchString => $moreInfoArray) {
+        foreach ($this->getReplaceArray() as $searchString => $moreInfoArray) {
             $newArray[$searchString] = $moreInfoArray['Title'];
         }
 
@@ -163,7 +163,7 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
 
     protected function basicReplacement(string $recordMethod, $record, string $searchString, string $str ) : string
     {
-        $replace = '';
+        $replace = $record->ClassName.'-'.$record->ID.'-'.$recordMethod;
         if ($record->hasMethod($recordMethod)) {
             (string) $replace = $record->$recordMethod();
         }

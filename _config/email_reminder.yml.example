@@ -15,10 +15,10 @@ SunnySideUp\EmailReminder\Api\EmailReminderMailOut:
 SunnySideUp\EmailReminder\Api\EmailReminderReplacerClassBase:
     replace_array:
 
-        REPLACE_ME:
+        '[REPLACE_ME]':
             Title: 'Something else'
             RecordMethod: 'EmailTemplateReplaceValueProvider'
 
-        REPLACE_ME_ALSO:
+        '[REPLACE_ME_ALSO]':
             Title: 'Something even better'
             RecordMethod: 'EmailTemplateReplaceMeAlsoValueProvider'
