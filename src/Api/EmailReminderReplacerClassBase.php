@@ -5,11 +5,16 @@ namespace SunnySideUp\EmailReminder\Api;
 use SilverStripe\Control\Director;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\View\ViewableData;
+
+use SilverStripe\Core\Config\Config;
 use SunnySideUp\EmailReminder\Email\EmailReminderMailer;
 use SunnySideUp\EmailReminder\Interfaces\EmailReminderReplacerClassInterface;
 
 class EmailReminderReplacerClassBase extends ViewableData implements EmailReminderReplacerClassInterface
 {
+
+    private static $replace_array = [];
+
     protected $replaceArray = [
         '[PASSWORD_REMINDER_LINK]' => [
             'Title' => 'Password reminder page',
@@ -38,7 +43,8 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
      */
     public function getReplaceArray()
     {
-        return $this->replaceArray;
+        return
+            $this->replaceArray + Config::inst()->get(self::class, 'replace_array');
     }
 
     /**
@@ -48,8 +54,15 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
     public function replace($reminder, $record, string $str): string
     {
         foreach ($this->getReplaceArray() as $searchString => $moreInfoArray) {
-            $method = $moreInfoArray['Method'];
-            $str = $this->{$method}($reminder, $record, $searchString, $str);
+            $method = $moreInfoArray['Method'] ?? '';
+            if($method) {
+                $str = $this->{$method}($reminder, $record, $searchString, $str);
+            } else {
+                $recordMethod = $moreInfoArray['RecordMethod'] ?? '';
+                if($recordMethod) {
+                    $str = $this->basicReplacement($method, $reminder, $record, $searchString, $str);
+                }
+            }
         }
 
         return $str;
@@ -136,6 +149,7 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
      */
     protected function VerificationLink($reminder, $record, string $searchString, string $str): string
     {
+
         $replace = '/';
         if ($record->hasMethod('EmailReminderVerificationLink')) {
             $replace = $record->EmailReminderVerificationLink();
@@ -143,7 +157,16 @@ class EmailReminderReplacerClassBase extends ViewableData implements EmailRemind
 
         $replace = Director::absoluteURL($replace);
         $replace = $this->removeLinkExtras($replace);
+        return $this->replacerInner($searchString, $replace, $str);
+    }
 
+
+    protected function basicReplacement(string $recordMethod, $record, string $searchString, string $str ) : string
+    {
+        $replace = '';
+        if ($record->hasMethod($recordMethod)) {
+            (string) $replace = $record->$recordMethod();
+        }
         return $this->replacerInner($searchString, $replace, $str);
     }
 

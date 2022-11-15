@@ -4,8 +4,21 @@ name: EmailReminder
 
 SunnySideUp\EmailReminder\Api\EmailReminderEmogrifier:
   css_file: 'vendor/sunnysideup/email_reminder/client/css/example.css'
+
 SunnySideUp\EmailReminder\Api\EmailReminderMailOut:
   always_send_to:
     - a@b.com
+
 SunnySideUp\EmailReminder\Api\EmailReminderMailOut:
   template: Sunnysideup/EmailReminder/Email/EmailReminderStandardTemplate
+
+SunnySideUp\EmailReminder\Api\EmailReminderReplacerClassBase:
+    replace_array:
+
+        REPLACE_ME:
+            Title: 'Something else'
+            RecordMethod: 'EmailTemplateReplaceValueProvider'
+
+        REPLACE_ME_ALSO:
+            Title: 'Something even better'
+            RecordMethod: 'EmailTemplateReplaceMeAlsoValueProvider'
