@@ -199,13 +199,14 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
         );
         $Cc = '';
         $Bcc = '';
-        foreach([$this->CarbonCopyMethod => 'Cc', $this->BlindCarbonCopyMethod => 'Bcc'] as $recordMethod => $emailMethod) {
+        $otherEmails =[];
+        $carbonCopyFields = [$reminder->CarbonCopyMethod => 'setCc', $reminder->BlindCarbonCopyMethod => 'setBcc'];
+        foreach ($carbonCopyFields as $recordMethod => $emailMethod) {
             if($recordMethod) {
                 $array = (array) $record->$recordMethod();
                 if(! empty($array)) {
                     $email->$emailMethod($array);
-                    //sets Cc and Bcc double $$ is on purpose
-                    $$emailMethod = $array;
+                    $otherEmails[$emailMethod] = $array;
                 }
             }
         }
@@ -213,18 +214,22 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
         $email->setHTMLTemplate(Config::inst()->get(EmailReminderMailOut::class, 'template'));
 
         $email->setData($data);
+        try {
+            $outcome = $email->send();
+        } catch (\Exception $e) {
+            $outcome = false;
+        }
 
         // send email
-        $outcome = $email->send();
-
+        print_r($Cc);
         // create log - using filter as starting point
         $log = EmailReminderEmailRecord::create($filter);
         $log->HasTried = true;
         $log->Result = (bool) $outcome;
         $log->Subject = $subject;
         $log->EmailContent = $email->body;
-        $log->EmailCc = implode(', ', $Cc);
-        $log->EmailBcc = implode(', ', $Bcc);
+        $log->EmailCc = implode(', ', $otherEmails['setCc'] ?? []);
+        $log->EmailBcc = implode(', ', $otherEmails['setBcc'] ?? []);
         $log->write();
 
         return (bool) $log->Result;
