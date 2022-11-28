@@ -214,14 +214,14 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
         $email->setHTMLTemplate(Config::inst()->get(EmailReminderMailOut::class, 'template'));
 
         $email->setData($data);
+
+        // send email
         try {
             $outcome = $email->send();
         } catch (\Exception $e) {
             $outcome = false;
         }
 
-        // send email
-        print_r($Cc);
         // create log - using filter as starting point
         $log = EmailReminderEmailRecord::create($filter);
         $log->HasTried = true;
