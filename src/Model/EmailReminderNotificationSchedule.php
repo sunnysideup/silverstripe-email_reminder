@@ -107,6 +107,8 @@ class EmailReminderNotificationSchedule extends DataObject
         'Code' => 'Varchar(64)',
         'DataObject' => 'Varchar(255)',
         'EmailField' => 'Varchar(100)',
+        'CarbonCopyMethod' => 'Varchar(100)',
+        'BlindCarbonCopyMethod' => 'Varchar(100)',
         // days stuff
         'BeforeAfter' => "Enum('before,after,immediately','before')",
         'DateField' => 'Varchar(100)',
@@ -343,15 +345,30 @@ class EmailReminderNotificationSchedule extends DataObject
             $fields->replaceField('DataObject', ReadonlyField ::create('DataObjectNice', 'Works on ...', $whatIsThis));
         }
 
-        $fields->addFieldToTab(
+        $fields->addFieldsToTab(
             'Root.Advanced',
-            $emailFieldField = DropdownField::create(
-                'EmailField',
-                'Email Field',
-                $this->emailFieldOptions()
-            )
-                ->setDescription('Select the field that will contain a valid email address')
-                ->setEmptyString('[ Please select ]')
+            [
+                $emailFieldField = DropdownField::create(
+                    'EmailField',
+                    'Email Field',
+                    $this->emailFieldOptions()
+                )
+                    ->setDescription('Select the field that will contain a valid email address')
+                    ->setEmptyString('[ Please select ]'),
+                ReadonlyField::create(
+                    'CarbonCopyMethod',
+                    'Carbon Copy (CC) method',
+                    $this->emailFieldOptions()
+                )
+                    ->setDescription('This is set by your developer'),
+                ReadonlyField::create(
+                    'BlindCarbonCopyMethod',
+                    'Blind Carbon Copy (BCC) method',
+                    $this->emailFieldOptions()
+                )
+                    ->setDescription('This is set by your developer'),
+
+            ]
         );
         if ($this->Config()->get('default_email_field')) {
             $fields->replaceField('EmailField', $emailFieldField->performReadonlyTransformation());

@@ -17,6 +17,8 @@ class EmailReminderEmailRecord extends DataObject
 
     private static $db = [
         'EmailTo' => 'Varchar(100)',
+        'EmailCc' => 'Text',
+        'EmailBcc' => 'Text',
         'ExternalRecordClassName' => 'Varchar(255)',
         'ExternalRecordID' => 'Int',
         'HasTried' => 'Boolean',

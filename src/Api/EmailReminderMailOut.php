@@ -197,6 +197,18 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
             $email,
             $subject
         );
+        $Cc = '';
+        $Bcc = '';
+        foreach([$this->CarbonCopyMethod => 'Cc', $this->BlindCarbonCopyMethod => 'Bcc'] as $recordMethod => $emailMethod) {
+            if($recordMethod) {
+                $array = (array) $record->$recordMethod();
+                if(! empty($array)) {
+                    $email->$emailMethod($array);
+                    //sets Cc and Bcc double $$ is on purpose
+                    $$emailMethod = $array;
+                }
+            }
+        }
 
         $email->setHTMLTemplate(Config::inst()->get(EmailReminderMailOut::class, 'template'));
 
@@ -211,6 +223,8 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
         $log->Result = (bool) $outcome;
         $log->Subject = $subject;
         $log->EmailContent = $email->body;
+        $log->EmailCc = implode(', ', $Cc);
+        $log->EmailBcc = implode(', ', $Bcc);
         $log->write();
 
         return (bool) $log->Result;
