@@ -5,7 +5,6 @@ namespace SunnySideUp\EmailReminder\Model;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\ORM\DataObject;
-
 use Sunnysideup\CmsEditLinkField\Forms\Fields\CMSEditLinkField;
 
 class EmailReminderEmailRecord extends DataObject
@@ -18,10 +17,12 @@ class EmailReminderEmailRecord extends DataObject
 
     private static $db = [
         'EmailTo' => 'Varchar(100)',
-        'ExternalRecordClassName' => 'Varchar(100)',
+        'EmailCc' => 'Text',
+        'EmailBcc' => 'Text',
+        'ExternalRecordClassName' => 'Varchar(255)',
         'ExternalRecordID' => 'Int',
-        'Result' => 'Boolean',
         'HasTried' => 'Boolean',
+        'Result' => 'Boolean',
         'IsTestOnly' => 'Boolean',
         'Subject' => 'Varchar',
         'EmailContent' => 'HTMLText',
@@ -34,6 +35,14 @@ class EmailReminderEmailRecord extends DataObject
         'Result' => true,
         'HasTried' => true,
         'Created' => true,
+    ];
+
+    private static $field_labels = [
+        'EmailTo' => 'To',
+        'ExternalRecordClassName' => true,
+        'ExternalRecordID' => true,
+        'HasTried' => 'Tried to sent',
+        'Result' => 'Has been sent',
     ];
 
     private static $has_one = [
@@ -52,7 +61,7 @@ class EmailReminderEmailRecord extends DataObject
     private static $default_sort = ['Created' => 'DESC', 'ID' => 'DESC'];
 
     /**
-     * PartialMatchFilter
+     * PartialMatchFilter.
      */
     private static $searchable_fields = [
         'EmailTo' => 'PartialMatchFilter',
@@ -96,10 +105,11 @@ class EmailReminderEmailRecord extends DataObject
     {
         $fields = parent::getCMSFields();
         $linkedObject = $this->FindLinkedObject();
+        $fields->removeByName('ExternalRecordClassName');
+        $fields->removeByName('ExternalRecordID');
         $fields->addFieldsToTab(
             'Root.Details',
             [
-                $fields->dataFieldByName('EmailTo'),
                 CMSEditLinkField::create('LinksTo', 'Linked To', $linkedObject),
                 $fields->dataFieldByName('HasTried'),
                 $fields->dataFieldByName('Result'),
@@ -114,31 +124,36 @@ class EmailReminderEmailRecord extends DataObject
                 $this->EmailContent
             )
         );
+
         return $fields;
     }
 
     /**
      * tests to see if an email can be sent
-     * the emails can only be sent once unless previous attempts have failed
+     * the emails can only be sent once unless previous attempts have failed.
      */
-    public function canSendAgain()
+    public function canSendAgain(): bool
     {
-        $send = true;
+        $canSendAgain = true;
         if ($this->Result) {
             if ($this->IsTestOnly) {
                 return true;
             }
-            $send = false;
-            $numberOfSecondsBeforeYouCanSendAgain = $this->EmailReminderNotificationSchedule()->RepeatDays * 86400;
-            $todaysTS = strtotime('NOW');
 
-            $creationTS = strtotime($this->Created);
-            $difference = $todaysTS - $creationTS;
-            if ($difference > $numberOfSecondsBeforeYouCanSendAgain) {
-                $send = true;
+            $canSendAgain = false;
+            $repeatValue = $this->EmailReminderNotificationSchedule()->RepeatDays;
+            if ($repeatValue) {
+                $numberOfSecondsBeforeYouCanSendAgain = $repeatValue * 86400;
+                $todaysTS = strtotime('NOW');
+                $creationTS = strtotime($this->Created);
+                $difference = $todaysTS - $creationTS;
+                if ($difference > $numberOfSecondsBeforeYouCanSendAgain) {
+                    $canSendAgain = true;
+                }
             }
         }
-        return $send;
+
+        return $canSendAgain;
     }
 
     /**
@@ -151,6 +166,7 @@ class EmailReminderEmailRecord extends DataObject
             $className = $this->ExternalRecordClassName;
             $linkedObject = $className::get()->byID($this->ExternalRecordID);
         }
+
         return $linkedObject ?: $this;
     }
 }
