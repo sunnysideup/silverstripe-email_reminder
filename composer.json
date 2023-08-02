@@ -22,8 +22,8 @@
         }
     ],
     "require": {
-        "pelago/emogrifier": "v5.0.0",
-        "silverstripe/recipe-cms": "^4.4",
+        "pelago/emogrifier": "v7.0.0",
+        "silverstripe/cms": "^4 || ^5",
         "sunnysideup/sanitise-class-name": "dev-master",
         "sunnysideup/yes-no-any-filter": "dev-master"
     },
