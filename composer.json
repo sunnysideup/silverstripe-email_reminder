@@ -22,7 +22,7 @@
         }
     ],
     "require": {
-        "pelago/emogrifier": "v7.0.0",
+        "pelago/emogrifier": "^v7.0.0",
         "silverstripe/cms": "^4 || ^5",
         "sunnysideup/sanitise-class-name": "dev-master",
         "sunnysideup/yes-no-any-filter": "dev-master"
