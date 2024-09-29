@@ -28,6 +28,25 @@ use SunnySideUp\EmailReminder\Interfaces\EmailReminderMailOutInterface;
 use SunnySideUp\EmailReminder\Interfaces\EmailReminderReplacerClassInterface;
 use Sunnysideup\SanitiseClassName\Sanitiser;
 
+/**
+ * Class \SunnySideUp\EmailReminder\Model\EmailReminderNotificationSchedule
+ *
+ * @property string $Code
+ * @property string $DataObject
+ * @property string $EmailField
+ * @property string $CarbonCopyMethod
+ * @property string $BlindCarbonCopyMethod
+ * @property string $BeforeAfter
+ * @property string $DateField
+ * @property int $Days
+ * @property int $RepeatDays
+ * @property string $EmailFrom
+ * @property string $EmailSubject
+ * @property string $Content
+ * @property bool $Disable
+ * @property string $SendTestTo
+ * @method DataList|EmailReminderEmailRecord[] EmailsSent()
+ */
 class EmailReminderNotificationSchedule extends DataObject
 {
     /**

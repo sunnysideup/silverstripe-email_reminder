@@ -7,6 +7,22 @@ use SilverStripe\Forms\LiteralField;
 use SilverStripe\ORM\DataObject;
 use Sunnysideup\CmsEditLinkField\Forms\Fields\CMSEditLinkField;
 
+/**
+ * Class \SunnySideUp\EmailReminder\Model\EmailReminderEmailRecord
+ *
+ * @property string $EmailTo
+ * @property string $EmailCc
+ * @property string $EmailBcc
+ * @property string $ExternalRecordClassName
+ * @property int $ExternalRecordID
+ * @property bool $HasTried
+ * @property bool $Result
+ * @property bool $IsTestOnly
+ * @property string $Subject
+ * @property string $EmailContent
+ * @property int $EmailReminderNotificationScheduleID
+ * @method EmailReminderNotificationSchedule EmailReminderNotificationSchedule()
+ */
 class EmailReminderEmailRecord extends DataObject
 {
     private static $singular_name = 'Email Reminder Record';
