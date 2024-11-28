@@ -260,8 +260,7 @@ class EmailReminderNotificationSchedule extends DataObject
                     ->setDescription('The email from address, eg: "My Company info@example.com"'),
                 $subjectField = TextField::create('EmailSubject', 'Email Subject Line')
                     ->setDescription('The subject of the email'),
-                $contentField = HTMLEditorField::create('Content', 'Email Content')
-                    ->SetRows(20),
+                $contentField = HTMLEditorField::create('Content', 'Email Content'),
             ]
         );
         $obj = $this->getReplacerObject();
@@ -361,7 +360,7 @@ class EmailReminderNotificationSchedule extends DataObject
                 ->setDescription('This is a : ' . $whatIsThis)
         );
         if ($this->Config()->get('default_data_object')) {
-            $fields->replaceField('DataObject', ReadonlyField ::create('DataObjectNice', 'Works on ...', $whatIsThis));
+            $fields->replaceField('DataObject', ReadonlyField::create('DataObjectNice', 'Works on ...', $whatIsThis));
         }
 
         $fields->addFieldsToTab(
@@ -733,7 +732,7 @@ class EmailReminderNotificationSchedule extends DataObject
 
     public function canDelete($member = null)
     {
-        if($this->EmailsSent()->exists()) {
+        if ($this->EmailsSent()->exists()) {
             return false;
         }
         return parent::canDelete($member);
