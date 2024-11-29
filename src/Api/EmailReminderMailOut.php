@@ -197,14 +197,14 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
             $email,
             $subject
         );
-        $Cc = '';
-        $Bcc = '';
-        $otherEmails =[];
+        // $Cc = '';
+        // $Bcc = '';
+        $otherEmails = [];
         $carbonCopyFields = [$reminder->CarbonCopyMethod => 'setCc', $reminder->BlindCarbonCopyMethod => 'setBcc'];
         foreach ($carbonCopyFields as $recordMethod => $emailMethod) {
-            if($recordMethod) {
+            if ($recordMethod) {
                 $array = (array) $record->$recordMethod();
-                if(! empty($array)) {
+                if (! empty($array)) {
                     $email->$emailMethod($array);
                     $otherEmails[$emailMethod] = $array;
                 }
@@ -217,7 +217,8 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
 
         // send email
         try {
-            $outcome = $email->send();
+            $email->send();
+            $outcome = true;
         } catch (\Exception $e) {
             $outcome = false;
         }
@@ -227,7 +228,7 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
         $log->HasTried = true;
         $log->Result = (bool) $outcome;
         $log->Subject = $subject;
-        $log->EmailContent = $email->body;
+        $log->EmailContent = $email->getBody();
         $log->EmailCc = implode(', ', $otherEmails['setCc'] ?? []);
         $log->EmailBcc = implode(', ', $otherEmails['setBcc'] ?? []);
         $log->write();
