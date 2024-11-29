@@ -14,6 +14,7 @@ use SunnySideUp\EmailReminder\Interfaces\EmailReminderMailOutInterface;
 use SunnySideUp\EmailReminder\Interfaces\EmailReminderReplacerClassInterface;
 use SunnySideUp\EmailReminder\Model\EmailReminderEmailRecord;
 use SunnySideUp\EmailReminder\Model\EmailReminderNotificationSchedule;
+use Exception;
 
 class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutInterface
 {
@@ -219,7 +220,7 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
         try {
             $email->send();
             $outcome = true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $outcome = false;
         }
 
