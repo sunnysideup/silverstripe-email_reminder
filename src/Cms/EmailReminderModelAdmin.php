@@ -6,9 +6,13 @@ use SilverStripe\Admin\ModelAdmin;
 use SunnySideUp\EmailReminder\Model\EmailReminderEmailRecord;
 use SunnySideUp\EmailReminder\Model\EmailReminderNotificationSchedule;
 
+/**
+ * Class \SunnySideUp\EmailReminder\Cms\EmailReminderModelAdmin
+ *
+ */
 class EmailReminderModelAdmin extends ModelAdmin
 {
-    /* Prevent importing of CSV */
+    // Prevent importing of CSV
     public $showImportForm = false;
 
     private static $managed_models = [
