@@ -102,12 +102,12 @@ class EmailReminderEmailRecord extends DataObject
         return false;
     }
 
-    public function canEdit($member = null, $context = [])
+    public function canEdit($member = null)
     {
         return false;
     }
 
-    public function canDelete($member = null, $context = [])
+    public function canDelete($member = null)
     {
         return false;
     }
