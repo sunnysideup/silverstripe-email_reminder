@@ -524,8 +524,7 @@ class EmailReminderNotificationSchedule extends DataObject
              */
             $objects = $className::get()->sort('RAND()')
                 ->where('"' . $this->DateField . '" IS NOT NULL AND "' . $this->DateField . '" <> \'\' AND "' . $this->DateField . '" <> 0')
-                ->limit($limit)
-            ;
+                ->limit($limit);
             if ($objects->count()) {
                 return array_unique($objects->column($this->DateField));
             }
@@ -538,7 +537,7 @@ class EmailReminderNotificationSchedule extends DataObject
     {
         $controller = Injector::inst()->get(EmailReminderModelAdmin::class);
 
-        return $controller->Link() . Sanitiser::sanitise($this->ClassName) . '/EditForm/field/' . Sanitiser::sanitise($this->ClassName) . '/item/' . $this->ID . '/edit';
+        return $controller->Link() . '/' . Sanitiser::sanitise($this->ClassName) . '/EditForm/field/' . Sanitiser::sanitise($this->ClassName) . '/item/' . $this->ID . '/edit';
     }
 
     /**
