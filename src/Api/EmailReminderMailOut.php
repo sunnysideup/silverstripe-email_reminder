@@ -229,7 +229,7 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
         $log->HasTried = true;
         $log->Result = (bool) $outcome;
         $log->Subject = $subject;
-        $log->EmailContent = $email->getBody();
+        $log->EmailContent = $email->getBody()?->bodyToString();
         $log->EmailCc = implode(', ', $otherEmails['setCc'] ?? []);
         $log->EmailBcc = implode(', ', $otherEmails['setBcc'] ?? []);
         $log->write();
