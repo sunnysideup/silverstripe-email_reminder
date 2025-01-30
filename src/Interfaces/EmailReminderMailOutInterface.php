@@ -4,36 +4,21 @@ namespace SunnySideUp\EmailReminder\Interfaces;
 
 interface EmailReminderMailOutInterface
 {
-    public function setVerbose($b);
+    public function setTestOnly(?bool $b = true): self;
 
-    public function setTestOnly($b);
-
-    /**
-     * @todo: https://docs.silverstripe.org/en/3.1/developer_guides/extending/injector/ implement
-     * for email class to be used...
-     *
-     * expire date = 08-09
-     * days before 7
-     * min: current date + 7 - grace days
-     * min: current date + 7
-     *
-     * expire date = 08-09
-     * days after 7
-     * min: current date - 7
-     * max current date - 7 - grace days
-     *
-     * @param  [type] $request [description]
-     * @return [type]          [description]
-     */
-    public function run($request);
+    public function getReplacerObject(): ?EmailReminderReplacerClassInterface;
 
     /**
-     * @return EmailReminderReplacerClassInterface|null
+     * @param mixed $record
+     * @param mixed $content
      */
-    public function getReplacerObject();
+    public function getParsedContent($record, $content): string;
 
     /**
-     * @return string
+     * @param EmailReminderNotificationSchedule $reminder
+     * @param DataObject|string                 $recordOrEmail
+     * @param bool                              $isTestOnly
+     * @param mixed                             $force
      */
-    public function getParsedContent($record, $content);
+    public function send($reminder, $recordOrEmail, ?bool $isTestOnly = false, ?bool $force = false): bool;
 }

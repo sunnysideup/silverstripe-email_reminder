@@ -1,36 +1,36 @@
 {
-    "name": "sunnysideup/email_reminder",
-    "type": "silverstripe-vendormodule",
-    "description": "Sends email reminders to members / users based on a selectable date field in the Member Record.",
-    "keywords": [
-        "Silverstripe-CMS",
-        "CMS",
-        "Silverstripe",
-        "member",
-        "user",
-        "emogrifier",
-        "email",
-        "reminder",
-        "membership"
-    ],
-    "license": "BSD-3-Clause",
-    "authors": [
-        {
-            "name": "Nicolaas Francken",
-            "email": "modules@sunnysideup.co.nz",
-            "role": "lead developer"
-        }
-    ],
-    "require": {
-        "pelago/emogrifier": "v5.0.0",
-        "silverstripe/recipe-cms": "^4.4",
-        "sunnysideup/sanitise-class-name": "*",
-        "sunnysideup/yes-no-any-filter": "dev-master"
-    },
-    "extra": [],
-    "autoload": {
-        "psr-4": {
-            "SunnySideUp\\EmailReminder\\": "src/"
-        }
+  "name": "sunnysideup/email_reminder",
+  "type": "silverstripe-vendormodule",
+  "description": "Sends email reminders to members / users based on a selectable date field in the Member Record.",
+  "keywords": [
+    "Silverstripe-CMS",
+    "CMS",
+    "Silverstripe",
+    "member",
+    "user",
+    "emogrifier",
+    "email",
+    "reminder",
+    "membership"
+  ],
+  "license": "BSD-3-Clause",
+  "authors": [
+    {
+      "name": "Nicolaas Francken",
+      "email": "modules@sunnysideup.co.nz",
+      "role": "lead developer"
     }
+  ],
+  "require": {
+    "pelago/emogrifier": "^v7.0.0",
+    "silverstripe/cms": "^4 || ^5",
+    "sunnysideup/sanitise-class-name": "dev-master",
+    "sunnysideup/yes-no-any-filter": "dev-master"
+  },
+  "extra": [],
+  "autoload": {
+    "psr-4": {
+      "SunnySideUp\\EmailReminder\\": "src/"
+    }
+  }
 }
