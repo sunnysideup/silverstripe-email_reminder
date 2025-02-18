@@ -5,7 +5,9 @@ namespace SunnySideUp\EmailReminder\Model;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\Security\Permission;
 use Sunnysideup\CmsEditLinkField\Forms\Fields\CMSEditLinkField;
+use SunnySideUp\EmailReminder\Cms\EmailReminderModelAdmin;
 
 /**
  * Class \SunnySideUp\EmailReminder\Model\EmailReminderEmailRecord
@@ -95,6 +97,11 @@ class EmailReminderEmailRecord extends DataObject
     public function i18n_plural_name()
     {
         return self::$plural_name;
+    }
+
+    public function canView($member = null)
+    {
+        return Permission::check(EmailReminderModelAdmin::PERMISSION_PROVIDER_CODE, 'any', $member);
     }
 
     public function canCreate($member = null, $context = [])

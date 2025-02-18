@@ -22,6 +22,7 @@ use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\Security\Member;
+use SilverStripe\Security\Permission;
 use SunnySideUp\EmailReminder\Api\EmailReminderMailOut;
 use SunnySideUp\EmailReminder\Cms\EmailReminderModelAdmin;
 use SunnySideUp\EmailReminder\Interfaces\EmailReminderMailOutInterface;
@@ -456,9 +457,6 @@ class EmailReminderNotificationSchedule extends DataObject
         return $this->EmailFrom && $this->EmailSubject && $this->Content;
     }
 
-    /**
-     * @return bool
-     */
     public function validate()
     {
         $valid = parent::validate();
@@ -729,11 +727,27 @@ class EmailReminderNotificationSchedule extends DataObject
         return '1 = 2';
     }
 
+    public function canCreate($member = null, $context = [])
+    {
+        return Permission::check(EmailReminderModelAdmin::PERMISSION_PROVIDER_CODE, 'any', $member);
+    }
+
+    public function canView($member = null)
+    {
+        return Permission::check(EmailReminderModelAdmin::PERMISSION_PROVIDER_CODE, 'any', $member);
+    }
+
+    public function canEdit($member = null)
+    {
+        return Permission::check(EmailReminderModelAdmin::PERMISSION_PROVIDER_CODE, 'any', $member);
+    }
+
+
     public function canDelete($member = null)
     {
         if ($this->EmailsSent()->exists()) {
             return false;
         }
-        return parent::canDelete($member);
+        return Permission::check(EmailReminderModelAdmin::PERMISSION_PROVIDER_CODE, 'any', $member);
     }
 }
