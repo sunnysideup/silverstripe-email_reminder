@@ -1,10 +1,10 @@
-SilverStripe\ORM\DatabaseAdmin:
-  classname_value_remapping:
-    EmailReminder_DailyMailOut: SunnySideUp\EmailReminder\Tasks\EmailReminderDailyMailOut
-    EmailReminder_ReplacerClassBase: SunnySideUp\EmailReminder\Api\EmailReminderReplacerClassBase
-    EmailReminder_NotificationSchedule: SunnySideUp\EmailReminder\Model\EmailReminderNotificationSchedule
-    EmailReminder_EmailRecord: SunnySideUp\EmailReminder\Model\EmailReminderEmailRecord
-    EmailReminder_ReplacerClassInterface: SunnySideUp\EmailReminder\Interfaces\EmailReminderReplacerClassInterface
-    EmailReminder_MailOutInterface: SunnySideUp\EmailReminder\Interfaces\EmailReminderMailOutInterface
-    EmailReminder_Mailer: SunnySideUp\EmailReminder\Email\EmailReminderMailer
-    EmailReminder_ModelAdmin: SunnySideUp\EmailReminder\Cms\EmailReminderModelAdmin
+# SilverStripe\ORM\DatabaseAdmin:
+#   classname_value_remapping:
+#     EmailReminder_DailyMailOut: SunnySideUp\EmailReminder\Tasks\EmailReminderDailyMailOut
+#     EmailReminder_ReplacerClassBase: SunnySideUp\EmailReminder\Api\EmailReminderReplacerClassBase
+#     EmailReminder_NotificationSchedule: SunnySideUp\EmailReminder\Model\EmailReminderNotificationSchedule
+#     EmailReminder_EmailRecord: SunnySideUp\EmailReminder\Model\EmailReminderEmailRecord
+#     EmailReminder_ReplacerClassInterface: SunnySideUp\EmailReminder\Interfaces\EmailReminderReplacerClassInterface
+#     EmailReminder_MailOutInterface: SunnySideUp\EmailReminder\Interfaces\EmailReminderMailOutInterface
+#     EmailReminder_Mailer: SunnySideUp\EmailReminder\Email\EmailReminderMailer
+#     EmailReminder_ModelAdmin: SunnySideUp\EmailReminder\Cms\EmailReminderModelAdmin
