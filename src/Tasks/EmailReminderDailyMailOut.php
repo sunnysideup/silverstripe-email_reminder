@@ -7,13 +7,21 @@ use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\BuildTask;
+use SilverStripe\ORM\DB;
 use SunnySideUp\EmailReminder\Model\EmailReminderNotificationSchedule;
 
 class EmailReminderDailyMailOut extends BuildTask
 {
-    protected $verbose = false;
+    protected $verbose = true;
 
     protected $testOnly = false;
+
+    private static $segment = 'email-reminder-daily-mail-out';
+
+    protected $title = 'Email Reminder Daily Mail Out';
+
+    protected $description = 'Send out daily email reminders';
+
 
     public function setVerbose($b)
     {
@@ -50,20 +58,35 @@ class EmailReminderDailyMailOut extends BuildTask
     {
         $reminders = EmailReminderNotificationSchedule::get();
         foreach ($reminders as $reminder) {
+            if ($this->verbose) {
+                DB::alteration_message('Sending reminder for ' . $reminder->Title, 'created');
+            }
             if (! $reminder->hasValidFields()) {
+                if ($this->verbose) {
+                    DB::alteration_message('... Skip, does not have valid fields ' . $reminder->Title, 'deleted');
+                }
                 continue; // skip if task is not valid
             }
 
-            if (! $reminder->IsImmediate()) {
+            if ($reminder->IsImmediate()) {
+                if ($this->verbose) {
+                    DB::alteration_message('... Is immediate send, no need to send', 'edited');
+                }
                 continue; // skip if they are sent on the fly...
             }
 
             if ($reminder->Disable) {
+                if ($this->verbose) {
+                    DB::alteration_message('... Is disabled for daily, no need to send', 'edited');
+                }
                 continue; // skip if task is disable
             }
 
             // Use StartsWith to match Date and DateTime fields
             if ($this->testOnly) {
+                if ($this->verbose) {
+                    DB::alteration_message('... Sending test email', 'edited');
+                }
                 if ($reminder->SendTestTo) {
                     $emails = explode(',', $reminder->SendTestTo);
                     foreach ($emails as $email) {
@@ -72,8 +95,10 @@ class EmailReminderDailyMailOut extends BuildTask
                 }
             } else {
                 $limit = Config::inst()->get(EmailReminderDailyMailOut::class, 'daily_limit');
-
                 $records = $reminder->CurrentRecords()->limit($limit);
+                if ($this->verbose) {
+                    DB::alteration_message('... Sending our real emails' . $records->count(), 'edited');
+                }
                 if ($records) {
                     foreach ($records as $record) {
                         $reminder->sendOne($record, $isTestOnly = false);
