@@ -30,7 +30,12 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
     /**
      * @var int
      */
-    private static $limit = 200;
+    private static $daily_limit = 200;
+
+    /**
+     * @var int
+     */
+    private static float $grace_days_for_immediate_emails = 0.000694444; // 24 / 60 / 30 => 2 minutes;
 
     /**
      * @var string
@@ -136,10 +141,11 @@ class EmailReminderMailOut extends ViewableData implements EmailReminderMailOutI
             $filter['ExternalRecordClassName'] = $record->ClassName;
             $filter['ExternalRecordID'] = $record->ID;
             $filter['EmailTo'] = $email;
+            $alwaysSendTo = $this->Config()->get('always_send_to');
             // always send to admin
             if (
                 $email === Config::inst()->get(Email::class, 'admin_email') ||
-                in_array($email, $this->Config()->get('always_send_to'), true)
+                in_array($email, $alwaysSendTo, true)
             ) {
                 $force = true;
             }

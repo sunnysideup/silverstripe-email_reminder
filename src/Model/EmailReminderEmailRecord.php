@@ -2,11 +2,13 @@
 
 namespace SunnySideUp\EmailReminder\Model;
 
+use SilverStripe\Core\Config\Config;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Permission;
 use Sunnysideup\CmsEditLinkField\Forms\Fields\CMSEditLinkField;
+use SunnySideUp\EmailReminder\Api\EmailReminderMailOut;
 use SunnySideUp\EmailReminder\Cms\EmailReminderModelAdmin;
 
 /**
@@ -157,6 +159,7 @@ class EmailReminderEmailRecord extends DataObject
      */
     public function canSendAgain(): bool
     {
+        $schedule = $this->EmailReminderNotificationSchedule();
         $canSendAgain = true;
         if ($this->Result) {
             if ($this->IsTestOnly) {
@@ -164,12 +167,16 @@ class EmailReminderEmailRecord extends DataObject
             }
 
             $canSendAgain = false;
-            $repeatValue = $this->EmailReminderNotificationSchedule()->RepeatDays;
+            if ($schedule->IsImmediate()) {
+                $repeatValue = Config::inst()->get(EmailReminderMailOut::class, 'grace_days_for_immediate_emails'); // 2 minute grace period;
+            } else {
+                $repeatValue = $schedule->RepeatDays;
+            }
             if ($repeatValue) {
                 $numberOfSecondsBeforeYouCanSendAgain = $repeatValue * 86400;
-                $todaysTS = strtotime('NOW');
+                $nowTs = strtotime('NOW');
                 $creationTS = strtotime($this->Created);
-                $difference = $todaysTS - $creationTS;
+                $difference = $nowTs - $creationTS;
                 if ($difference > $numberOfSecondsBeforeYouCanSendAgain) {
                     $canSendAgain = true;
                 }
