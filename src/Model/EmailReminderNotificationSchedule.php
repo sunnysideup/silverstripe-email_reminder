@@ -372,13 +372,13 @@ class EmailReminderNotificationSchedule extends DataObject
                 ReadonlyField::create(
                     'CarbonCopyMethod',
                     'Carbon Copy (CC) method',
-                    $this->emailFieldOptions()
+                    $this->CarbonCopyMethod
                 )
                     ->setDescription('This is set by your developer'),
                 ReadonlyField::create(
                     'BlindCarbonCopyMethod',
                     'Blind Carbon Copy (BCC) method',
-                    $this->emailFieldOptions()
+                    $this->BlindCarbonCopyMethod
                 )
                     ->setDescription('This is set by your developer'),
 
