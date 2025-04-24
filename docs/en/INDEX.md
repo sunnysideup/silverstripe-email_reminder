@@ -56,19 +56,19 @@ Behind the scenes we replace the placeholder with a link link this: `<a href="Se
 The HTML of the email can also be set in the custom template file for the email.
 
 
-Slow Down and Security
+### Slow Down and Security
 ---
 The system will only ever send `n` mails per day (see configs).  This is to ensure that we don't accidentally spam all our users due to some sort of bug / glitch.  In the CMS, you can view the  `EmailReminder_EmailRecord` records to make sure emails are being sent correctly. These can be found under the `Security` tab in the CMS, as well as being shown with each `member`.
 
 
-Inspiration / Ideas
+### Inspiration / Ideas
 ---
  * https://github.com/silverstripe-labs/silverstripe-newsletter: how to set up email templates and how to allow the selection of available templates in the CMS.
  * https://github.com/sunnysideup/silverstripe-newsletter_emogrify: how to emogrify.
  * https://github.com/unclecheese/silverstripe-permamail: seems great - might be used in conjunction with this module?
 
 
-Setting up a Cron job
+### Setting up a Cron job
  ---
 The task to run is `dev/tasks/EmailReminder_DailyMailOut`. A few things to remember:
  * theme-ing may not work / work differently from command line
