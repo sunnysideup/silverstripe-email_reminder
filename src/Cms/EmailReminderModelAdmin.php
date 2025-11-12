@@ -17,11 +17,11 @@ class EmailReminderModelAdmin extends ModelAdmin implements PermissionProvider
     public $showImportForm = false;
 
     private static $managed_models = [
-        EmailReminderNotificationSchedule::class,
         EmailReminderEmailRecord::class,
+        EmailReminderNotificationSchedule::class,
     ];
 
-    public const PERMISSION_PROVIDER_CODE = 'Email Reminders';
+    public const PERMISSION_PROVIDER_CODE = 'CMS_ACCESS_EMAIL_REMINDERS';
 
     private static $url_segment = 'emailreminders';
 
